@@ -1,0 +1,162 @@
+[
+  {
+    "id": "goal",
+    "term_en": "Task",
+    "term_ru": "Задача",
+    "category": "Quality",
+    "description_ru": "Ставит задачу фотореалистичной доводки исходного архитектурного рендера.",
+    "block_id": "goal"
+  },
+  {
+    "id": "source",
+    "term_en": "Source Render",
+    "term_ru": "Исходный рендер",
+    "category": "Geometry",
+    "description_ru": "Назначает исходный рендер источником истины для геометрии, камеры и композиции.",
+    "block_id": "source"
+  },
+  {
+    "id": "geometry",
+    "term_en": "Geometry Lock",
+    "term_ru": "Сохранение геометрии",
+    "category": "Geometry",
+    "description_ru": "Запрещает менять форму здания, пропорции, этажность, проёмы и положение камеры.",
+    "block_id": "geometry"
+  },
+  {
+    "id": "windows",
+    "term_en": "Preserve Windows",
+    "term_ru": "Сохранить окна",
+    "category": "Geometry",
+    "description_ru": "Сохраняет окна, остекление, рамы и балконные проёмы без изменений.",
+    "block_id": "windows"
+  },
+  {
+    "id": "facade",
+    "term_en": "Facade Material",
+    "term_ru": "Материал фасада",
+    "category": "Materials",
+    "description_ru": "Разрешает замену только непрозрачной отделки стен внутри маски фасада.",
+    "block_id": "facade"
+  },
+  {
+    "id": "brick",
+    "term_en": "Old Brick",
+    "term_ru": "Состаренный красный кирпич",
+    "category": "Materials",
+    "description_ru": "Состаренный красный кирпич: регулируются масштаб кладки, швы, шероховатость и характер износа.",
+    "block_id": "brick"
+  },
+  {
+    "id": "limestone",
+    "term_en": "Weathered Limestone",
+    "term_ru": "Выветренный известняк",
+    "category": "Materials",
+    "description_ru": "Выветренный известняк: регулируются масштаб блоков, швы, шероховатость и эрозия поверхности.",
+    "block_id": "limestone"
+  },
+  {
+    "id": "overcast",
+    "term_en": "Overcast Day",
+    "term_ru": "Пасмурный день",
+    "category": "Lighting",
+    "description_ru": "Рассеянное дневное освещение и мягкие тени; несовместимо с ночным блоком.",
+    "block_id": "overcast"
+  },
+  {
+    "id": "night",
+    "term_en": "Night",
+    "term_ru": "Ночная атмосфера",
+    "category": "Lighting",
+    "description_ru": "Ночная атмосфера с освещением только от существующих светильников.",
+    "block_id": "night"
+  },
+  {
+    "id": "wet",
+    "term_en": "Wet Surface",
+    "term_ru": "Влажная поверхность",
+    "category": "Atmosphere",
+    "description_ru": "Добавляет влажность и отражения только на поверхности земли с сохранением границ.",
+    "block_id": "wet"
+  },
+  {
+    "id": "autumn",
+    "term_en": "Autumn Atmosphere",
+    "term_ru": "Осенняя атмосфера",
+    "category": "Landscape",
+    "description_ru": "Меняет цвет существующей листвы на осенний без добавления деревьев или изменения силуэтов.",
+    "block_id": "autumn"
+  },
+  {
+    "id": "photo",
+    "term_en": "Commercial Photography",
+    "term_ru": "Коммерческая архитектурная фотография",
+    "category": "Camera",
+    "description_ru": "Задаёт сдержанную фотографическую обработку без изменения перспективы и кадрирования.",
+    "block_id": "photo"
+  },
+  {
+    "id": "exclude",
+    "term_en": "Negative / Exclusions",
+    "term_ru": "Запреты и исключения",
+    "category": "Negative / Restrictions",
+    "description_ru": "Запрещает новые этажи, смещение окон, деформацию контуров и добавление архитектурных элементов.",
+    "block_id": "exclude"
+  },
+  {
+    "id": "qc",
+    "term_en": "Strict QC",
+    "term_ru": "Строгая проверка результата",
+    "category": "Quality",
+    "description_ru": "Задаёт критерии ручной приёмки: этажность, проёмы, силуэты, камера, границы масок. Автопроверку не выполняет.",
+    "block_id": "qc"
+  },
+  {
+    "id": "road",
+    "term_en": "Road / Sidewalk",
+    "term_ru": "Дорога и тротуар",
+    "category": "Materials",
+    "description_ru": "Уточняет фактуру покрытия и швы внутри маски, сохраняя бордюры и ширину дороги.",
+    "block_id": "road"
+  },
+  {
+    "id": "greenery",
+    "term_en": "Greenery",
+    "term_ru": "Озеленение",
+    "category": "Landscape",
+    "description_ru": "Улучшает существующую растительность внутри маски без изменения количества и расположения.",
+    "block_id": "greenery"
+  },
+  {
+    "id": "people",
+    "term_en": "People",
+    "term_ru": "Люди",
+    "category": "People",
+    "description_ru": "Правит людей внутри маски с согласованием масштаба, перспективы, освещения и контактных теней.",
+    "block_id": "people"
+  },
+  {
+    "id": "interior",
+    "term_en": "Interior",
+    "term_ru": "Интерьер",
+    "category": "Quality",
+    "description_ru": "Ставит задачу доводки интерьера с сохранением планировки и расстановки мебели.",
+    "block_id": "interior"
+  },
+  {
+    "id": "polish",
+    "term_en": "Final Polish",
+    "term_ru": "Финальная доводка",
+    "category": "Atmosphere",
+    "description_ru": "Разрешает только тональную и атмосферную доводку; референс задаёт настроение, а не новые объекты.",
+    "block_id": "polish"
+  },
+  {
+    "id": "mask",
+    "term_en": "Mask",
+    "term_ru": "Маска области редактирования",
+    "category": "AI terminology",
+    "description_ru": "Назначает маску границей допустимого редактирования. Точность зависит от системы генерации.",
+    "block_id": "mask"
+  }
+]

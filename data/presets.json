@@ -1,0 +1,146 @@
+[
+  {
+    "id": "facade",
+    "name": "Facade",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "photo",
+      "exclude",
+      "qc",
+      "facade",
+      "brick",
+      "overcast"
+    ]
+  },
+  {
+    "id": "road",
+    "name": "Road",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "photo",
+      "exclude",
+      "qc",
+      "road",
+      "overcast"
+    ]
+  },
+  {
+    "id": "greenery",
+    "name": "Greenery",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "photo",
+      "exclude",
+      "qc",
+      "greenery"
+    ]
+  },
+  {
+    "id": "people",
+    "name": "People",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "photo",
+      "exclude",
+      "qc",
+      "people"
+    ]
+  },
+  {
+    "id": "interior",
+    "name": "Interior",
+    "blocks": [
+      "interior",
+      "source",
+      "geometry",
+      "windows",
+      "photo",
+      "exclude",
+      "qc"
+    ]
+  },
+  {
+    "id": "exterior",
+    "name": "Exterior",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "photo",
+      "exclude",
+      "qc",
+      "overcast"
+    ]
+  },
+  {
+    "id": "final-polish",
+    "name": "Final Polish",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "photo",
+      "exclude",
+      "qc",
+      "polish"
+    ]
+  },
+  {
+    "id": "material-study",
+    "name": "Material Study",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "photo",
+      "exclude",
+      "qc",
+      "facade",
+      "limestone"
+    ]
+  },
+  {
+    "id": "day-→-night",
+    "name": "Day → Night",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "photo",
+      "exclude",
+      "qc",
+      "night"
+    ]
+  },
+  {
+    "id": "portfolio-polish",
+    "name": "Portfolio Polish",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "photo",
+      "exclude",
+      "qc",
+      "polish",
+      "overcast"
+    ]
+  }
+]

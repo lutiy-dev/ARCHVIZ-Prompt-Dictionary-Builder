@@ -1,0 +1,287 @@
+{
+  "schema_version": 1,
+  "sections": [
+    "GOAL",
+    "SOURCE / INPUT",
+    "MUST PRESERVE",
+    "ALLOWED CHANGES",
+    "MATERIAL / SUBJECT",
+    "LIGHT / ATMOSPHERE",
+    "CAMERA / PHOTOGRAPHY",
+    "RESTRICTIONS",
+    "QC"
+  ],
+  "blocks": [
+    {
+      "id": "goal",
+      "en": "Task",
+      "ru": "Задача",
+      "category": "Quality",
+      "section": "GOAL",
+      "text": "Create a photorealistic architectural image from the supplied render.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "source",
+      "en": "Source Render",
+      "ru": "Исходный рендер",
+      "category": "Geometry",
+      "section": "SOURCE / INPUT",
+      "text": "Use the source render as the authority for geometry, camera and composition.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "geometry",
+      "en": "Geometry Lock",
+      "ru": "Сохранение геометрии",
+      "category": "Geometry",
+      "section": "MUST PRESERVE",
+      "text": "Preserve the original architectural geometry, camera position, building proportions, floor count and facade openings.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "windows",
+      "en": "Preserve Windows",
+      "ru": "Сохранить окна",
+      "category": "Geometry",
+      "section": "MUST PRESERVE",
+      "text": "Keep all windows, glazing, frames and balcony openings unchanged.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "facade",
+      "en": "Facade Material",
+      "ru": "Материал фасада",
+      "category": "Materials",
+      "section": "ALLOWED CHANGES",
+      "text": "Change only the opaque exterior wall material within the supplied facade mask. Preserve all opening boundaries.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "polish"
+      ]
+    },
+    {
+      "id": "brick",
+      "en": "Old Brick",
+      "ru": "Состаренный красный кирпич",
+      "category": "Materials",
+      "section": "MATERIAL / SUBJECT",
+      "text": "Use aged red brick with {{scale}}, {{joints}}, {{roughness}} and {{weathering}}.",
+      "parameters": {
+        "scale": "realistic brick dimensions",
+        "joints": "recessed mortar joints",
+        "roughness": "matte surface roughness",
+        "weathering": "subtle localized weathering"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "limestone"
+      ]
+    },
+    {
+      "id": "limestone",
+      "en": "Weathered Limestone",
+      "ru": "Выветренный известняк",
+      "category": "Materials",
+      "section": "MATERIAL / SUBJECT",
+      "text": "Use weathered limestone with {{scale}}, {{joints}}, {{roughness}} and {{weathering}}.",
+      "parameters": {
+        "scale": "natural block scale",
+        "joints": "fine mortar joints",
+        "roughness": "matte mineral roughness",
+        "weathering": "subtle edge erosion"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "brick"
+      ]
+    },
+    {
+      "id": "overcast",
+      "en": "Overcast Day",
+      "ru": "Пасмурный день",
+      "category": "Lighting",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Use overcast daylight with soft diffused shadows.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "night"
+      ]
+    },
+    {
+      "id": "night",
+      "en": "Night",
+      "ru": "Ночная атмосфера",
+      "category": "Lighting",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Create a night atmosphere with plausible illumination from existing fixtures only.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "overcast"
+      ]
+    },
+    {
+      "id": "wet",
+      "en": "Wet Surface",
+      "ru": "Влажная поверхность",
+      "category": "Atmosphere",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Apply subtle dampness and physically plausible reflections to ground surfaces only; preserve their boundaries.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "autumn",
+      "en": "Autumn Atmosphere",
+      "ru": "Осенняя атмосфера",
+      "category": "Landscape",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Shift existing foliage to natural autumn colors without changing plant count, placement or silhouette.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "photo",
+      "en": "Commercial Photography",
+      "ru": "Коммерческая архитектурная фотография",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Use restrained commercial architectural photography grading, natural dynamic range and believable material response. Preserve the source perspective and framing.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "exclude",
+      "en": "Negative / Exclusions",
+      "ru": "Запреты и исключения",
+      "category": "Negative / Restrictions",
+      "section": "RESTRICTIONS",
+      "text": "Do not add or remove architectural elements. No extra floors, moved windows, warped edges, invented balconies, text or watermarks.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "qc",
+      "en": "Strict QC",
+      "ru": "Строгая проверка результата",
+      "category": "Quality",
+      "section": "QC",
+      "text": "Check against the source: identical floor count, opening positions, silhouettes, camera and perspective; clean mask boundaries and no texture spill. Reject results with geometry drift.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "road",
+      "en": "Road / Sidewalk",
+      "ru": "Дорога и тротуар",
+      "category": "Materials",
+      "section": "ALLOWED CHANGES",
+      "text": "Refine existing pavement texture, joints and wear only inside the ground mask. Preserve curbs, road width and paving boundaries.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "polish"
+      ]
+    },
+    {
+      "id": "greenery",
+      "en": "Greenery",
+      "ru": "Озеленение",
+      "category": "Landscape",
+      "section": "ALLOWED CHANGES",
+      "text": "Refine existing vegetation inside its mask. Preserve species intent, plant count, placement and overall silhouette. Do not add trees.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "polish"
+      ]
+    },
+    {
+      "id": "people",
+      "en": "People",
+      "ru": "Люди",
+      "category": "People",
+      "section": "ALLOWED CHANGES",
+      "text": "Edit people only inside the supplied people mask. Match source perspective, scale, lighting and contact shadows. Preserve surrounding architecture.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "polish"
+      ]
+    },
+    {
+      "id": "interior",
+      "en": "Interior",
+      "ru": "Интерьер",
+      "category": "Quality",
+      "section": "GOAL",
+      "text": "Refine the supplied interior render to photographic realism while preserving the layout and furniture placement.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "polish",
+      "en": "Final Polish",
+      "ru": "Финальная доводка",
+      "category": "Atmosphere",
+      "section": "ALLOWED CHANGES",
+      "text": "Adjust tonal balance, highlight rolloff and atmospheric depth only. Use the reference for mood, not geometry or new objects.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "facade",
+        "road",
+        "greenery",
+        "people"
+      ]
+    },
+    {
+      "id": "mask",
+      "en": "Mask",
+      "ru": "Маска области редактирования",
+      "category": "AI terminology",
+      "section": "SOURCE / INPUT",
+      "text": "Treat the supplied mask as the edit boundary. Preserve all pixels outside the intended editable region as closely as the editing system allows.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    }
+  ]
+}
