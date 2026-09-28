@@ -1,0 +1,337 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Shared types — proposed ARCHVIZ data model v0.1",
+  "$defs": {
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+    },
+    "localized": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "en",
+        "ru"
+      ],
+      "properties": {
+        "en": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "ru": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        }
+      }
+    },
+    "category": {
+      "enum": [
+        "geometry",
+        "materials",
+        "lighting",
+        "camera",
+        "atmosphere",
+        "landscape",
+        "people",
+        "quality",
+        "ai_terminology",
+        "restrictions"
+      ]
+    },
+    "section": {
+      "enum": [
+        "goal",
+        "source_input",
+        "must_preserve",
+        "allowed_changes",
+        "material_subject",
+        "light_atmosphere",
+        "camera_photography",
+        "restrictions",
+        "qc"
+      ]
+    },
+    "pass": {
+      "enum": [
+        "facade_material",
+        "road_surface",
+        "greenery",
+        "people",
+        "interior",
+        "exterior",
+        "global_lighting",
+        "final_polish",
+        "material_study"
+      ]
+    },
+    "reference": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "revision"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+        },
+        "revision": {
+          "type": "integer",
+          "minimum": 1
+        }
+      }
+    },
+    "evidence": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "path",
+        "sha256"
+      ],
+      "properties": {
+        "path": {
+          "type": "string",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "sha256": {
+          "type": "string",
+          "pattern": "^[a-f0-9]{64}$"
+        }
+      }
+    },
+    "provenance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "origin",
+        "source_refs",
+        "note"
+      ],
+      "properties": {
+        "origin": {
+          "enum": [
+            "authored",
+            "adapted",
+            "imported"
+          ]
+        },
+        "source_refs": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1,
+            "pattern": "\\S"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "note": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "en",
+            "ru"
+          ],
+          "properties": {
+            "en": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "ru": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        }
+      }
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "content_status",
+        "maturity",
+        "evidence_refs",
+        "approval_refs"
+      ],
+      "properties": {
+        "content_status": {
+          "enum": [
+            "GENERATED",
+            "VALIDATED",
+            "TESTED"
+          ]
+        },
+        "maturity": {
+          "enum": [
+            "experimental",
+            "production_standard"
+          ]
+        },
+        "evidence_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/evidence"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        },
+        "approval_refs": {
+          "type": "array",
+          "items": {
+            "$ref": "common.schema.json#/$defs/evidence"
+          },
+          "minItems": 0,
+          "uniqueItems": true
+        }
+      }
+    },
+    "parameter": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "type",
+        "label",
+        "description",
+        "required",
+        "unit"
+      ],
+      "properties": {
+        "type": {
+          "enum": [
+            "text",
+            "number",
+            "integer",
+            "enum"
+          ]
+        },
+        "label": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "en",
+            "ru"
+          ],
+          "properties": {
+            "en": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "ru": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "description": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "en",
+            "ru"
+          ],
+          "properties": {
+            "en": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            },
+            "ru": {
+              "type": "string",
+              "minLength": 1,
+              "pattern": "\\S"
+            }
+          }
+        },
+        "required": {
+          "type": "boolean"
+        },
+        "unit": {
+          "type": [
+            "string",
+            "null"
+          ]
+        },
+        "default": {},
+        "minimum": {
+          "type": "number"
+        },
+        "maximum": {
+          "type": "number"
+        },
+        "max_length": {
+          "type": "integer",
+          "minimum": 1
+        },
+        "options": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "label",
+              "prompt_value"
+            ],
+            "properties": {
+              "value": {
+                "type": "string",
+                "pattern": "^[a-z][a-z0-9]*(?:[._-][a-z0-9]+)*$"
+              },
+              "label": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "en",
+                  "ru"
+                ],
+                "properties": {
+                  "en": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  },
+                  "ru": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              },
+              "prompt_value": {
+                "type": "object",
+                "additionalProperties": false,
+                "required": [
+                  "en",
+                  "ru"
+                ],
+                "properties": {
+                  "en": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  },
+                  "ru": {
+                    "type": "string",
+                    "minLength": 1,
+                    "pattern": "\\S"
+                  }
+                }
+              }
+            }
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

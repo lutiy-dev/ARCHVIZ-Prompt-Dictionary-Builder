@@ -1,0 +1,120 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Dictionary — proposed v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_family",
+    "schema_version",
+    "library_revision",
+    "kind",
+    "terms"
+  ],
+  "properties": {
+    "schema_family": {
+      "const": "archviz.prompt-library"
+    },
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "library_revision": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "kind": {
+      "const": "dictionary"
+    },
+    "terms": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "revision",
+          "label",
+          "definition",
+          "category",
+          "aliases",
+          "tags",
+          "related_term_ids",
+          "provenance",
+          "quality"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "label": {
+            "$ref": "common.schema.json#/$defs/localized"
+          },
+          "definition": {
+            "$ref": "common.schema.json#/$defs/localized"
+          },
+          "category": {
+            "$ref": "common.schema.json#/$defs/category"
+          },
+          "aliases": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "en",
+              "ru"
+            ],
+            "properties": {
+              "en": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "minItems": 0,
+                "uniqueItems": true
+              },
+              "ru": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "minLength": 1,
+                  "pattern": "\\S"
+                },
+                "minItems": 0,
+                "uniqueItems": true
+              }
+            }
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "related_term_ids": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "provenance": {
+            "$ref": "common.schema.json#/$defs/provenance"
+          },
+          "quality": {
+            "$ref": "common.schema.json#/$defs/quality"
+          }
+        }
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}

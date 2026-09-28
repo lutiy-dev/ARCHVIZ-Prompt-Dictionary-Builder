@@ -1,0 +1,253 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Prompt blocks — proposed v0.1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema_family",
+    "schema_version",
+    "library_revision",
+    "kind",
+    "section_order",
+    "blocks"
+  ],
+  "properties": {
+    "schema_family": {
+      "const": "archviz.prompt-library"
+    },
+    "schema_version": {
+      "const": "0.1.0"
+    },
+    "library_revision": {
+      "type": "string",
+      "minLength": 1,
+      "pattern": "\\S"
+    },
+    "kind": {
+      "const": "prompt_blocks"
+    },
+    "section_order": {
+      "const": [
+        "goal",
+        "source_input",
+        "must_preserve",
+        "allowed_changes",
+        "material_subject",
+        "light_atmosphere",
+        "camera_photography",
+        "restrictions",
+        "qc"
+      ]
+    },
+    "blocks": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "id",
+          "revision",
+          "label",
+          "term_refs",
+          "section",
+          "order",
+          "template",
+          "parameters",
+          "applicability",
+          "required_inputs",
+          "requires_all",
+          "conflicts_with",
+          "exclusive_group",
+          "effects",
+          "qc_rules",
+          "provenance",
+          "quality"
+        ],
+        "properties": {
+          "id": {
+            "$ref": "common.schema.json#/$defs/id"
+          },
+          "revision": {
+            "type": "integer",
+            "minimum": 1
+          },
+          "label": {
+            "$ref": "common.schema.json#/$defs/localized"
+          },
+          "term_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/reference"
+            },
+            "minItems": 1,
+            "uniqueItems": true
+          },
+          "section": {
+            "$ref": "common.schema.json#/$defs/section"
+          },
+          "order": {
+            "type": "integer",
+            "minimum": 0
+          },
+          "template": {
+            "$ref": "common.schema.json#/$defs/localized"
+          },
+          "parameters": {
+            "type": "object",
+            "propertyNames": {
+              "pattern": "^[a-z][a-z0-9_]*$"
+            },
+            "additionalProperties": {
+              "$ref": "common.schema.json#/$defs/parameter"
+            }
+          },
+          "applicability": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "pass_types",
+              "scope"
+            ],
+            "properties": {
+              "pass_types": {
+                "type": "array",
+                "items": {
+                  "$ref": "common.schema.json#/$defs/pass"
+                },
+                "minItems": 1,
+                "uniqueItems": true
+              },
+              "scope": {
+                "enum": [
+                  "any",
+                  "masked_region",
+                  "whole_image"
+                ]
+              }
+            }
+          },
+          "required_inputs": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "role",
+                "purpose"
+              ],
+              "properties": {
+                "role": {
+                  "enum": [
+                    "source_image",
+                    "edit_mask",
+                    "reference_image"
+                  ]
+                },
+                "purpose": {
+                  "$ref": "common.schema.json#/$defs/localized"
+                }
+              }
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "requires_all": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/reference"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "conflicts_with": {
+            "type": "array",
+            "items": {
+              "$ref": "common.schema.json#/$defs/id"
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "exclusive_group": {
+            "anyOf": [
+              {
+                "$ref": "common.schema.json#/$defs/id"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "effects": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "changes",
+              "preserves"
+            ],
+            "properties": {
+              "changes": {
+                "type": "array",
+                "items": {
+                  "$ref": "common.schema.json#/$defs/id"
+                },
+                "minItems": 0,
+                "uniqueItems": true
+              },
+              "preserves": {
+                "type": "array",
+                "items": {
+                  "$ref": "common.schema.json#/$defs/id"
+                },
+                "minItems": 0,
+                "uniqueItems": true
+              }
+            }
+          },
+          "qc_rules": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "id",
+                "instruction",
+                "method",
+                "severity"
+              ],
+              "properties": {
+                "id": {
+                  "$ref": "common.schema.json#/$defs/id"
+                },
+                "instruction": {
+                  "$ref": "common.schema.json#/$defs/localized"
+                },
+                "method": {
+                  "enum": [
+                    "visual_compare",
+                    "metadata_compare"
+                  ]
+                },
+                "severity": {
+                  "enum": [
+                    "error",
+                    "warning"
+                  ]
+                }
+              }
+            },
+            "minItems": 0,
+            "uniqueItems": true
+          },
+          "provenance": {
+            "$ref": "common.schema.json#/$defs/provenance"
+          },
+          "quality": {
+            "$ref": "common.schema.json#/$defs/quality"
+          }
+        }
+      },
+      "minItems": 1,
+      "uniqueItems": true
+    }
+  }
+}

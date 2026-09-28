@@ -1,0 +1,348 @@
+{
+  "schema_family": "archviz.prompt-library",
+  "schema_version": "0.1.0",
+  "library_revision": "design-example.1",
+  "kind": "prompt_blocks",
+  "section_order": [
+    "goal",
+    "source_input",
+    "must_preserve",
+    "allowed_changes",
+    "material_subject",
+    "light_atmosphere",
+    "camera_photography",
+    "restrictions",
+    "qc"
+  ],
+  "blocks": [
+    {
+      "id": "preserve.geometry",
+      "revision": 1,
+      "label": {
+        "en": "Geometry Lock",
+        "ru": "Сохранение геометрии"
+      },
+      "term_refs": [
+        {
+          "id": "geometry.lock",
+          "revision": 1
+        }
+      ],
+      "section": "must_preserve",
+      "order": 100,
+      "template": {
+        "en": "Preserve geometry, camera, proportions, floor count and all openings from the source render.",
+        "ru": "Сохранить геометрию, камеру, пропорции, этажность и все проёмы исходного рендера."
+      },
+      "parameters": {},
+      "applicability": {
+        "pass_types": [
+          "facade_material"
+        ],
+        "scope": "any"
+      },
+      "required_inputs": [
+        {
+          "role": "source_image",
+          "purpose": {
+            "en": "Source render defines geometry.",
+            "ru": "Исходный рендер задаёт геометрию."
+          }
+        }
+      ],
+      "requires_all": [],
+      "conflicts_with": [],
+      "exclusive_group": null,
+      "effects": {
+        "changes": [],
+        "preserves": [
+          "geometry",
+          "camera",
+          "openings"
+        ]
+      },
+      "qc_rules": [],
+      "provenance": {
+        "origin": "authored",
+        "source_refs": [],
+        "note": {
+          "en": "Illustrative draft for schema review; not a tested prompt.",
+          "ru": "Иллюстративный пример для обсуждения схемы; prompt не тестировался."
+        }
+      },
+      "quality": {
+        "content_status": "GENERATED",
+        "maturity": "experimental",
+        "evidence_refs": [],
+        "approval_refs": []
+      }
+    },
+    {
+      "id": "edit.facade_material",
+      "revision": 1,
+      "label": {
+        "en": "Facade edit boundary",
+        "ru": "Граница редактирования фасада"
+      },
+      "term_refs": [
+        {
+          "id": "facade.material",
+          "revision": 1
+        }
+      ],
+      "section": "allowed_changes",
+      "order": 100,
+      "template": {
+        "en": "Change only the opaque exterior wall finish inside the supplied facade mask; preserve glazing and frames.",
+        "ru": "Изменять только отделку непрозрачных наружных стен внутри маски фасада; сохранить остекление и рамы."
+      },
+      "parameters": {},
+      "applicability": {
+        "pass_types": [
+          "facade_material"
+        ],
+        "scope": "masked_region"
+      },
+      "required_inputs": [
+        {
+          "role": "source_image",
+          "purpose": {
+            "en": "Source render defines geometry.",
+            "ru": "Исходный рендер задаёт геометрию."
+          }
+        },
+        {
+          "role": "edit_mask",
+          "purpose": {
+            "en": "Facade mask excludes glazing.",
+            "ru": "Маска фасада исключает остекление."
+          }
+        }
+      ],
+      "requires_all": [
+        {
+          "id": "preserve.geometry",
+          "revision": 1
+        }
+      ],
+      "conflicts_with": [],
+      "exclusive_group": null,
+      "effects": {
+        "changes": [
+          "facade.surface_material"
+        ],
+        "preserves": [
+          "geometry",
+          "camera",
+          "openings"
+        ]
+      },
+      "qc_rules": [],
+      "provenance": {
+        "origin": "authored",
+        "source_refs": [],
+        "note": {
+          "en": "Illustrative draft for schema review; not a tested prompt.",
+          "ru": "Иллюстративный пример для обсуждения схемы; prompt не тестировался."
+        }
+      },
+      "quality": {
+        "content_status": "GENERATED",
+        "maturity": "experimental",
+        "evidence_refs": [],
+        "approval_refs": []
+      }
+    },
+    {
+      "id": "material.aged_brick",
+      "revision": 1,
+      "label": {
+        "en": "Aged brick finish",
+        "ru": "Отделка состаренным кирпичом"
+      },
+      "term_refs": [
+        {
+          "id": "material.aged_brick",
+          "revision": 1
+        }
+      ],
+      "section": "material_subject",
+      "order": 100,
+      "template": {
+        "en": "Use aged red brick with mortar joint width {{joint_width_mm}} mm and {{roughness}}.",
+        "ru": "Использовать состаренный красный кирпич со швом {{joint_width_mm}} мм и {{roughness}}."
+      },
+      "parameters": {
+        "joint_width_mm": {
+          "type": "number",
+          "label": {
+            "en": "Joint width",
+            "ru": "Ширина шва"
+          },
+          "description": {
+            "en": "Visible mortar joint width; choose from project reference.",
+            "ru": "Видимая ширина растворного шва; выбрать по проектному референсу."
+          },
+          "required": true,
+          "unit": "mm",
+          "minimum": 0,
+          "maximum": 50
+        },
+        "roughness": {
+          "type": "enum",
+          "label": {
+            "en": "Surface response",
+            "ru": "Характер поверхности"
+          },
+          "description": {
+            "en": "Qualitative appearance, not a numeric PBR roughness value.",
+            "ru": "Описание внешнего вида, не числовая PBR roughness."
+          },
+          "required": true,
+          "unit": null,
+          "options": [
+            {
+              "value": "matte",
+              "label": {
+                "en": "Matte",
+                "ru": "Матовая"
+              },
+              "prompt_value": {
+                "en": "a matte surface",
+                "ru": "матовой поверхностью"
+              }
+            },
+            {
+              "value": "slightly_glossy",
+              "label": {
+                "en": "Slightly glossy",
+                "ru": "Слабый глянец"
+              },
+              "prompt_value": {
+                "en": "a slightly glossy surface",
+                "ru": "слегка глянцевой поверхностью"
+              }
+            }
+          ]
+        }
+      },
+      "applicability": {
+        "pass_types": [
+          "facade_material"
+        ],
+        "scope": "masked_region"
+      },
+      "required_inputs": [
+        {
+          "role": "source_image",
+          "purpose": {
+            "en": "Source render defines geometry.",
+            "ru": "Исходный рендер задаёт геометрию."
+          }
+        }
+      ],
+      "requires_all": [
+        {
+          "id": "edit.facade_material",
+          "revision": 1
+        }
+      ],
+      "conflicts_with": [],
+      "exclusive_group": "facade.base_material",
+      "effects": {
+        "changes": [
+          "facade.surface_material"
+        ],
+        "preserves": []
+      },
+      "qc_rules": [],
+      "provenance": {
+        "origin": "authored",
+        "source_refs": [],
+        "note": {
+          "en": "Illustrative draft for schema review; not a tested prompt.",
+          "ru": "Иллюстративный пример для обсуждения схемы; prompt не тестировался."
+        }
+      },
+      "quality": {
+        "content_status": "GENERATED",
+        "maturity": "experimental",
+        "evidence_refs": [],
+        "approval_refs": []
+      }
+    },
+    {
+      "id": "qc.geometry",
+      "revision": 1,
+      "label": {
+        "en": "Geometry acceptance",
+        "ru": "Приёмка геометрии"
+      },
+      "term_refs": [
+        {
+          "id": "quality.geometry_qc",
+          "revision": 1
+        }
+      ],
+      "section": "qc",
+      "order": 100,
+      "template": {
+        "en": "Compare the result against the source; reject shifted openings, changed floor count or camera drift.",
+        "ru": "Сравнить результат с исходником; отклонить смещённые проёмы, изменение этажности или камеры."
+      },
+      "parameters": {},
+      "applicability": {
+        "pass_types": [
+          "facade_material"
+        ],
+        "scope": "any"
+      },
+      "required_inputs": [
+        {
+          "role": "source_image",
+          "purpose": {
+            "en": "Source render defines geometry.",
+            "ru": "Исходный рендер задаёт геометрию."
+          }
+        }
+      ],
+      "requires_all": [
+        {
+          "id": "preserve.geometry",
+          "revision": 1
+        }
+      ],
+      "conflicts_with": [],
+      "exclusive_group": null,
+      "effects": {
+        "changes": [],
+        "preserves": []
+      },
+      "qc_rules": [
+        {
+          "id": "openings.unchanged",
+          "instruction": {
+            "en": "Window and door boundaries match the source.",
+            "ru": "Границы окон и дверей совпадают с исходником."
+          },
+          "method": "visual_compare",
+          "severity": "error"
+        }
+      ],
+      "provenance": {
+        "origin": "authored",
+        "source_refs": [],
+        "note": {
+          "en": "Illustrative draft for schema review; not a tested prompt.",
+          "ru": "Иллюстративный пример для обсуждения схемы; prompt не тестировался."
+        }
+      },
+      "quality": {
+        "content_status": "GENERATED",
+        "maturity": "experimental",
+        "evidence_refs": [],
+        "approval_refs": []
+      }
+    }
+  ]
+}

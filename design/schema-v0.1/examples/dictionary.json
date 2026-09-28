@@ -1,0 +1,140 @@
+{
+  "schema_family": "archviz.prompt-library",
+  "schema_version": "0.1.0",
+  "library_revision": "design-example.1",
+  "kind": "dictionary",
+  "terms": [
+    {
+      "id": "geometry.lock",
+      "revision": 1,
+      "label": {
+        "en": "Geometry Lock",
+        "ru": "Сохранение геометрии"
+      },
+      "definition": {
+        "en": "Preserve source building geometry and camera.",
+        "ru": "Сохранение формы здания, пропорций, этажности, проёмов и камеры исходного рендера."
+      },
+      "category": "geometry",
+      "aliases": {
+        "en": [],
+        "ru": []
+      },
+      "tags": [],
+      "related_term_ids": [],
+      "provenance": {
+        "origin": "authored",
+        "source_refs": [],
+        "note": {
+          "en": "Illustrative draft for schema review; not a tested prompt.",
+          "ru": "Иллюстративный пример для обсуждения схемы; prompt не тестировался."
+        }
+      },
+      "quality": {
+        "content_status": "GENERATED",
+        "maturity": "experimental",
+        "evidence_refs": [],
+        "approval_refs": []
+      }
+    },
+    {
+      "id": "facade.material",
+      "revision": 1,
+      "label": {
+        "en": "Facade Material",
+        "ru": "Материал фасада"
+      },
+      "definition": {
+        "en": "Opaque exterior wall finish within an explicit edit region.",
+        "ru": "Отделка непрозрачных стен в явно заданной области редактирования."
+      },
+      "category": "materials",
+      "aliases": {
+        "en": [],
+        "ru": []
+      },
+      "tags": [],
+      "related_term_ids": [],
+      "provenance": {
+        "origin": "authored",
+        "source_refs": [],
+        "note": {
+          "en": "Illustrative draft for schema review; not a tested prompt.",
+          "ru": "Иллюстративный пример для обсуждения схемы; prompt не тестировался."
+        }
+      },
+      "quality": {
+        "content_status": "GENERATED",
+        "maturity": "experimental",
+        "evidence_refs": [],
+        "approval_refs": []
+      }
+    },
+    {
+      "id": "material.aged_brick",
+      "revision": 1,
+      "label": {
+        "en": "Aged Red Brick",
+        "ru": "Состаренный красный кирпич"
+      },
+      "definition": {
+        "en": "Red brick with subtle weathering and visible mortar joints.",
+        "ru": "Красный кирпич с умеренным износом и выраженными растворными швами."
+      },
+      "category": "materials",
+      "aliases": {
+        "en": [],
+        "ru": []
+      },
+      "tags": [],
+      "related_term_ids": [],
+      "provenance": {
+        "origin": "authored",
+        "source_refs": [],
+        "note": {
+          "en": "Illustrative draft for schema review; not a tested prompt.",
+          "ru": "Иллюстративный пример для обсуждения схемы; prompt не тестировался."
+        }
+      },
+      "quality": {
+        "content_status": "GENERATED",
+        "maturity": "experimental",
+        "evidence_refs": [],
+        "approval_refs": []
+      }
+    },
+    {
+      "id": "quality.geometry_qc",
+      "revision": 1,
+      "label": {
+        "en": "Geometry QC",
+        "ru": "Проверка геометрии"
+      },
+      "definition": {
+        "en": "Compare architectural features with the source image.",
+        "ru": "Сравнение архитектурных элементов результата с исходным изображением."
+      },
+      "category": "quality",
+      "aliases": {
+        "en": [],
+        "ru": []
+      },
+      "tags": [],
+      "related_term_ids": [],
+      "provenance": {
+        "origin": "authored",
+        "source_refs": [],
+        "note": {
+          "en": "Illustrative draft for schema review; not a tested prompt.",
+          "ru": "Иллюстративный пример для обсуждения схемы; prompt не тестировался."
+        }
+      },
+      "quality": {
+        "content_status": "GENERATED",
+        "maturity": "experimental",
+        "evidence_refs": [],
+        "approval_refs": []
+      }
+    }
+  ]
+}
