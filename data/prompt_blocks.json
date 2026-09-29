@@ -90,7 +90,8 @@
       "status": "GENERATED",
       "version": 1,
       "conflicts": [
-        "limestone"
+        "limestone",
+        "travertine"
       ]
     },
     {
@@ -109,7 +110,23 @@
       "status": "GENERATED",
       "version": 1,
       "conflicts": [
-        "brick"
+        "brick",
+        "travertine"
+      ]
+    },
+    {
+      "id": "travertine",
+      "en": "Existing Light Travertine",
+      "ru": "Существующий светлый травертин",
+      "category": "Materials",
+      "section": "MATERIAL / SUBJECT",
+      "text": "Refine the existing light travertine on the masked upper facade. Make its natural directional grain, fine open pores and restrained mineral banding visible at architectural viewing distance. Keep the original stone color, panel layout, edges, joints, relief and daylight response; do not invent new seams or replace the architectural design.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "brick",
+        "limestone"
       ]
     },
     {

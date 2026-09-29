@@ -56,6 +56,14 @@
     "block_id": "limestone"
   },
   {
+    "id": "travertine",
+    "term_en": "Existing Light Travertine",
+    "term_ru": "Существующий светлый травертин",
+    "category": "Materials",
+    "description_ru": "Усиливает читаемость фактуры существующего светлого травертина только внутри маски, сохраняя цвет, раскладку плит, рельеф и дневное освещение.",
+    "block_id": "travertine"
+  },
+  {
     "id": "overcast",
     "term_en": "Overcast Day",
     "term_ru": "Пасмурный день",

@@ -16,4 +16,4 @@ for(const b of lib.blocks){const matches=[...b.text.matchAll(/\{\{([a-z][a-z0-9_
 for(const d of read('data/dictionary.json')){const b=byId.get(d.block_id);assert.ok(b);assert.equal(d.term_en,b.en);assert.equal(d.term_ru,b.ru);assert.equal(d.category,b.category);}
 for(const p of read('data/presets.json')){assert.equal(new Set(p.blocks).size,p.blocks.length);for(const id of p.blocks)assert.ok(byId.has(id));}
 for(const mutate of [x=>x.blocks[0].status='TESTED',x=>x.blocks[0].section='TYPO',x=>x.blocks[5].parameters.scale='',x=>x.blocks[0].unexpected=true,x=>x.schema_version='0.1']){const bad=structuredClone(lib);mutate(bad);assert.throws(()=>check(bad,schema));}
-console.log('PASS: schema keyword subset, 20 blocks, references/templates/metadata/conflict symmetry; 5 invalid fixtures rejected. Full Draft 2020-12 metaschema validation NOT run.');
+console.log(`PASS: schema keyword subset, ${lib.blocks.length} blocks, references/templates/metadata/conflict symmetry; 5 invalid fixtures rejected. Full Draft 2020-12 metaschema validation NOT run.`);
