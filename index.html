@@ -3,15 +3,22 @@
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
   <title>ARCHVIZ · Prompt Studio</title>
+  <meta name="theme-color" content="#0b0d10">
+  <meta name="application-name" content="ARCHVIZ Prompt Studio">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <script>try{document.documentElement.dataset.theme=localStorage.getItem('archviz-prompt-studio-theme')==='light'?'light':'dark'}catch{}</script>
+  <script src="pwa-install-capture.js"></script>
   <link rel="stylesheet" href="src/style.css">
 </head>
 <body>
   <header class="topbar">
     <div class="mark" aria-hidden="true">A/P</div>
     <div class="brand"><small>CONTROLLED AI · ARCHITECTURAL VISUALIZATION</small><strong>ARCHVIZ <span>Prompt Studio</span></strong></div>
-    <div class="top-actions"><span class="badge">LAB / v0.1</span><button id="themeToggle" class="theme-toggle" type="button" aria-label="Включить светлую тему" title="Переключить тему">☼</button></div>
+    <div class="top-actions"><span class="badge">LAB / v0.1</span><button id="installApp" type="button">Установить приложение</button><button id="themeToggle" class="theme-toggle" type="button" aria-label="Включить светлую тему" title="Переключить тему">☼</button></div>
   </header>
+  <p id="installHint" class="install-hint" role="status" aria-live="polite" hidden></p>
   <div class="shell">
     <div class="hero"><div><span class="eyebrow">ARCHITECTURE FIRST / PROMPT CONTROL</span><h1>Точность начинается с задания.</h1><p>Технический словарь, контролируемые блоки и проверяемая сборка промпта для архитектурной визуализации.</p></div><div class="hero-status"><b>01 / STRUCTURED PROMPT</b>Source → constraints → material → QC<br>GENERATED · требует теста на кадре</div></div>
     <div class="flow" aria-label="Порядок сборки промпта"><div class="flow-step"><span>01 / INPUT</span><strong>Словарь</strong></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-step"><span>02 / SELECT</span><strong>Блоки и пресеты</strong></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-step"><span>03 / ADJUST</span><strong>Параметры</strong></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-step"><span>04 / VERIFY</span><strong>Final Prompt + QC</strong></div></div>
