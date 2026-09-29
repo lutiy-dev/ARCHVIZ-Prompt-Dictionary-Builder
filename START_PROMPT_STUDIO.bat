@@ -17,9 +17,10 @@ if not errorlevel 1 (
 )
 
 echo ARCHVIZ Prompt Studio
-echo Open http://127.0.0.1:8080 in your browser.
+echo Starting server and opening http://127.0.0.1:8080
 echo Close this window or press Ctrl+C to stop the server.
 echo.
+start "" /min powershell.exe -NoProfile -WindowStyle Hidden -Command "Start-Sleep -Seconds 2; Start-Process 'http://127.0.0.1:8080/'"
 "%PYTHON_CMD%" -m http.server 8080 --bind 127.0.0.1
 echo.
 echo Server stopped.
