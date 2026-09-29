@@ -1,5 +1,5 @@
-const CACHE='archviz-prompt-studio-v1';
-const SHELL=['./','./index.html','./manifest.webmanifest','./pwa-install-capture.js','./src/style.css','./src/app.mjs','./src/composer.mjs','./data/prompt_blocks.json','./data/dictionary.json','./data/presets.json','./icons/favicon.ico','./icons/apple-touch-icon.png','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png'];
+const CACHE='archviz-prompt-studio-v2';
+const SHELL=['./','./index.html','./manifest.webmanifest','./pwa-install-capture.js','./src/style.css','./src/app.mjs','./src/composer.mjs','./src/translation-ru.mjs','./data/prompt_blocks.json','./data/dictionary.json','./data/presets.json','./icons/favicon.ico','./icons/apple-touch-icon.png','./icons/icon-192.png','./icons/icon-512.png','./icons/icon-maskable-512.png'];
 self.addEventListener('install',event=>{
   event.waitUntil(caches.open(CACHE).then(cache=>cache.addAll(SHELL)).then(()=>self.skipWaiting()));
 });
