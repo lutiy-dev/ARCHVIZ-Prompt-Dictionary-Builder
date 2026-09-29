@@ -1,6 +1,10 @@
 import {compose,merge} from './composer.mjs';
 const $=id=>document.getElementById(id), el=(tag,text)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e;};
 let selection=[],saved=[];const key='archviz-prompt-studio-v1';
+const themeKey='archviz-prompt-studio-theme';
+function renderTheme(){const dark=document.documentElement.dataset.theme!=='light';$('themeToggle').textContent=dark?'☼':'☾';$('themeToggle').setAttribute('aria-label',dark?'Включить светлую тему':'Включить тёмную тему');}
+$('themeToggle').onclick=()=>{const next=document.documentElement.dataset.theme==='light'?'dark':'light';document.documentElement.dataset.theme=next;try{localStorage.setItem(themeKey,next);}catch{}renderTheme();};
+renderTheme();
 function message(t){$('message').textContent=t;}
 try {
 const [library,dictionary,presets]=await Promise.all(['prompt_blocks','dictionary','presets'].map(async name=>{const r=await fetch(`data/${name}.json`);if(!r.ok)throw Error(`${name}: HTTP ${r.status}`);return r.json();}));
