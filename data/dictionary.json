@@ -158,5 +158,285 @@
     "category": "AI terminology",
     "description_ru": "Назначает маску границей допустимого редактирования. Точность зависит от системы генерации.",
     "block_id": "mask"
+  },
+  {
+    "id": "golden-hour",
+    "term_en": "Golden Hour",
+    "term_ru": "Золотой час",
+    "category": "Lighting",
+    "description_ru": "Тёплый низкий солнечный свет золотого часа с длинными естественными тенями и контролируемыми бликами.",
+    "block_id": "golden-hour"
+  },
+  {
+    "id": "blue-hour",
+    "term_en": "Blue Hour",
+    "term_ru": "Синий час",
+    "category": "Lighting",
+    "description_ru": "Холодный синий час с мягким небом и правдоподобным тёплым светом только от существующих источников.",
+    "block_id": "blue-hour"
+  },
+  {
+    "id": "early-morning",
+    "term_en": "Early Morning",
+    "term_ru": "Раннее утро",
+    "category": "Lighting",
+    "description_ru": "Ранний утренний свет с низким солнцем, мягким контрастом и свежим нейтрально-холодным окружением.",
+    "block_id": "early-morning"
+  },
+  {
+    "id": "bright-midday",
+    "term_en": "Bright Midday",
+    "term_ru": "Яркий полдень",
+    "category": "Lighting",
+    "description_ru": "Яркий полуденный свет с высоким солнцем, чёткими физически правдоподобными тенями и контролем пересветов.",
+    "block_id": "bright-midday"
+  },
+  {
+    "id": "late-afternoon",
+    "term_en": "Late Afternoon",
+    "term_ru": "Поздний день",
+    "category": "Lighting",
+    "description_ru": "Поздний дневной свет с умеренно низким солнцем, тёплым направленным освещением и естественной глубиной теней.",
+    "block_id": "late-afternoon"
+  },
+  {
+    "id": "twilight",
+    "term_en": "Twilight",
+    "term_ru": "Сумерки",
+    "category": "Lighting",
+    "description_ru": "Сумеречный свет после заката с холодным светящимся небом и только существующими источниками освещения.",
+    "block_id": "twilight"
+  },
+  {
+    "id": "soft-diffused-light",
+    "term_en": "Soft Diffused Light",
+    "term_ru": "Мягкий рассеянный свет",
+    "category": "Lighting",
+    "description_ru": "Широкий мягкий рассеянный свет с плавными тенями и сдержанными бликами.",
+    "block_id": "soft-diffused-light"
+  },
+  {
+    "id": "hard-sunlight",
+    "term_en": "Hard Sunlight",
+    "term_ru": "Жёсткий солнечный свет",
+    "category": "Lighting",
+    "description_ru": "Сильный прямой солнечный свет с чёткими тенями при правдоподобной экспозиции и реакции материалов.",
+    "block_id": "hard-sunlight"
+  },
+  {
+    "id": "side-light",
+    "term_en": "Side Light",
+    "term_ru": "Боковой свет",
+    "category": "Lighting",
+    "description_ru": "Боковой направленный свет для подчёркивания рельефа поверхностей без изменения геометрии и камеры.",
+    "block_id": "side-light"
+  },
+  {
+    "id": "backlight",
+    "term_en": "Backlight",
+    "term_ru": "Контровой свет",
+    "category": "Lighting",
+    "description_ru": "Контролируемый контровой свет с естественным отделением силуэтов и сохранением читаемости фасада.",
+    "block_id": "backlight"
+  },
+  {
+    "id": "warm-interior-glow",
+    "term_en": "Warm Interior Glow",
+    "term_ru": "Тёплый свет из интерьеров",
+    "category": "Lighting",
+    "description_ru": "Сдержанный тёплый свет только за существующим остеклением, без новых окон, светильников или геометрии.",
+    "block_id": "warm-interior-glow"
+  },
+  {
+    "id": "clear-air",
+    "term_en": "Clear Air",
+    "term_ru": "Чистый воздух",
+    "category": "Atmosphere",
+    "description_ru": "Чистая сухая атмосфера с естественной высокой видимостью без искусственной дымки.",
+    "block_id": "clear-air"
+  },
+  {
+    "id": "light-haze",
+    "term_en": "Light Haze",
+    "term_ru": "Лёгкая дымка",
+    "category": "Atmosphere",
+    "description_ru": "Лёгкая дальняя дымка для глубины без потери деталей фасада и изменения силуэтов.",
+    "block_id": "light-haze"
+  },
+  {
+    "id": "light-mist",
+    "term_en": "Light Mist",
+    "term_ru": "Лёгкий туман",
+    "category": "Atmosphere",
+    "description_ru": "Тонкий естественный туман преимущественно в глубине и низких участках при сохранении читаемости архитектуры.",
+    "block_id": "light-mist"
+  },
+  {
+    "id": "after-rain",
+    "term_en": "After Rain",
+    "term_ru": "После дождя",
+    "category": "Atmosphere",
+    "description_ru": "Атмосфера после дождя: влажный чистый воздух и локальная остаточная влага без активного дождя.",
+    "block_id": "after-rain"
+  },
+  {
+    "id": "dramatic-clouds",
+    "term_en": "Dramatic Clouds",
+    "term_ru": "Выразительные облака",
+    "category": "Atmosphere",
+    "description_ru": "Правдоподобные слоистые выразительные облака, не перетягивающие внимание с архитектуры.",
+    "block_id": "dramatic-clouds"
+  },
+  {
+    "id": "subtle-aerial-perspective",
+    "term_en": "Aerial Perspective",
+    "term_ru": "Воздушная перспектива",
+    "category": "Atmosphere",
+    "description_ru": "Небольшое усиление воздушной перспективы через падение контраста и насыщенности с расстоянием.",
+    "block_id": "subtle-aerial-perspective"
+  },
+  {
+    "id": "microdetail",
+    "term_en": "Material Microdetail",
+    "term_ru": "Микродетали материалов",
+    "category": "Materials",
+    "description_ru": "Усиливает физически правдоподобные микродетали поверхности без изменения формы, кромок, швов и границ.",
+    "block_id": "microdetail"
+  },
+  {
+    "id": "roughness-variation",
+    "term_en": "Roughness Variation",
+    "term_ru": "Вариативность шероховатости",
+    "category": "Materials",
+    "description_ru": "Добавляет естественную неоднородность roughness без глянцевого шума и чрезмерного контраста.",
+    "block_id": "roughness-variation"
+  },
+  {
+    "id": "subtle-weathering",
+    "term_en": "Subtle Weathering",
+    "term_ru": "Деликатное старение",
+    "category": "Materials",
+    "description_ru": "Деликатное локальное старение по логике воздействия среды, стоков и контакта без равномерной процедурной грязи.",
+    "block_id": "subtle-weathering"
+  },
+  {
+    "id": "edge-wear",
+    "term_en": "Natural Edge Wear",
+    "term_ru": "Естественный износ кромок",
+    "category": "Materials",
+    "description_ru": "Очень лёгкий естественный износ существующих открытых кромок без сколов и изменения геометрии.",
+    "block_id": "edge-wear"
+  },
+  {
+    "id": "stone-detail",
+    "term_en": "Natural Stone Detail",
+    "term_ru": "Детализация натурального камня",
+    "category": "Materials",
+    "description_ru": "Усиливает минеральную неоднородность, поры и тональные вариации камня в реалистичном масштабе.",
+    "block_id": "stone-detail"
+  },
+  {
+    "id": "concrete-detail",
+    "term_en": "Architectural Concrete",
+    "term_ru": "Архитектурный бетон",
+    "category": "Materials",
+    "description_ru": "Реалистичный архитектурный бетон с деликатными порами, тональной неоднородностью и физически правдоподобной roughness.",
+    "block_id": "concrete-detail"
+  },
+  {
+    "id": "glass-realism",
+    "term_en": "Glass Realism",
+    "term_ru": "Реалистичное стекло",
+    "category": "Materials",
+    "description_ru": "Улучшает существующее остекление: отражение, прозрачность и лёгкая вариативность roughness без изменения рам и проёмов.",
+    "block_id": "glass-realism"
+  },
+  {
+    "id": "pavement-detail",
+    "term_en": "Pavement Microdetail",
+    "term_ru": "Микродетали покрытия",
+    "category": "Materials",
+    "description_ru": "Усиливает реализм существующего покрытия: заполнитель, швы, износ и roughness в правильном масштабе.",
+    "block_id": "pavement-detail"
+  },
+  {
+    "id": "natural-greenery-detail",
+    "term_en": "Natural Greenery Detail",
+    "term_ru": "Детализация зелени",
+    "category": "Landscape",
+    "description_ru": "Усиливает естественные детали листьев, травы и ветвей без изменения количества, положения и силуэта растений.",
+    "block_id": "natural-greenery-detail"
+  },
+  {
+    "id": "spring",
+    "term_en": "Spring Atmosphere",
+    "term_ru": "Весенняя атмосфера",
+    "category": "Landscape",
+    "description_ru": "Переводит существующую растительность в естественное весеннее состояние без изменения количества и расположения.",
+    "block_id": "spring"
+  },
+  {
+    "id": "summer",
+    "term_en": "Summer Atmosphere",
+    "term_ru": "Летняя атмосфера",
+    "category": "Landscape",
+    "description_ru": "Естественное летнее состояние существующей растительности с вариативными зелёными оттенками без изменения структуры.",
+    "block_id": "summer"
+  },
+  {
+    "id": "winter",
+    "term_en": "Winter Atmosphere",
+    "term_ru": "Зимняя атмосфера",
+    "category": "Landscape",
+    "description_ru": "Сдержанное зимнее состояние сцены без изменения архитектуры и растительности; снег не добавлять без отдельного запроса.",
+    "block_id": "winter"
+  },
+  {
+    "id": "highlight-rolloff",
+    "term_en": "Soft Highlight Rolloff",
+    "term_ru": "Мягкий rolloff светов",
+    "category": "Quality",
+    "description_ru": "Мягкий фотографический rolloff светов с сохранением деталей ярких поверхностей без цифровых пересветов.",
+    "block_id": "highlight-rolloff"
+  },
+  {
+    "id": "natural-contrast",
+    "term_en": "Natural Contrast",
+    "term_ru": "Естественный контраст",
+    "category": "Quality",
+    "description_ru": "Сдержанный фотографический контраст с читаемыми тенями, контролируемыми светами и без проваленных чёрных.",
+    "block_id": "natural-contrast"
+  },
+  {
+    "id": "neutral-color",
+    "term_en": "Neutral Color Balance",
+    "term_ru": "Нейтральный цветовой баланс",
+    "category": "Quality",
+    "description_ru": "Естественный нейтральный цветовой баланс без чрезмерной общей тонировки.",
+    "block_id": "neutral-color"
+  },
+  {
+    "id": "premium-real-estate",
+    "term_en": "Premium Real Estate Look",
+    "term_ru": "Премиальная подача недвижимости",
+    "category": "Camera",
+    "description_ru": "Премиальная подача архитектурной фотографии с естественной экспозицией, чистым разделением цветов и сдержанной обработкой.",
+    "block_id": "premium-real-estate"
+  },
+  {
+    "id": "editorial-architecture",
+    "term_en": "Editorial Architecture Look",
+    "term_ru": "Редакционная архитектурная подача",
+    "category": "Camera",
+    "description_ru": "Редакционная архитектурная подача с ясными материалами, естественной тональной иерархией и минимальной стилизацией.",
+    "block_id": "editorial-architecture"
+  },
+  {
+    "id": "final-cleanup",
+    "term_en": "Final Cleanup",
+    "term_ru": "Финальная очистка",
+    "category": "Quality",
+    "description_ru": "Убирает артефакты генерации, spill текстур, ореолы, загрязнение краёв и неправдоподобные локальные детали.",
+    "block_id": "final-cleanup"
   }
 ]
