@@ -16,6 +16,22 @@
     ]
   },
   {
+    "id": "facade-travertine",
+    "name": "Facade · Travertine / светлый фасад",
+    "blocks": [
+      "goal",
+      "source",
+      "mask",
+      "geometry",
+      "windows",
+      "facade",
+      "travertine",
+      "photo",
+      "exclude",
+      "qc"
+    ]
+  },
+  {
     "id": "road",
     "name": "Road",
     "blocks": [

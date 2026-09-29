@@ -1,6 +1,25 @@
 import {compose,merge} from './composer.mjs';
 const $=id=>document.getElementById(id), el=(tag,text)=>{const e=document.createElement(tag);if(text!==undefined)e.textContent=text;return e;};
 let selection=[],saved=[];const key='archviz-prompt-studio-v1';
+const themeKey='archviz-prompt-studio-theme';
+function renderTheme(){const dark=document.documentElement.dataset.theme!=='light';$('themeToggle').textContent=dark?'☼':'☾';$('themeToggle').setAttribute('aria-label',dark?'Включить светлую тему':'Включить тёмную тему');}
+$('themeToggle').onclick=()=>{const next=document.documentElement.dataset.theme==='light'?'dark':'light';document.documentElement.dataset.theme=next;try{localStorage.setItem(themeKey,next);}catch{}renderTheme();};
+renderTheme();
+const installButton=$('installApp'),installHint=$('installHint');
+function installNotice(text){installHint.textContent=text;installHint.hidden=!text;}
+function installed(){return window.matchMedia('(display-mode: standalone)').matches||navigator.standalone===true;}
+function updateInstall(){installButton.hidden=installed();if(installed())installNotice('');}
+window.addEventListener('promptstudioinstallready',updateInstall);
+window.addEventListener('appinstalled',()=>{window.promptStudioInstall.deferred=null;installButton.hidden=true;installNotice('Приложение установлено.');});
+installButton.onclick=async()=>{
+  const deferred=window.promptStudioInstall?.deferred;
+  if(!deferred){installNotice('Если браузер поддерживает установку, откройте меню ⋮ → «Установить страницу как приложение». В Chrome на компьютере попробуйте также значок установки справа в адресной строке.');return;}
+  window.promptStudioInstall.deferred=null;
+  try{await deferred.prompt();const choice=await deferred.userChoice;installNotice(choice.outcome==='accepted'?'Установка подтверждена.':'Установка отменена. Кнопка станет доступна после нового предложения браузера.');}
+  catch{installNotice('Браузер не открыл установку. Попробуйте через его меню ⋮.');}
+};
+updateInstall();
+if('serviceWorker' in navigator)window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>installNotice('Офлайн-режим недоступен. Проверьте, что страница открыта через localhost или HTTPS.')));
 function message(t){$('message').textContent=t;}
 try {
 const [library,dictionary,presets]=await Promise.all(['prompt_blocks','dictionary','presets'].map(async name=>{const r=await fetch(`data/${name}.json`);if(!r.ok)throw Error(`${name}: HTTP ${r.status}`);return r.json();}));

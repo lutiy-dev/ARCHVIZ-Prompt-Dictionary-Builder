@@ -1,6 +1,34 @@
-<!doctype html><html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>ARCHVIZ · Prompt Studio</title><link rel="stylesheet" href="src/style.css"></head><body>
-<header><div class="mark">A / P</div><div><small>CONTROLLED AI · ARCHITECTURAL VISUALIZATION</small><h1>ARCHVIZ <span>Prompt Studio</span></h1></div><span class="badge">LAB / v0.1</span></header>
-<div class="intro"><h2>Точность начинается с задания.</h2><p>Технический словарь → блоки → композиция → production prompt</p></div>
-<main><section><div class="heading"><h2>01 / Библиотека</h2><span id="count"></span></div><label>Поиск EN / RU<input id="search" placeholder="Geometry, кирпич, свет…"></label><label>Категория<select id="category"><option value="">Все категории</option></select></label><div id="library"></div></section>
-<section><h2>02 / Composer</h2><p class="muted">Объединяйте пресеты и отдельные блоки. Повторные блоки не добавляются.</p><label>Пресет<select id="preset"></select></label><button id="addPreset">+ Объединить с пресетом</button><div id="selected"></div><div class="save"><label>Название комбинации<input id="name" placeholder="Old City Night"></label><button id="save">Save Combination</button><label>Мои комбинации<select id="saved"></select></label><button id="load">+ Добавить комбинацию</button><button id="export">Экспорт JSON</button><label class="import">Импорт комбинации<input type="file" id="import" accept="application/json,.json"></label><button id="clear" class="quiet">Очистить сборку</button></div></section>
-<section class="preview"><div class="heading"><h2>03 / Final Prompt</h2><button id="copy">Копировать EN</button></div><div id="warnings" role="alert"></div><textarea id="output" readonly aria-label="Итоговый prompt"></textarea><p class="muted">Блоки: GENERATED. Проверка приложения не означает проверку генерации. Geometry Lock — инструкция, а не гарантия: результат сверяется с исходником.</p><p id="message" role="status" aria-live="polite"></p></section></main><footer>Одна база. Повторяемые задания. Контролируемые изменения.<br>Пресеты сохраняются только в этом браузере. Экспортируйте JSON для резервной копии.</footer><script type="module" src="src/app.mjs"></script></body></html>
+<!doctype html>
+<html lang="ru" data-theme="dark">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>ARCHVIZ · Prompt Studio</title>
+  <meta name="theme-color" content="#0b0d10">
+  <meta name="application-name" content="ARCHVIZ Prompt Studio">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/favicon.ico" sizes="any">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <script>try{document.documentElement.dataset.theme=localStorage.getItem('archviz-prompt-studio-theme')==='light'?'light':'dark'}catch{}</script>
+  <script src="pwa-install-capture.js"></script>
+  <link rel="stylesheet" href="src/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="mark" aria-hidden="true">A/P</div>
+    <div class="brand"><small>CONTROLLED AI · ARCHITECTURAL VISUALIZATION</small><strong>ARCHVIZ <span>Prompt Studio</span></strong></div>
+    <div class="top-actions"><span class="badge">LAB / v0.1</span><button id="installApp" type="button">Установить приложение</button><button id="themeToggle" class="theme-toggle" type="button" aria-label="Включить светлую тему" title="Переключить тему">☼</button></div>
+  </header>
+  <p id="installHint" class="install-hint" role="status" aria-live="polite" hidden></p>
+  <div class="shell">
+    <div class="hero"><div><span class="eyebrow">ARCHITECTURE FIRST / PROMPT CONTROL</span><h1>Точность начинается с задания.</h1><p>Технический словарь, контролируемые блоки и проверяемая сборка промпта для архитектурной визуализации.</p></div><div class="hero-status"><b>01 / STRUCTURED PROMPT</b>Source → constraints → material → QC<br>GENERATED · требует теста на кадре</div></div>
+    <div class="flow" aria-label="Порядок сборки промпта"><div class="flow-step"><span>01 / INPUT</span><strong>Словарь</strong></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-step"><span>02 / SELECT</span><strong>Блоки и пресеты</strong></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-step"><span>03 / ADJUST</span><strong>Параметры</strong></div><span class="flow-arrow" aria-hidden="true">→</span><div class="flow-step"><span>04 / VERIFY</span><strong>Final Prompt + QC</strong></div></div>
+    <main>
+      <section aria-labelledby="libraryTitle"><div class="section-head"><span class="micro">01 / DICTIONARY</span><div class="heading"><h2 id="libraryTitle">Библиотека</h2><span id="count"></span></div><p>Найдите термин, материал или ограничение.</p></div><div class="section-body"><label>Поиск EN / RU<input id="search" placeholder="Geometry, травертин, свет…"></label><label>Категория<select id="category"><option value="">Все категории</option></select></label><div id="library"></div></div></section>
+      <section aria-labelledby="composerTitle"><div class="section-head"><span class="micro">02 / ASSEMBLY</span><h2 id="composerTitle">Composer</h2><p>Выберите пресет, затем уточните блоки и параметры.</p></div><div class="section-body"><label>Пресет<select id="preset"></select></label><button id="addPreset">+ Объединить с пресетом</button><div id="selected"></div><div class="save"><label>Название комбинации<input id="name" placeholder="Facade · Travertine"></label><button id="save">Save Combination</button><label>Мои комбинации<select id="saved"></select></label><button id="load">+ Добавить комбинацию</button><button id="export">Экспорт JSON</button><label>Импорт комбинации<input type="file" id="import" accept="application/json,.json"></label><button id="clear" class="quiet">Очистить сборку</button></div></div></section>
+      <section class="preview" aria-labelledby="previewTitle"><div class="section-head"><span class="micro">03 / OUTPUT</span><div class="heading"><h2 id="previewTitle">Final Prompt</h2><button id="copy">Копировать EN</button></div><p>Проверяйте ограничения перед запуском модели.</p></div><div class="section-body"><div id="warnings" role="alert"></div><textarea id="output" readonly aria-label="Итоговый prompt"></textarea><p class="note">Блоки: GENERATED. Prompt не гарантирует сохранение геометрии; результат сверяется с исходником и маской.</p><p id="message" role="status" aria-live="polite"></p></div></section>
+    </main>
+    <footer>ARCHVIZ PROMPT STUDIO · LAB &nbsp; / &nbsp; Одна база. Повторяемые задания. Контролируемые изменения.<br>Комбинации хранятся в этом браузере; экспортируйте JSON для резервной копии.</footer>
+  </div>
+  <script type="module" src="src/app.mjs"></script>
+</body>
+</html>
