@@ -45,3 +45,29 @@ input,select,textarea{border-radius:5px;font-size:13px}button{border-radius:5px}
 
 /* Stage 2: a full-width library below the existing workspace. */
 .prompt-library{margin:24px 0;border-radius:9px}.output-actions{display:flex;gap:8px;flex-wrap:wrap}#savedPrompts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}#savedPrompts .card{margin:0;min-width:0}.saved-prompt-card p{white-space:pre-wrap;overflow-wrap:anywhere}.saved-prompt-card time{display:block;font:10px var(--mono);color:var(--text-faint);margin:12px 0}.saved-prompt-actions{display:flex;flex-wrap:wrap;gap:8px}.saved-prompt-actions button{margin:0}#promptLibraryMessage{color:var(--text-soft);font-size:12px}#openedPromptNote[hidden]{display:none}@media(max-width:1100px){#savedPrompts{grid-template-columns:repeat(2,minmax(0,1fr))}}@media(max-width:700px){#savedPrompts{grid-template-columns:1fr}}
+
+
+/* Stage 2 acceptance: bounded workspace and compact results footer. */
+.shell{max-width:none;padding-inline:24px}.topbar{padding-inline:24px}
+main>section{height:clamp(900px,85vh,1080px);display:flex;flex-direction:column}
+main>section>.section-head{flex:none}
+main>section>.section-body{display:flex;flex-direction:column;flex:1;min-height:0}
+main .section-body>label,main .section-body>button,.save{flex:none}
+#library,#selected{flex:1;min-height:0;max-height:none;overflow:auto;overscroll-behavior:contain;scrollbar-color:var(--border) transparent;padding-right:10px}
+#selected{margin-top:12px}.save{margin-top:12px;padding-top:12px}
+.preview #output{flex:1;min-height:0;height:auto;resize:none}
+.preview #warnings{max-height:140px;overflow:auto;flex:none}
+.preview .note,.preview #message{flex:none}
+.footer-workspace{margin-top:22px;border-top:1px solid var(--border)}
+.footer-workspace .prompt-library{margin:0;border:0;border-radius:0;background:none;box-shadow:none}
+.prompt-library .section-head{padding:16px 0 10px;border:0}
+.prompt-library .section-head h2{font-size:18px}.prompt-library .section-head p{margin-top:4px}
+.prompt-library .section-body{padding:0 0 16px}
+#promptLibraryMessage:empty{display:none}
+#savedPrompts{grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:10px}
+#savedPrompts .card{padding:12px;max-width:480px}
+.saved-prompt-card p{display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.saved-prompt-card time{margin:8px 0}.saved-prompt-actions{gap:6px}.saved-prompt-actions button{padding:6px 9px;font-size:11px}
+.footer-workspace footer{padding:14px 0 10px}
+@media(max-width:1100px){.preview{height:640px}}
+@media(max-width:700px){.shell{padding-inline:16px}.topbar{padding-inline:16px}main>section{height:auto}main>section>.section-body{display:block}#library,#selected{max-height:480px}#selected{margin-top:12px}.preview #output{height:360px;min-height:360px}.footer-workspace{margin-top:16px}#savedPrompts .card{max-width:none}}
