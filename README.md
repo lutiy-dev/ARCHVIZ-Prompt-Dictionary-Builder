@@ -121,3 +121,11 @@ node --test src/composer.test.mjs src/stage2.test.mjs
 ```
 
 See [Stage 2 verification](design/stage-2/VERIFICATION.md) for test evidence and the browser verification limitation. Stage 2 is offered for manual review and is not merged into main.
+
+## EN / RU preview and Video presets
+
+Final Prompt offers EN Original / RU reading preview. Translations are derived from the actual English output using exact-source block templates, including frozen Saved Prompts. English remains the source of truth for Copy EN and Save Prompt. Unknown text and custom parameter values are retained as labelled [EN: …] fragments; this is a reading aid, not a general translation service. composer.mjs and storage schemas are unchanged.
+
+Archviz Image-to-Video and Object Video add six shared/specialized GENERATED blocks and reuse existing architecture restrictions / object shape constraints. Defaults: 5 seconds, subtle forward dolly; change duration and movement in Composer. They produce prompt text only, no video API. Avoid motion revealing unsupported unseen surfaces. The library now has 68 blocks and 13 presets; all previous 62 blocks / 11 presets remain unchanged. These video prompts require real model testing; text constraints alone do not ensure temporal stability.
+
+Checks: `node --test src/composer.test.mjs src/stage2.test.mjs src/translation-ru.test.mjs src/video.test.mjs`.

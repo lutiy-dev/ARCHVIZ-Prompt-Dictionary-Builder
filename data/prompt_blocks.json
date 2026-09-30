@@ -854,6 +854,84 @@
       "status": "GENERATED",
       "version": 1,
       "conflicts": []
+    },
+    {
+      "id": "video-arch-goal",
+      "en": "Architectural video",
+      "ru": "Архитектурное видео",
+      "category": "Video",
+      "section": "GOAL",
+      "text": "Create a photorealistic architectural image-to-video shot lasting {{duration}} from the supplied image. Produce a single continuous shot, not a redesigned scene.",
+      "parameters": {
+        "duration": "5 seconds"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "video-object-goal",
+      "en": "Object video",
+      "ru": "Видео объекта",
+      "category": "Video",
+      "section": "GOAL",
+      "text": "Create a photorealistic product image-to-video shot of the referenced object lasting {{duration}}. Keep the complete object readable in a single continuous shot.",
+      "parameters": {
+        "duration": "5 seconds"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "video-reference",
+      "en": "Video first frame",
+      "ru": "Первый кадр видео",
+      "category": "Video",
+      "section": "SOURCE / INPUT",
+      "text": "Use the supplied image as the first-frame authority for design, proportions, materials and lighting. Reveal only surfaces supported by the reference; do not invent unseen architecture or object parts.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "video-arch-preserve",
+      "en": "Video architecture preservation",
+      "ru": "Сохранение архитектуры в видео",
+      "category": "Video",
+      "section": "MUST PRESERVE",
+      "text": "Preserve building proportions, floor count, facade openings, structural edges and the placement of all existing objects throughout the shot. Perspective may change only as a coherent result of the requested camera movement.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "video-motion",
+      "en": "Video camera movement",
+      "ru": "Движение камеры видео",
+      "category": "Video",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Camera movement: {{movement}}. Use slow smooth physically coherent motion, stable perspective and gentle acceleration. No cuts, abrupt zooms, camera shake or movement revealing unsupported surfaces.",
+      "parameters": {
+        "movement": "a subtle forward dolly"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "video-stability",
+      "en": "Video temporal QC",
+      "ru": "Стабильность видео",
+      "category": "Video",
+      "section": "QC",
+      "text": "Maintain temporal consistency of geometry, textures, lighting and object identity across every frame. No flicker, morphing, drifting openings, duplicated parts or spontaneous objects. Keep the source lighting stable unless explicitly requested otherwise. Reject frames with geometry drift or invented detail.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
     }
   ]
 }
