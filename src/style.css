@@ -71,3 +71,5 @@ main .section-body>label,main .section-body>button,.save{flex:none}
 .footer-workspace footer{padding:14px 0 10px}
 @media(max-width:1100px){.preview{height:640px}}
 @media(max-width:700px){.shell{padding-inline:16px}.topbar{padding-inline:16px}main>section{height:auto}main>section>.section-body{display:block}#library,#selected{max-height:480px}#selected{margin-top:12px}.preview #output{height:360px;min-height:360px}.footer-workspace{margin-top:16px}#savedPrompts .card{max-width:none}}
+
+.preview-tabs{flex:none}#translationNote[hidden]{display:none}

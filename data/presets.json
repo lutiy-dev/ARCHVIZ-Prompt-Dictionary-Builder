@@ -159,5 +159,28 @@
       "asset-qc",
       "final-cleanup"
     ]
+  },
+  {
+    "id": "archviz-video",
+    "name": "Archviz Image-to-Video",
+    "blocks": [
+      "video-arch-goal",
+      "video-reference",
+      "video-arch-preserve",
+      "video-motion",
+      "exclude",
+      "video-stability"
+    ]
+  },
+  {
+    "id": "object-video",
+    "name": "Object Video",
+    "blocks": [
+      "video-object-goal",
+      "video-reference",
+      "asset-shape",
+      "video-motion",
+      "video-stability"
+    ]
   }
 ]
