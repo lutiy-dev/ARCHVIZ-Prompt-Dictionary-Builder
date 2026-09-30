@@ -1,48 +1,91 @@
 # ARCHVIZ · Prompt Studio
 
-Технический словарь → переиспользуемые блоки → Composer → production prompt.
+**Bilingual structured prompt composer for controlled AI-assisted architectural visualization.**
 
-Первая версия без сервера, API-ключей и внешних зависимостей. Интерфейс и объяснения — RU, итоговые инструкции — EN.
+[Open Prompt Studio](https://lutiy-dev.github.io/ARCHVIZ-Prompt-Dictionary-Builder/)
 
-## Запуск
+ARCHVIZ Prompt Studio turns a technical dictionary into reusable prompt blocks, presets and a structured production prompt. It is designed for controlled image-to-image Archviz work where geometry, camera, proportions and design intent must remain explicit constraints.
 
-Из корня репозитория: `python -m http.server 8080`, затем открыть http://localhost:8080. Открытие index.html через file:// не поддерживается из-за загрузки JSON.
+**Status:** Experimental v0.1
 
-Для GitHub Pages: Settings → Pages → Deploy from a branch → main → / (root). Включение Pages отдельно; наличие исходников не означает публикацию сайта.
+## Production logic
 
-## Использование
+```text
+GOAL
+→ SOURCE / INPUT
+→ MUST PRESERVE
+→ ALLOWED CHANGES
+→ MATERIAL / SUBJECT
+→ LIGHT / ATMOSPHERE
+→ CAMERA / PHOTOGRAPHY
+→ RESTRICTIONS
+→ QC
+```
 
-1. Найдите термин или материал, нажмите Add to Prompt.
-2. Добавляйте пресеты через Composer: блоки объединяются по ID, существующие параметры сохраняются.
-3. Настройте параметры материала на английском. Справа обновится итог.
-4. Устраните показанные конфликты, скопируйте prompt.
-5. Save Combination сохраняет сборку в localStorage этого браузера. Экспорт JSON нужен для переноса и резервного копирования. Импорт добавляет блоки, сохраняя существующие параметры.
+The current version runs locally without a backend, API keys or cloud dependencies. Interface and explanations are bilingual-oriented; final production instructions are assembled in English.
 
-## База
+## Features
 
-- data/dictionary.json — термины EN/RU и ссылки на блоки.
-- data/prompt_blocks.json — единственный источник текстов, параметров, порядка секций, статусов и явных конфликтов.
-- data/presets.json — комбинации ID блоков.
-- src/composer.mjs — независимый модуль компиляции, пригодный для повторного использования.
+- searchable EN/RU technical dictionary;
+- reusable prompt blocks instead of repeated free-form text;
+- Composer with deterministic section ordering;
+- material, lighting and atmosphere presets;
+- explicit conflict rules;
+- local saved combinations;
+- JSON import/export for transfer and backup;
+- browser-only operation with no shared API key.
 
-Материалы, свет и атмосфера пока хранятся в общей базе блоков с категориями, без дублирования текстов в нескольких JSON.
+## Run locally
 
-Порядок: GOAL → SOURCE / INPUT → MUST PRESERVE → ALLOWED CHANGES → MATERIAL / SUBJECT → LIGHT / ATMOSPHERE → CAMERA / PHOTOGRAPHY → RESTRICTIONS → QC.
+From the repository root:
 
-## Границы версии 0.1
+```bash
+python -m http.server 8080
+```
 
-Composer объединяет структурированные блоки и пресеты. Он не разбирает произвольный вставленный prompt, не выполняет семантическое удаление повторов и не обнаруживает все возможные противоречия. Удаляются совпадающие ID и полностью совпадающие тексты после нормализации пробелов/регистра. Конфликты задаются явно в базе. Изменение параметров может создать дополнительное противоречие, которое нужно проверить вручную.
+Then open `http://localhost:8080`.
 
-Все стартовые блоки имеют статус GENERATED: они написаны для первого теста и не проверены на результатах генерации. Нельзя считать их TESTED или Production Standard. Prompt не гарантирует сохранение геометрии; требуются маски/структурный контроль и сравнение с исходным рендером. QC в тексте — инструкция, а не автоматический анализ изображения.
+Opening `index.html` directly through `file://` is not supported because the application loads JSON data.
 
-Параметры передаются в prompt буквально. Автоматического перевода и облачной синхронизации нет. Пользовательские пресеты не отправляются на GitHub.
+## Repository structure
 
-## Проверка
+```text
+data/
+  dictionary.json
+  prompt_blocks.json
+  presets.json
+src/
+  composer.mjs
+  app.mjs
+schemas/
+docs/
+design/
+index.html
+```
 
-`node --check src/app.mjs`
+`data/prompt_blocks.json` is the source of truth for block text, parameters, section order, statuses and explicit conflicts. `src/composer.mjs` contains the reusable compilation logic.
 
-`node --test src/composer.test.mjs`
+## Verification
 
-PASS: все тесты проходят; FAIL: ошибка синтаксиса, неразрешённые ссылки, конфликт в стартовом пресете или нарушение порядка/дедупликации. При FAIL не публиковать изменения.
+```bash
+node --check src/app.mjs
+node --test src/composer.test.mjs
+```
 
-Ручной smoke test: добавить Facade, поменять scale, повторно добавить Facade (параметр сохраняется), добавить Night (конфликт и запрет копирования), удалить Overcast, сохранить и перезагрузить страницу, экспортировать и импортировать комбинацию.
+**PASS:** syntax and tests succeed, references resolve, starter presets have no unresolved conflicts, and section ordering/deduplication remains valid.
+
+Manual smoke test: add Facade → change scale → add Facade again → confirm the parameter is preserved → add Night → verify conflict handling → remove Overcast → save/reload → export/import the combination.
+
+## Limitations
+
+v0.1 does not semantically parse arbitrary pasted prompts and does not discover every possible contradiction. Conflicts are explicit rules in the data layer.
+
+Starter blocks are currently **GENERATED**, not **TESTED** or **Production Standard**. Prompt text alone does not guarantee geometry preservation; production use still requires masks/structural control and comparison against the source render.
+
+## Deployment
+
+GitHub Pages is served from the repository:
+
+https://lutiy-dev.github.io/ARCHVIZ-Prompt-Dictionary-Builder/
+
+A successful source commit does not by itself prove deployment; the published Pages artifact should be checked after relevant changes.
