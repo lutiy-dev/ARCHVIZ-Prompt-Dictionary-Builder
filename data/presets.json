@@ -142,5 +142,22 @@
       "polish",
       "overcast"
     ]
+  },
+  {
+    "id": "object-3d-asset",
+    "name": "Object / 3D Asset",
+    "blocks": [
+      "asset-goal",
+      "asset-reference",
+      "asset-shape",
+      "asset-material",
+      "microdetail",
+      "roughness-variation",
+      "soft-diffused-light",
+      "asset-view",
+      "asset-background",
+      "asset-qc",
+      "final-cleanup"
+    ]
   }
 ]

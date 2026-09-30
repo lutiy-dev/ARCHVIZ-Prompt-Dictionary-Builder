@@ -438,5 +438,61 @@
     "category": "Quality",
     "description_ru": "Убирает артефакты генерации, spill текстур, ореолы, загрязнение краёв и неправдоподобные локальные детали.",
     "block_id": "final-cleanup"
+  },
+  {
+    "id": "asset-goal",
+    "term_en": "Object / 3D Asset",
+    "term_ru": "Объект / 3D asset",
+    "category": "Object / 3D Asset",
+    "description_ru": "Объект / 3D asset для отдельного объекта, prop, мебели или архитектурной детали.",
+    "block_id": "asset-goal"
+  },
+  {
+    "id": "asset-reference",
+    "term_en": "Object Reference",
+    "term_ru": "Референс объекта",
+    "category": "Object / 3D Asset",
+    "description_ru": "Референс объекта для отдельного объекта, prop, мебели или архитектурной детали.",
+    "block_id": "asset-reference"
+  },
+  {
+    "id": "asset-shape",
+    "term_en": "Object Shape Lock",
+    "term_ru": "Сохранение формы объекта",
+    "category": "Object / 3D Asset",
+    "description_ru": "Сохранение формы объекта для отдельного объекта, prop, мебели или архитектурной детали.",
+    "block_id": "asset-shape"
+  },
+  {
+    "id": "asset-material",
+    "term_en": "Object Material",
+    "term_ru": "Материал объекта",
+    "category": "Object / 3D Asset",
+    "description_ru": "Материал объекта для отдельного объекта, prop, мебели или архитектурной детали.",
+    "block_id": "asset-material"
+  },
+  {
+    "id": "asset-view",
+    "term_en": "Object Camera / View",
+    "term_ru": "Ракурс объекта",
+    "category": "Object / 3D Asset",
+    "description_ru": "Ракурс объекта для отдельного объекта, prop, мебели или архитектурной детали.",
+    "block_id": "asset-view"
+  },
+  {
+    "id": "asset-background",
+    "term_en": "Object Background",
+    "term_ru": "Фон объекта",
+    "category": "Object / 3D Asset",
+    "description_ru": "Фон объекта для отдельного объекта, prop, мебели или архитектурной детали.",
+    "block_id": "asset-background"
+  },
+  {
+    "id": "asset-qc",
+    "term_en": "Object QC",
+    "term_ru": "Проверка объекта",
+    "category": "Object / 3D Asset",
+    "description_ru": "Проверка объекта для отдельного объекта, prop, мебели или архитектурной детали.",
+    "block_id": "asset-qc"
   }
 ]

@@ -99,4 +99,25 @@ The map explains REFERENCE → PRESERVE → MATERIAL → LIGHT → ATMOSPHERE �
 
 All 55 main-library blocks, 10 presets, section order, explicit conflicts, generation logic and storage/import/export behavior remain unchanged. RU final-prompt preview, PWA installation and the Travertine preset from the earlier independent baseline branch are outside this visual-only integration. Existing EN/RU dictionary descriptions remain available.
 
-Integration verification and merge conditions: [Stage 1 integration report](design/stage-1/INTEGRATION.md). Stage 2 is not started.
+Integration verification and merge conditions: [Stage 1 integration report](design/stage-1/INTEGRATION.md). Stage 1 was merged in `ec2e306833768b8f97dcda65566a60a1393a77b3` and verified on production Pages.
+
+
+## Stage 2 — Object and Saved Prompts (review branch)
+
+The Object / 3D Asset preset produces a structured image production prompt for a single prop, furniture item, lamp or architectural detail. It does not generate a 3D mesh. Seven object-specific blocks reuse four existing detail/light/cleanup blocks. The existing canonical section order stays unchanged: shape belongs to MUST PRESERVE, surface detail to MATERIAL / SUBJECT and background to RESTRICTIONS. All original 55 blocks and 10 presets remain intact; the review branch has 62 blocks and 11 presets.
+
+**Saved Combination** stores a reusable recipe (blocks and custom parameters). **Saved Prompt** stores a particular finished English text and its effective parameter snapshot. Enter a prompt name beside Final Prompt and use Save Prompt after resolving conflicts. The full-width 04 / SAVED PROMPTS section provides Open / Load, Copy and Delete. Open / Load replaces the current assembly and displays the exact saved text; editing blocks or parameters resumes live composition. Copy on a saved card copies its frozen text.
+
+Saved Prompts use a separate localStorage key, `archviz-prompt-library-v1`, with envelope `{schema_version:1,prompts:[...]}`. Each record contains `id`, `name`, `scenario` (preset ID), `text`, `blockIds`, `parameters` (effective values keyed by block ID) and ISO `createdAt`. Reads validate version, references, known parameters, field types, bounds and unique IDs. Corrupt or inaccessible storage shows a message; corrupt data is not overwritten. Quota errors leave the previous records intact. Existing combinations keep their `archviz-prompt-studio-v1` key and their original format and JSON import/export.
+
+Saved Prompts are specific to the browser and site origin. This first version has no Saved Prompt export/import or cross-device synchronization. Scenario metadata uses the chosen preset; manually mixing presets still requires semantic review. The new blocks remain GENERATED and require validation against real reference images.
+
+Stage 2 verification:
+
+```bash
+node --check src/app.mjs
+node --check src/saved-prompts.mjs
+node --test src/composer.test.mjs src/stage2.test.mjs
+```
+
+See [Stage 2 verification](design/stage-2/VERIFICATION.md) for test evidence and the browser verification limitation. Stage 2 is offered for manual review and is not merged into main.
