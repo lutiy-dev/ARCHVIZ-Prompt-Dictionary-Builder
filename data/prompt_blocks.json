@@ -762,6 +762,98 @@
       "status": "GENERATED",
       "version": 1,
       "conflicts": []
+    },
+    {
+      "id": "asset-goal",
+      "en": "Object / 3D Asset",
+      "ru": "Объект / 3D asset",
+      "category": "Object / 3D Asset",
+      "section": "GOAL",
+      "text": "Create a photorealistic presentation image of a single {{object}} for a production brief. This is an image prompt, not a request for a generated 3D mesh.",
+      "parameters": {
+        "object": "architectural lamp"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "asset-reference",
+      "en": "Object Reference",
+      "ru": "Референс объекта",
+      "category": "Object / 3D Asset",
+      "section": "SOURCE / INPUT",
+      "text": "Use the supplied object reference as the authority for design intent, silhouette, construction and proportions. Do not borrow unrelated objects or scenery.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "asset-shape",
+      "en": "Object Shape Lock",
+      "ru": "Сохранение формы объекта",
+      "category": "Object / 3D Asset",
+      "section": "MUST PRESERVE",
+      "text": "Preserve the referenced object silhouette, dimensions, proportions, component count, joints and construction details. Do not invent, remove or reposition parts.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "asset-material",
+      "en": "Object Material",
+      "ru": "Материал объекта",
+      "category": "Object / 3D Asset",
+      "section": "MATERIAL / SUBJECT",
+      "text": "Present the object in {{material}} with physically plausible material response and true-scale surface detail. Keep the specified construction and shape unchanged.",
+      "parameters": {
+        "material": "matte brushed brass"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "asset-view",
+      "en": "Object Camera / View",
+      "ru": "Ракурс объекта",
+      "category": "Object / 3D Asset",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Show the complete object in {{view}} with believable perspective, consistent scale and no cropped parts.",
+      "parameters": {
+        "view": "a three-quarter product view"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "asset-background",
+      "en": "Object Background",
+      "ru": "Фон объекта",
+      "category": "Object / 3D Asset",
+      "section": "RESTRICTIONS",
+      "text": "Place the object against {{background}}. Avoid unrelated props, text and watermarks; retain a plausible contact shadow.",
+      "parameters": {
+        "background": "a neutral graphite studio background"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "asset-qc",
+      "en": "Object QC",
+      "ru": "Проверка объекта",
+      "category": "Object / 3D Asset",
+      "section": "QC",
+      "text": "Compare with the object reference: identical silhouette, proportions, component count and construction; consistent material scale, readable surface detail, clean edges, complete framing and plausible light. Reject invented parts or shape drift.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
     }
   ]
 }
