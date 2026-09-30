@@ -89,3 +89,14 @@ GitHub Pages is served from the repository:
 https://lutiy-dev.github.io/ARCHVIZ-Prompt-Dictionary-Builder/
 
 A successful source commit does not by itself prove deployment; the published Pages artifact should be checked after relevant changes.
+
+## Stage 1 visual system
+
+The accepted visual checkpoint is `85d90ba8a0b8c344229660e5be275c8bbf8b2a1f`.
+Integration branch `integration/stage-1-main-sync` starts from main `9e5b579f7efd0ebd8e41262c7562bf7f421ab0dc` and carries over the static Process Map, SVG line icons and graphite/yellow workspace styling only.
+
+The map explains REFERENCE → PRESERVE → MATERIAL → LIGHT → ATMOSPHERE → CAMERA → QC → STRUCTURED PROMPT. It does not control Library or Composer. The workspace remains 01 / DICTIONARY → 02 / ASSEMBLY → 03 / OUTPUT; category and preset controls remain native selects. Icons beside these labels identify the current selection.
+
+All 55 main-library blocks, 10 presets, section order, explicit conflicts, generation logic and storage/import/export behavior remain unchanged. RU final-prompt preview, PWA installation and the Travertine preset from the earlier independent baseline branch are outside this visual-only integration. Existing EN/RU dictionary descriptions remain available.
+
+Integration verification and merge conditions: [Stage 1 integration report](design/stage-1/INTEGRATION.md). Stage 2 is not started.
