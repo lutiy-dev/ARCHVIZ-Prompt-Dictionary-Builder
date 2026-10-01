@@ -73,3 +73,13 @@ main .section-body>label,main .section-body>button,.save{flex:none}
 @media(max-width:700px){.shell{padding-inline:16px}.topbar{padding-inline:16px}main>section{height:auto}main>section>.section-body{display:block}#library,#selected{max-height:480px}#selected{margin-top:12px}.preview #output{height:360px;min-height:360px}.footer-workspace{margin-top:16px}#savedPrompts .card{max-width:none}}
 
 .preview-tabs{flex:none}#translationNote[hidden]{display:none}
+
+
+/* Desktop: grow the workspace to the viewport; keep results at the bottom. */
+@media(min-width:1101px){
+ body{height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr)}
+ .shell{width:100%;min-height:0;margin:0;display:grid;grid-template-rows:auto auto minmax(620px,1fr) auto;padding-bottom:16px}
+ main{min-height:0;grid-template-rows:minmax(0,1fr)}
+ main>section{height:auto;min-height:0}
+ .footer-workspace{align-self:end}
+}
