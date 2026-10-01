@@ -107,7 +107,7 @@ main .section-body>label,main .section-body>button,.save{flex:none}
  main>section>.section-body{padding:12px 16px 16px}
  main .section-body>label{margin-bottom:8px}
  #selected{flex:1 0 220px;min-height:220px}
- .save{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'name save' 'saved load' 'import export' 'clear clear';gap:8px 10px;align-items:end;margin-top:10px;padding-top:10px}
+ .save{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'name save' 'saved load' 'import export';gap:8px 10px;align-items:end;margin-top:10px;padding-top:10px}
  .save>label,.save>button{min-width:0;margin:0}
  .save>label:nth-of-type(1){grid-area:name}
  .save>label:nth-of-type(2){grid-area:saved}
@@ -121,3 +121,14 @@ main .section-body>label,main .section-body>button,.save{flex:none}
  .footer-workspace{margin-top:14px}
  .prompt-library .section-head{padding-top:10px}
 }
+
+/* Combination tools stay collapsed until needed; the editor keeps priority. */
+.combination-tools{flex:none;margin-top:12px;border-top:1px solid var(--border)}
+.combination-tools>summary{display:flex;align-items:center;gap:9px;padding:12px 0;cursor:pointer;color:var(--text-soft);font-size:12px;list-style:none}
+.combination-tools>summary::-webkit-details-marker{display:none}
+.combination-tools>summary::before{content:'▸';color:var(--yellow);font-size:14px}
+.combination-tools[open]>summary::before{content:'▾'}
+.combination-tools>summary:hover{color:var(--yellow)}
+.combination-tools>summary:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+.combination-tools .save{margin-top:0;padding-top:0;border-top:0}
+.clear-assembly{align-self:flex-start;margin-top:8px;padding:6px 10px;font-size:11px}
