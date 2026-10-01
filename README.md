@@ -137,3 +137,15 @@ Prompt Studio has its own manifest identity and project-relative scope, separate
 The root Pages artifact includes manifest.webmanifest, sw.js, pwa-install-capture.js and 180/192/512/maskable PNG icons. The service worker uses a Prompt Studio-specific cache prefix, only caches the app shell, and attempts the network before cached fallback. It does not access localStorage or caches belonging to other applications. The first load must be online; offline use requires a successful shell cache.
 
 Release verification must check the published artifact, browser registration and a fresh native installation. Static checks alone do not prove Android installation; verify that separately on a real device.
+
+## License
+
+Copyright (c) 2026 Oleg Gorkov.
+
+ARCHVIZ Prompt Studio is licensed under the GNU General Public License, version 3 only (**SPDX: GPL-3.0-only**). See [LICENSE](LICENSE) for the complete, unmodified license text. No permission to apply later GPL versions is granted by this project notice.
+
+Commercial use and sale are permitted. Distribution of covered modified versions must meet GPL-3.0 requirements, including providing Corresponding Source and preserving applicable notices.
+
+This notice grants only rights the copyright holder is entitled to grant. It does not resolve the outstanding provenance review of inline SVG icons, the original visual showcase and legacy prompt texts, or replace any applicable third-party terms. No third-party runtime dependency was identified in the audit of application commit `9545918838b49abcf2e9e764fc673828259dc5bd`; this is not a legal guarantee of non-infringement.
+
+The previously accepted application checkpoint `checkpoint/production-standard-v1.0.0` remains unchanged. This documentation update records the license choice without changing application code, data, UI or storage.
