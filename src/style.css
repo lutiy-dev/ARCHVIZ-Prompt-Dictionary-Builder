@@ -83,3 +83,41 @@ main .section-body>label,main .section-body>button,.save{flex:none}
  main>section{height:auto;min-height:0}
  .footer-workspace{align-self:end}
 }
+
+/* Keep desktop process cards compact; distribute width to the connections. */
+@media(min-width:1101px){
+ .process-map{overflow-x:auto}
+ .process-steps{container-type:inline-size;min-width:1248px;grid-template-columns:repeat(7,132px) 170px;gap:22px;justify-content:space-between}
+ .process-steps li{--connection-gap:max(22px,calc((100cqw - 1094px)/7));width:100%;min-height:110px}
+ .process-steps li:not(:last-child)::after{content:'';left:calc(100% + 8px);right:auto;top:50%;width:calc(var(--connection-gap) - 16px);height:0;border-top:1px solid var(--yellow)}
+ .process-steps li:not(:last-child)::before{content:'';position:absolute;left:calc(100% + var(--connection-gap) - 13px);top:calc(50% - 3px);width:6px;height:6px;border-top:1px solid var(--yellow);border-right:1px solid var(--yellow);transform:rotate(45deg)}
+ .process-steps .ui-icon{flex:none;width:28px;height:28px}
+}
+
+/* Landscape screens: reserve useful editing space before fitting the footer. */
+@media(min-width:1101px) and (min-aspect-ratio:4/3){
+ .shell{grid-template-rows:auto auto minmax(720px,1fr) auto}
+ .topbar{min-height:56px}
+ .hero{padding:14px 0 16px;gap:20px}
+ .hero h1{font-size:32px;margin:8px 0}
+ .process-map{padding:12px 0 16px}
+ .process-steps li{min-height:90px;padding-block:10px}
+ main{padding-top:16px}
+ main>section>.section-head{padding:12px 16px}
+ main>section>.section-body{padding:12px 16px 16px}
+ main .section-body>label{margin-bottom:8px}
+ #selected{flex:1 0 220px;min-height:220px}
+ .save{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:'name save' 'saved load' 'import export' 'clear clear';gap:8px 10px;align-items:end;margin-top:10px;padding-top:10px}
+ .save>label,.save>button{min-width:0;margin:0}
+ .save>label:nth-of-type(1){grid-area:name}
+ .save>label:nth-of-type(2){grid-area:saved}
+ .save>label:nth-of-type(3){grid-area:import}
+ .save>#save{grid-area:save}
+ .save>#load{grid-area:load}
+ .save>#export{grid-area:export}
+ .save>#clear{grid-area:clear;justify-self:start}
+ .save input,.save select{margin-top:4px;padding:8px}
+ .save button{padding:8px 10px;font-size:11px}
+ .footer-workspace{margin-top:14px}
+ .prompt-library .section-head{padding-top:10px}
+}
