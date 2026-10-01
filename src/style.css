@@ -96,7 +96,7 @@ main .section-body>label,main .section-body>button,.save{flex:none}
 
 /* Landscape screens: reserve useful editing space before fitting the footer. */
 @media(min-width:1101px) and (min-aspect-ratio:4/3){
- .shell{grid-template-rows:auto auto minmax(720px,1fr) auto}
+ .shell{grid-template-rows:auto auto minmax(780px,1fr) auto}
  .topbar{min-height:56px}
  .hero{padding:14px 0 16px;gap:20px}
  .hero h1{font-size:32px;margin:8px 0}
