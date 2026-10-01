@@ -129,3 +129,11 @@ Final Prompt offers EN Original / RU reading preview. Translations are derived f
 Archviz Image-to-Video and Object Video add six shared/specialized GENERATED blocks and reuse existing architecture restrictions / object shape constraints. Defaults: 5 seconds, subtle forward dolly; change duration and movement in Composer. They produce prompt text only, no video API. Avoid motion revealing unsupported unseen surfaces. The library now has 68 blocks and 13 presets; all previous 62 blocks / 11 presets remain unchanged. These video prompts require real model testing; text constraints alone do not ensure temporal stability.
 
 Checks: `node --test src/composer.test.mjs src/stage2.test.mjs src/translation-ru.test.mjs src/video.test.mjs`.
+
+## PWA installation
+
+Prompt Studio has its own manifest identity and project-relative scope, separate from Technical_Manual_UI. The header install action uses the native browser prompt when available and inline instructions otherwise. Installed mode opens in a standalone window. HTTPS (production Pages) or localhost is required.
+
+The root Pages artifact includes manifest.webmanifest, sw.js, pwa-install-capture.js and 180/192/512/maskable PNG icons. The service worker uses a Prompt Studio-specific cache prefix, only caches the app shell, and attempts the network before cached fallback. It does not access localStorage or caches belonging to other applications. The first load must be online; offline use requires a successful shell cache.
+
+Release verification must check the published artifact, browser registration and a fresh native installation. Static checks alone do not prove Android installation; verify that separately on a real device.

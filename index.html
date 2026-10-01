@@ -2,6 +2,11 @@
 <html lang="ru" data-theme="dark">
 <head>
   <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="manifest" href="manifest.webmanifest">
+  <meta name="theme-color" content="#17191d">
+  <link rel="icon" type="image/png" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <script src="pwa-install-capture.js"></script>
   <title>ARCHVIZ · Prompt Studio</title>
   <link rel="stylesheet" href="src/style.css">
 </head>
@@ -10,10 +15,10 @@
   <header class="topbar">
     <div class="mark" aria-hidden="true">A/P</div>
     <div class="brand"><small>CONTROLLED AI · ARCHITECTURAL VISUALIZATION</small><strong>ARCHVIZ <span>Prompt Studio</span></strong></div>
-    <div class="top-actions"><span class="badge">LAB / v0.1</span></div>
+    <div class="top-actions"><button id="installApp" type="button">Установить приложение</button><span class="badge">LAB / v0.1</span></div>
   </header>
   <div class="shell">
-    <div class="hero"><div><span class="eyebrow">ARCHITECTURE FIRST / PROMPT CONTROL</span><h1>Точность начинается с задания.</h1><p>Технический словарь, контролируемые блоки и проверяемая сборка промпта для архитектурной визуализации.</p></div><div class="hero-status"><b>01 / STRUCTURED PROMPT</b>Source → constraints → material → QC<br>GENERATED · требует теста на кадре</div></div>
+    <div class="hero"><div><p id="installHelp" role="status" hidden></p><span class="eyebrow">ARCHITECTURE FIRST / PROMPT CONTROL</span><h1>Точность начинается с задания.</h1><p>Технический словарь, контролируемые блоки и проверяемая сборка промпта для архитектурной визуализации.</p></div><div class="hero-status"><b>01 / STRUCTURED PROMPT</b>Source → constraints → material → QC<br>GENERATED · требует теста на кадре</div></div>
     <div class="process-map" aria-labelledby="processTitle"><div class="process-caption"><span id="processTitle">PROCESS MAP / ПРИНЦИП СБОРКИ</span><span>От исходника к заданию</span></div><ol class="process-steps"><li><span class="process-number">01</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-reference"/></svg><strong>REFERENCE</strong><span class="process-description">Исходник и задача</span></li><li><span class="process-number">02</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-geometry"/></svg><strong>PRESERVE</strong><span class="process-description">Геометрия и границы</span></li><li><span class="process-number">03</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-material"/></svg><strong>MATERIAL</strong><span class="process-description">Поверхности и детали</span></li><li><span class="process-number">04</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-light"/></svg><strong>LIGHT</strong><span class="process-description">Свет и время суток</span></li><li><span class="process-number">05</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-atmosphere"/></svg><strong>ATMOSPHERE</strong><span class="process-description">Настроение и среда</span></li><li><span class="process-number">06</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-camera"/></svg><strong>CAMERA</strong><span class="process-description">Кадр и перспектива</span></li><li><span class="process-number">07</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-qc"/></svg><strong>QC</strong><span class="process-description">Проверка результата</span></li><li><span class="process-number">08</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-reference"/></svg><strong>STRUCTURED PROMPT</strong><span class="process-description">Итоговое задание</span></li></ol></div>
     <main>
       <section aria-labelledby="libraryTitle"><div class="section-head"><span class="micro">01 / DICTIONARY</span><div class="heading"><h2 id="libraryTitle"><svg class="ui-icon" aria-hidden="true"><use href="#icon-preset"/></svg>Библиотека</h2><span id="count"></span></div><p>Найдите термин, материал или ограничение.</p></div><div class="section-body"><label>Поиск EN / RU<input id="search" placeholder="Geometry, кирпич, свет…"></label><label><span class="field-heading"><span id="categoryIcon" aria-hidden="true"><svg class="ui-icon" aria-hidden="true"><use href="#icon-preset"/></svg></span>Категория</span><select id="category"><option value="">Все категории</option></select></label><div id="library"></div></div></section>
