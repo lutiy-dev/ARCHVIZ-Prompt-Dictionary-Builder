@@ -289,3 +289,74 @@ Object.assign(translationRu,{
   "defaults": {}
  }
 });
+
+Object.assign(translationRu,{
+  "environment-extension": {
+    "source": "Extend the environment only inside the supplied editable context mask. Preserve the primary building and all protected pixels; do not expand the canvas or change the camera.",
+    "ru": "Дорисовать окружение только внутри предоставленной маски окружения. Сохранить основное здание и защищённые пиксели; не расширять холст и не менять камеру."
+  },
+  "context-description": {
+    "source": "Add {{context}} within the editable region. Follow supplied site references and visible ground connections; keep the primary architecture as the visual priority.",
+    "ru": "Добавить {{context}} в разрешённой области. Следовать референсам участка и видимым связям с землёй; основная архитектура остаётся главным объектом.",
+    "defaults": {
+      "context": [
+        "restrained urban surroundings with distant neighboring buildings and planting",
+        "сдержанное городское окружение с дальними соседними зданиями и озеленением"
+      ]
+    }
+  },
+  "perspective-scale-match": {
+    "source": "Match added elements to the source horizon, vanishing directions, camera height, perspective and depth-dependent scale. Preserve existing lens projection and vertical-line treatment; ground every added object without shifting the source framing.",
+    "ru": "Согласовать новые элементы с горизонтом, направлениями схода, высотой камеры, перспективой и масштабом по глубине исходника. Сохранить проекцию объектива и вертикали; поставить объекты на землю, не меняя кадрирование."
+  },
+  "match-source-lighting": {
+    "source": "Match new context to the source light direction, shadow softness, color temperature and exposure. Add plausible contact shadows and local reflections; do not relight the protected architecture.",
+    "ru": "Согласовать новое окружение с направлением света, мягкостью теней, цветовой температурой и экспозицией исходника. Добавить контактные тени и локальные отражения; не менять свет защищённой архитектуры."
+  },
+  "context-restrictions": {
+    "source": "New context elements are permitted only inside the editable mask. Keep the primary building, openings, silhouette and protected site layout unchanged. Do not cover key entrances, invent signage or add text and watermarks.",
+    "ru": "Новые элементы окружения разрешены только внутри маски. Сохранить основное здание, проёмы, силуэт и защищённую планировку участка. Не закрывать важные входы, не придумывать вывески, текст и водяные знаки."
+  },
+  "environment-qc": {
+    "source": "Check added context against the source: coherent horizon and perspective, realistic scale, grounded objects, correct occlusions, matching light and clean mask edges. Reject changes to protected architecture or site boundaries.",
+    "ru": "Проверить окружение: единый горизонт и перспектива, реалистичный масштаб, контакт с землёй, правильные перекрытия, согласованный свет и чистые границы маски. Отклонить изменения защищённой архитектуры и границ участка."
+  },
+  "night-windows": {
+    "source": "Illuminate a restrained irregular selection of existing windows from plausible interior sources only. Preserve frames and openings; keep some rooms dark, retain glazing reflections and avoid uniform glowing facades or invented interior details.",
+    "ru": "Осветить сдержанную нерегулярную часть существующих окон только правдоподобным внутренним светом. Сохранить рамы и проёмы; часть помещений оставить тёмной, сохранить отражения стекла, избегать равномерного свечения фасада и выдуманных деталей интерьера."
+  },
+  "night-street-sources": {
+    "source": "Light the street and surrounding ground only from visible existing street poles and luminaires. Match each light pool and shadow to its fixture position and direction with natural falloff; do not add poles, fixtures or unsupported pools of light.",
+    "ru": "Осветить улицу и землю только от видимых существующих столбов и светильников. Согласовать световые пятна и тени с положением и направлением источника, с естественным затуханием; не добавлять столбы, светильники и необоснованные пятна света."
+  },
+  "night-headlights": {
+    "source": "Use headlights only on visible existing vehicles whose lamps face the scene. Align beams, road reflections and local illumination with vehicle orientation; preserve vehicle count and position. No floating beams, invented cars or excessive bloom.",
+    "ru": "Использовать фары только видимых существующих автомобилей с подходящим направлением. Согласовать лучи, отражения дороги и локальный свет с ориентацией машины; сохранить количество и положение автомобилей. Без висящих лучей, новых машин и чрезмерного свечения."
+  },
+  "night-source-qc": {
+    "source": "Trace every local light pool, cast shadow and reflection to a visible existing fixture, illuminated window or vehicle lamp. Keep unlit areas plausibly dark with restrained night ambient light; reject invented emitters, glowing surfaces and inconsistent shadows.",
+    "ru": "Связать каждое локальное световое пятно, тень и отражение с существующим светильником, освещённым окном или фарой. Неосвещённые области оставить правдоподобно тёмными при сдержанном ночном фоновом свете; отклонить новые источники, светящиеся поверхности и неверные тени."
+  },
+  "add-people": {
+    "source": "Add {{count}} new people only inside the supplied people insertion mask, with {{activity}}. Preserve existing people and architecture; use natural spacing and keep entrances and key facade details readable.",
+    "ru": "Добавить {{count}} новых людей только внутри маски вставки, с действием: {{activity}}. Сохранить существующих людей и архитектуру; использовать естественные расстояния, не закрывать входы и важные детали фасада.",
+    "defaults": {
+      "count": [
+        "two",
+        "двух"
+      ],
+      "activity": [
+        "casual walking",
+        "спокойная ходьба"
+      ]
+    }
+  },
+  "people-integration": {
+    "source": "Match added people to source perspective, depth-dependent scale, season and lighting. Place feet on the visible ground plane with believable contact shadows; use restrained everyday clothing and natural poses, without duplicating identities.",
+    "ru": "Согласовать добавленных людей с перспективой, масштабом по глубине, сезоном и светом исходника. Поставить ступни на видимую землю с контактными тенями; использовать сдержанную повседневную одежду и естественные позы без повторения персонажей."
+  },
+  "add-people-qc": {
+    "source": "Check the requested added-person count, anatomy, feet-ground contact, perspective, scale, shadows and occlusion. Reject floating feet, duplicated people, malformed limbs or changes outside the insertion mask.",
+    "ru": "Проверить количество новых людей, анатомию, контакт ступней с землёй, перспективу, масштаб, тени и перекрытия. Отклонить висящие ступни, дубликаты, деформированные конечности и изменения вне маски."
+  }
+});
