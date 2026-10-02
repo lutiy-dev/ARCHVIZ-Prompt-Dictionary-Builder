@@ -932,6 +932,179 @@
       "status": "GENERATED",
       "version": 1,
       "conflicts": []
+    },
+    {
+      "id": "environment-extension",
+      "en": "Environment Extension",
+      "ru": "Дорисовка окружения",
+      "category": "Landscape",
+      "section": "ALLOWED CHANGES",
+      "text": "Extend the environment only inside the supplied editable context mask. Preserve the primary building and all protected pixels; do not expand the canvas or change the camera.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "polish",
+        "exclude"
+      ]
+    },
+    {
+      "id": "context-description",
+      "en": "Context Description",
+      "ru": "Описание окружения",
+      "category": "Landscape",
+      "section": "MATERIAL / SUBJECT",
+      "text": "Add {{context}} within the editable region. Follow supplied site references and visible ground connections; keep the primary architecture as the visual priority.",
+      "parameters": {
+        "context": "restrained urban surroundings with distant neighboring buildings and planting"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "perspective-scale-match",
+      "en": "Perspective and Scale Match",
+      "ru": "Перспектива и масштаб",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Match added elements to the source horizon, vanishing directions, camera height, perspective and depth-dependent scale. Preserve existing lens projection and vertical-line treatment; ground every added object without shifting the source framing.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "video-motion"
+      ]
+    },
+    {
+      "id": "match-source-lighting",
+      "en": "Source Lighting Match",
+      "ru": "Согласование света с исходником",
+      "category": "Lighting",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Match new context to the source light direction, shadow softness, color temperature and exposure. Add plausible contact shadows and local reflections; do not relight the protected architecture.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "night"
+      ]
+    },
+    {
+      "id": "context-restrictions",
+      "en": "Context Restrictions",
+      "ru": "Ограничения окружения",
+      "category": "Negative / Restrictions",
+      "section": "RESTRICTIONS",
+      "text": "New context elements are permitted only inside the editable mask. Keep the primary building, openings, silhouette and protected site layout unchanged. Do not cover key entrances, invent signage or add text and watermarks.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "environment-qc",
+      "en": "Environment QC",
+      "ru": "Проверка окружения",
+      "category": "Quality",
+      "section": "QC",
+      "text": "Check added context against the source: coherent horizon and perspective, realistic scale, grounded objects, correct occlusions, matching light and clean mask edges. Reject changes to protected architecture or site boundaries.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "night-windows",
+      "en": "Night Window Lighting",
+      "ru": "Ночное освещение окон",
+      "category": "Lighting",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Illuminate a restrained irregular selection of existing windows from plausible interior sources only. Preserve frames and openings; keep some rooms dark, retain glazing reflections and avoid uniform glowing facades or invented interior details.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "warm-interior-glow"
+      ]
+    },
+    {
+      "id": "night-street-sources",
+      "en": "Existing Street Lights",
+      "ru": "Существующие уличные фонари",
+      "category": "Lighting",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Light the street and surrounding ground only from visible existing street poles and luminaires. Match each light pool and shadow to its fixture position and direction with natural falloff; do not add poles, fixtures or unsupported pools of light.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "night-headlights",
+      "en": "Existing Vehicle Headlights",
+      "ru": "Фары существующих автомобилей",
+      "category": "Lighting",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Use headlights only on visible existing vehicles whose lamps face the scene. Align beams, road reflections and local illumination with vehicle orientation; preserve vehicle count and position. No floating beams, invented cars or excessive bloom.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "night-source-qc",
+      "en": "Night Source QC",
+      "ru": "Проверка ночных источников",
+      "category": "Quality",
+      "section": "QC",
+      "text": "Trace every local light pool, cast shadow and reflection to a visible existing fixture, illuminated window or vehicle lamp. Keep unlit areas plausibly dark with restrained night ambient light; reject invented emitters, glowing surfaces and inconsistent shadows.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "add-people",
+      "en": "Add People",
+      "ru": "Добавление людей",
+      "category": "People",
+      "section": "ALLOWED CHANGES",
+      "text": "Add {{count}} new people only inside the supplied people insertion mask, with {{activity}}. Preserve existing people and architecture; use natural spacing and keep entrances and key facade details readable.",
+      "parameters": {
+        "count": "two",
+        "activity": "casual walking"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "people",
+        "polish"
+      ]
+    },
+    {
+      "id": "people-integration",
+      "en": "People Integration",
+      "ru": "Вписывание людей в кадр",
+      "category": "People",
+      "section": "MATERIAL / SUBJECT",
+      "text": "Match added people to source perspective, depth-dependent scale, season and lighting. Place feet on the visible ground plane with believable contact shadows; use restrained everyday clothing and natural poses, without duplicating identities.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "add-people-qc",
+      "en": "People Insertion QC",
+      "ru": "Проверка добавления людей",
+      "category": "Quality",
+      "section": "QC",
+      "text": "Check the requested added-person count, anatomy, feet-ground contact, perspective, scale, shadows and occlusion. Reject floating feet, duplicated people, malformed limbs or changes outside the insertion mask.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
     }
   ]
 }

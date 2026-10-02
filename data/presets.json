@@ -182,5 +182,60 @@
       "video-motion",
       "video-stability"
     ]
+  },
+  {
+    "id": "environment-context",
+    "name": "Environment / Context",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "mask",
+      "environment-extension",
+      "context-description",
+      "match-source-lighting",
+      "photo",
+      "perspective-scale-match",
+      "context-restrictions",
+      "environment-qc",
+      "final-cleanup"
+    ]
+  },
+  {
+    "id": "night-lighting",
+    "name": "Night / Existing Sources",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "night",
+      "night-windows",
+      "night-street-sources",
+      "night-headlights",
+      "photo",
+      "exclude",
+      "qc",
+      "night-source-qc"
+    ]
+  },
+  {
+    "id": "people-insertion",
+    "name": "Add People",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "mask",
+      "add-people",
+      "people-integration",
+      "photo",
+      "perspective-scale-match",
+      "exclude",
+      "qc",
+      "add-people-qc"
+    ]
   }
 ]

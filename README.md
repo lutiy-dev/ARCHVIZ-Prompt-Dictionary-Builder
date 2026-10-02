@@ -149,3 +149,13 @@ Commercial use and sale are permitted. Distribution of covered modified versions
 This notice grants only rights the copyright holder is entitled to grant. It does not resolve the outstanding provenance review of inline SVG icons, the original visual showcase and legacy prompt texts, or replace any applicable third-party terms. No third-party runtime dependency was identified in the audit of application commit `9545918838b49abcf2e9e764fc673828259dc5bd`; this is not a legal guarantee of non-infringement.
 
 The previously accepted application checkpoint `checkpoint/production-standard-v1.0.0` remains unchanged. This documentation update records the license choice without changing application code, data, UI or storage.
+
+## Environment, night sources and people insertion
+
+Environment / Context adds masked surroundings while preserving the primary architecture and source camera. Context Description accepts a custom environment brief; Perspective and Scale Match aligns horizon, vanishing directions and scale. Context Restrictions permits new neighboring context only inside the mask, unlike the existing global Negative / Exclusions. Do not combine those contradictory blocks.
+
+Night / Existing Sources uses the existing Night block plus selective window illumination, visible street luminaires and headlights of existing vehicles. It does not create poles, cars or unsupported emitters. Source Lighting Match is intended for context matching, not day-to-night conversion.
+
+Add People inserts new people into an insertion mask; the existing People preset still edits existing people. Count and activity are editable parameters. Perspective, scale, ground contact, shadows and anatomy need manual QC.
+
+These additions bring the library to 81 blocks and 16 presets, preserving all previous 68 blocks and 13 presets. New prompt text is GENERATED; software validation does not establish image-model reliability. EN remains canonical, with exact-source RU reading aids. UI, composer logic and storage schemas are unchanged.
