@@ -1105,6 +1105,45 @@
       "status": "GENERATED",
       "version": 1,
       "conflicts": []
+    },
+    {
+      "id": "added-snow-cover",
+      "en": "Snow Cover",
+      "ru": "Снежный покров",
+      "category": "Landscape",
+      "section": "ALLOWED CHANGES",
+      "text": "Add {{amount}} of settled snow only inside the supplied seasonal edit mask, with {{distribution}}. Follow existing ground contours and upward-facing surfaces. Preserve architecture, openings, curbs and site boundaries; keep entrances, walkways and vehicle access clear and readable. Do not add falling snow, reshape objects or conceal protected facade details.",
+      "parameters": {
+        "amount": "a light layer",
+        "distribution": "localized natural accumulation on lawns and exposed ground, with cleared paths"
+      },
+      "conflicts": [
+        "spring",
+        "summer",
+        "autumn",
+        "autumn-fallen-leaves"
+      ],
+      "status": "GENERATED",
+      "version": 1
+    },
+    {
+      "id": "autumn-fallen-leaves",
+      "en": "Autumn Fallen Leaves",
+      "ru": "Опавшие осенние листья",
+      "category": "Landscape",
+      "section": "ALLOWED CHANGES",
+      "text": "Add {{amount}} of fallen autumn leaves only inside the supplied seasonal edit mask, with {{distribution}}. Match leaf species, size, perspective and source lighting to existing vegetation. Use irregular wind-shaped clusters rather than a uniform carpet. Preserve paving, curbs, drainage, entrances and road markings; do not add trees or cover protected architecture.",
+      "parameters": {
+        "amount": "a sparse scattering",
+        "distribution": "small clusters near existing trees, along curb edges and on lawns, with clear entrances and walking routes"
+      },
+      "conflicts": [
+        "spring",
+        "summer",
+        "winter"
+      ],
+      "status": "GENERATED",
+      "version": 1
     }
   ]
 }
