@@ -110,7 +110,7 @@ The Object / 3D Asset preset produces a structured image production prompt for a
 
 Saved Prompts use a separate localStorage key, `archviz-prompt-library-v1`, with envelope `{schema_version:1,prompts:[...]}`. Each record contains `id`, `name`, `scenario` (preset ID), `text`, `blockIds`, `parameters` (effective values keyed by block ID) and ISO `createdAt`. Reads validate version, references, known parameters, field types, bounds and unique IDs. Corrupt or inaccessible storage shows a message; corrupt data is not overwritten. Quota errors leave the previous records intact. Existing combinations keep their `archviz-prompt-studio-v1` key and their original format and JSON import/export.
 
-Saved Prompts are specific to the browser and site origin. This first version has no Saved Prompt export/import or cross-device synchronization. Scenario metadata uses the chosen preset; manually mixing presets still requires semantic review. The new blocks remain GENERATED and require validation against real reference images.
+Saved Prompts are specific to the browser and site origin. Saved Prompts can be transferred through JSON Export / Import (see below); automatic cross-device synchronization is not provided. Scenario metadata uses the chosen preset; manually mixing presets still requires semantic review. The new blocks remain GENERATED and require validation against real reference images.
 
 Stage 2 verification:
 
@@ -171,3 +171,7 @@ The library has 83 blocks and 20 presets. All previous blocks/presets remain unc
 First → Last Frame / Первый → последний кадр creates a structured video prompt between two supplied endpoint images. The images must show the same architecture with aligned framing, aspect ratio and camera. Duration and transition description are editable; the default is 5 seconds and a gradual lighting change. The camera stays locked. Architectural preservation and temporal QC reuse existing blocks; four endpoint-specific blocks are added. Existing Image-to-Video and Object Video presets remain unchanged.
 
 The library now has 87 blocks and 21 presets. This preset produces text only: attach both images to a video workflow/model that supports first/last-frame conditioning. It does not upload images, call an API or guarantee exact endpoint matching. New prompt text is GENERATED; software validation is separate from real video-model testing. EN is canonical with an exact-source RU reading aid.
+
+## Saved Prompts transfer
+
+Use Export on a saved card for one record, or Export All · JSON for the library. Import · JSON validates the entire file before adding records. Existing prompts and combinations are preserved; identical record IDs/content are skipped on repeat import. A matching ID with different content rejects the entire import rather than overwriting it. Unknown block/preset references, invalid schema or records, files over 10 MB and libraries over 500 records are rejected. Storage errors leave the previous data intact. Transfer uses the existing `{schema_version:1,prompts:[...]}` envelope and `archviz-prompt-library-v1` key. JSON includes the frozen English final text and block/parameter snapshot. This is manual file transfer, not account synchronization. Custom private text in the file is shared when you send it.

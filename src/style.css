@@ -132,3 +132,5 @@ main .section-body>label,main .section-body>button,.save{flex:none}
 .combination-tools>summary:focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
 .combination-tools .save{margin-top:0;padding-top:0;border-top:0}
 .clear-assembly{align-self:flex-start;margin-top:8px;padding:6px 10px;font-size:11px}
+
+.prompt-transfer-actions{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px}.prompt-transfer-actions button{margin:0}.prompt-import-control{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:12px;margin:0}.prompt-import-control input{width:auto;max-width:100%;margin:0}.prompt-import-control input::file-selector-button{border:1px solid var(--border);border-radius:4px;background:var(--card);color:inherit;padding:7px;cursor:pointer}
