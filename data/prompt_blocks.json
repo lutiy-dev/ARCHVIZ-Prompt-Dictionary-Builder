@@ -1144,6 +1144,65 @@
       ],
       "status": "GENERATED",
       "version": 1
+    },
+    {
+      "id": "first-last-goal",
+      "en": "First / Last Frame Video",
+      "ru": "Видео между двумя кадрами",
+      "category": "Video",
+      "section": "GOAL",
+      "text": "Create a photorealistic architectural video lasting {{duration}} between the supplied first and last frames. Produce one continuous shot that starts at the first image and ends at the last image.",
+      "parameters": {
+        "duration": "5 seconds"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "video-arch-goal",
+        "video-object-goal"
+      ]
+    },
+    {
+      "id": "first-last-reference",
+      "en": "First and Last Frame References",
+      "ru": "Первый и последний опорные кадры",
+      "category": "Video",
+      "section": "SOURCE / INPUT",
+      "text": "Use the supplied first frame as the starting state and the supplied last frame as the target state. Both frames must depict the same architecture from the same camera with aligned framing, perspective and aspect ratio. Preserve their shared geometry; use the last frame only as authority for the explicitly requested changes. Do not invent unseen surfaces.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "video-reference"
+      ]
+    },
+    {
+      "id": "first-last-transition",
+      "en": "Controlled Frame Transition",
+      "ru": "Контролируемый переход между кадрами",
+      "category": "Video",
+      "section": "ALLOWED CHANGES",
+      "text": "Transition description: {{transition}}. Change only the specified properties, progressively and coherently from the first-frame state to the last-frame state. Keep all other scene elements unchanged. Do not use a simple crossfade with doubled edges, sudden state changes, cuts or geometric morphing. Any lighting or seasonal change must follow the supplied endpoints without inventing intermediate objects.",
+      "parameters": {
+        "transition": "a gradual lighting change from the first frame to the last frame"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "first-last-camera",
+      "en": "Locked Transition Camera",
+      "ru": "Фиксированная камера перехода",
+      "category": "Video",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Keep the camera locked throughout the transition: identical position, focal length, framing, horizon and perspective in every frame. No dolly, pan, orbit, zoom, shake or reframing. Reject mismatched endpoint cameras rather than inventing a camera path.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": [
+        "video-motion"
+      ]
     }
   ]
 }

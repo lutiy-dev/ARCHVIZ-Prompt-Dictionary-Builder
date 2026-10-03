@@ -656,5 +656,37 @@
     "category": "Landscape",
     "description_ru": "Опавшие листья: количество и распределение регулируются; естественные скопления в маске без перекрытия входов.",
     "block_id": "autumn-fallen-leaves"
+  },
+  {
+    "id": "first-last-goal",
+    "term_en": "First / Last Frame Video",
+    "term_ru": "Видео между двумя кадрами",
+    "category": "Video",
+    "description_ru": "Видео между двумя опорными кадрами; длительность настраивается.",
+    "block_id": "first-last-goal"
+  },
+  {
+    "id": "first-last-reference",
+    "term_en": "First and Last Frame References",
+    "term_ru": "Первый и последний опорные кадры",
+    "category": "Video",
+    "description_ru": "Два изображения одной архитектуры с одинаковой камерой: начальное и целевое состояние.",
+    "block_id": "first-last-reference"
+  },
+  {
+    "id": "first-last-transition",
+    "term_en": "Controlled Frame Transition",
+    "term_ru": "Контролируемый переход между кадрами",
+    "category": "Video",
+    "description_ru": "Описание того, что меняется между кадрами: свет, сезон, материал или другое.",
+    "block_id": "first-last-transition"
+  },
+  {
+    "id": "first-last-camera",
+    "term_en": "Locked Transition Camera",
+    "term_ru": "Фиксированная камера перехода",
+    "category": "Video",
+    "description_ru": "Фиксированная камера для согласованных первого и последнего кадров.",
+    "block_id": "first-last-camera"
   }
 ]
