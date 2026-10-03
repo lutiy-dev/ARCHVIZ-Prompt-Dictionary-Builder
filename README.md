@@ -165,3 +165,9 @@ These additions bring the library to 81 blocks and 16 presets, preserving all pr
 Spring / Весна, Summer / Лето, Autumn / Осень and Winter / Зима reuse the existing seasonal blocks and preserve the source geometry and camera. They do not choose a time of day. Autumn includes editable fallen-leaf amount/distribution; Winter includes editable settled-snow amount/distribution. Both additions require a seasonal edit mask and keep entrances and circulation routes readable. Snowfall is not implied. Remove the optional Snow Cover or Autumn Fallen Leaves block for a season without ground decoration.
 
 The library has 83 blocks and 20 presets. All previous blocks/presets remain unchanged. New prompt text remains GENERATED until tested with an image model; EN/RU software checks do not establish model-output accuracy.
+
+## First → Last Frame video
+
+First → Last Frame / Первый → последний кадр creates a structured video prompt between two supplied endpoint images. The images must show the same architecture with aligned framing, aspect ratio and camera. Duration and transition description are editable; the default is 5 seconds and a gradual lighting change. The camera stays locked. Architectural preservation and temporal QC reuse existing blocks; four endpoint-specific blocks are added. Existing Image-to-Video and Object Video presets remain unchanged.
+
+The library now has 87 blocks and 21 presets. This preset produces text only: attach both images to a video workflow/model that supports first/last-frame conditioning. It does not upload images, call an API or guarantee exact endpoint matching. New prompt text is GENERATED; software validation is separate from real video-model testing. EN is canonical with an exact-source RU reading aid.

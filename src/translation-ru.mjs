@@ -391,3 +391,36 @@ Object.assign(translationRu,{
     }
   }
 });
+
+Object.assign(translationRu,{
+  "first-last-goal": {
+    "source": "Create a photorealistic architectural video lasting {{duration}} between the supplied first and last frames. Produce one continuous shot that starts at the first image and ends at the last image.",
+    "ru": "Создать фотореалистичное архитектурное видео длительностью {{duration}} между предоставленными первым и последним кадрами. Один непрерывный план, начинающийся первым изображением и заканчивающийся последним.",
+    "defaults": {
+      "duration": [
+        "5 seconds",
+        "5 секунд"
+      ]
+    }
+  },
+  "first-last-reference": {
+    "source": "Use the supplied first frame as the starting state and the supplied last frame as the target state. Both frames must depict the same architecture from the same camera with aligned framing, perspective and aspect ratio. Preserve their shared geometry; use the last frame only as authority for the explicitly requested changes. Do not invent unseen surfaces.",
+    "ru": "Считать первый кадр начальным состоянием, а последний — целевым. Оба кадра должны показывать одну архитектуру с одной камеры, с согласованными кадрированием, перспективой и соотношением сторон. Сохранить общую геометрию; последний кадр задаёт только явно запрошенные изменения. Не придумывать невидимые поверхности.",
+    "defaults": {}
+  },
+  "first-last-transition": {
+    "source": "Transition description: {{transition}}. Change only the specified properties, progressively and coherently from the first-frame state to the last-frame state. Keep all other scene elements unchanged. Do not use a simple crossfade with doubled edges, sudden state changes, cuts or geometric morphing. Any lighting or seasonal change must follow the supplied endpoints without inventing intermediate objects.",
+    "ru": "Описание перехода: {{transition}}. Менять только указанные свойства постепенно и согласованно от первого состояния к последнему. Остальные элементы сцены оставить неизменными. Без простого наложения кадров с двойными контурами, скачков состояния, склеек и изменения формы геометрии. Изменение света или сезона должно следовать опорным кадрам без придуманных промежуточных объектов.",
+    "defaults": {
+      "transition": [
+        "a gradual lighting change from the first frame to the last frame",
+        "постепенное изменение освещения от первого кадра к последнему"
+      ]
+    }
+  },
+  "first-last-camera": {
+    "source": "Keep the camera locked throughout the transition: identical position, focal length, framing, horizon and perspective in every frame. No dolly, pan, orbit, zoom, shake or reframing. Reject mismatched endpoint cameras rather than inventing a camera path.",
+    "ru": "Зафиксировать камеру на протяжении перехода: одинаковые положение, фокусное расстояние, кадрирование, горизонт и перспектива во всех кадрах. Без проезда, панорамирования, облёта, приближения, тряски и смены кадрирования. Несовпадающие камеры опорных кадров требуют исправления исходников, а не придуманной траектории.",
+    "defaults": {}
+  }
+});

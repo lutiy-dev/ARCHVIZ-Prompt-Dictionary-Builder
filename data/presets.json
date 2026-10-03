@@ -303,5 +303,17 @@
       "added-snow-cover",
       "final-cleanup"
     ]
+  },
+  {
+    "id": "first-last-video",
+    "name": "First → Last Frame / Первый → последний кадр",
+    "blocks": [
+      "first-last-goal",
+      "first-last-reference",
+      "video-arch-preserve",
+      "first-last-transition",
+      "first-last-camera",
+      "video-stability"
+    ]
   }
 ]
