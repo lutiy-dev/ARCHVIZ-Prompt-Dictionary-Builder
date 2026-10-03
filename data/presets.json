@@ -237,5 +237,71 @@
       "qc",
       "add-people-qc"
     ]
+  },
+  {
+    "id": "season-spring",
+    "name": "Spring / Весна",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "mask",
+      "photo",
+      "exclude",
+      "qc",
+      "spring",
+      "final-cleanup"
+    ]
+  },
+  {
+    "id": "season-summer",
+    "name": "Summer / Лето",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "mask",
+      "photo",
+      "exclude",
+      "qc",
+      "summer",
+      "final-cleanup"
+    ]
+  },
+  {
+    "id": "season-autumn",
+    "name": "Autumn / Осень",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "mask",
+      "photo",
+      "exclude",
+      "qc",
+      "autumn",
+      "autumn-fallen-leaves",
+      "final-cleanup"
+    ]
+  },
+  {
+    "id": "season-winter",
+    "name": "Winter / Зима",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "mask",
+      "photo",
+      "exclude",
+      "qc",
+      "winter",
+      "added-snow-cover",
+      "final-cleanup"
+    ]
   }
 ]

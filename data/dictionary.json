@@ -640,5 +640,21 @@
     "category": "Quality",
     "description_ru": "Проверить количество новых людей, анатомию, контакт ступней с землёй, перспективу, масштаб, тени и перекрытия. Отклонить висящие ступни, дубликаты, деформированные конечности и изменения вне маски.",
     "block_id": "add-people-qc"
+  },
+  {
+    "id": "added-snow-cover",
+    "term_en": "Snow Cover",
+    "term_ru": "Снежный покров",
+    "category": "Landscape",
+    "description_ru": "Снег: количество и распределение регулируются; только в маске, с сохранением входов и подъездов.",
+    "block_id": "added-snow-cover"
+  },
+  {
+    "id": "autumn-fallen-leaves",
+    "term_en": "Autumn Fallen Leaves",
+    "term_ru": "Опавшие осенние листья",
+    "category": "Landscape",
+    "description_ru": "Опавшие листья: количество и распределение регулируются; естественные скопления в маске без перекрытия входов.",
+    "block_id": "autumn-fallen-leaves"
   }
 ]

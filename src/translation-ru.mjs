@@ -360,3 +360,34 @@ Object.assign(translationRu,{
     "ru": "Проверить количество новых людей, анатомию, контакт ступней с землёй, перспективу, масштаб, тени и перекрытия. Отклонить висящие ступни, дубликаты, деформированные конечности и изменения вне маски."
   }
 });
+
+Object.assign(translationRu,{
+  "added-snow-cover": {
+    "source": "Add {{amount}} of settled snow only inside the supplied seasonal edit mask, with {{distribution}}. Follow existing ground contours and upward-facing surfaces. Preserve architecture, openings, curbs and site boundaries; keep entrances, walkways and vehicle access clear and readable. Do not add falling snow, reshape objects or conceal protected facade details.",
+    "ru": "Добавить {{amount}} лежащего снега только внутри маски сезонного редактирования, с распределением: {{distribution}}. Следовать существующему рельефу земли и обращённым вверх поверхностям. Сохранить архитектуру, проёмы, бордюры и границы участка; входы, пешеходные пути и подъезды оставить расчищенными и читаемыми. Не добавлять падающий снег, не менять форму объектов и не скрывать защищённые детали фасада.",
+    "defaults": {
+      "amount": [
+        "a light layer",
+        "тонкий слой"
+      ],
+      "distribution": [
+        "localized natural accumulation on lawns and exposed ground, with cleared paths",
+        "локальные естественные скопления на газонах и открытой земле с расчищенными дорожками"
+      ]
+    }
+  },
+  "autumn-fallen-leaves": {
+    "source": "Add {{amount}} of fallen autumn leaves only inside the supplied seasonal edit mask, with {{distribution}}. Match leaf species, size, perspective and source lighting to existing vegetation. Use irregular wind-shaped clusters rather than a uniform carpet. Preserve paving, curbs, drainage, entrances and road markings; do not add trees or cover protected architecture.",
+    "ru": "Добавить {{amount}} опавших осенних листьев только внутри маски сезонного редактирования, с распределением: {{distribution}}. Согласовать вид, размер, перспективу и свет листьев с существующей растительностью. Использовать нерегулярные скопления по направлению ветра вместо равномерного ковра. Сохранить покрытие, бордюры, водоотвод, входы и дорожную разметку; не добавлять деревья и не закрывать защищённую архитектуру.",
+    "defaults": {
+      "amount": [
+        "a sparse scattering",
+        "небольшое количество"
+      ],
+      "distribution": [
+        "small clusters near existing trees, along curb edges and on lawns, with clear entrances and walking routes",
+        "небольшие скопления возле существующих деревьев, вдоль бордюров и на газонах, со свободными входами и пешеходными путями"
+      ]
+    }
+  }
+});
