@@ -1203,6 +1203,78 @@
       "conflicts": [
         "video-motion"
       ]
+    },
+    {
+      "id": "material-id-goal",
+      "en": "Material ID Map",
+      "ru": "Карта Material ID",
+      "category": "AI terminology",
+      "section": "GOAL",
+      "text": "Convert the supplied architectural render into a flat Material ID map for masking and downstream editing.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "material-id-preserve",
+      "en": "Preserve Region Boundaries",
+      "ru": "Сохранить границы областей",
+      "category": "Geometry",
+      "section": "MUST PRESERVE",
+      "text": "Preserve the exact source camera, silhouette, object boundaries, window openings, frames, curbs, paving borders, vegetation silhouettes and all visible architectural edges. Do not move, add, remove or redesign geometry.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "material-id-rules",
+      "en": "Flat Material Regions",
+      "ru": "Плоские области материалов",
+      "category": "AI terminology",
+      "section": "ALLOWED CHANGES",
+      "text": "Assign one solid flat RGB color to each visually distinct material or surface class. Use the same color for the same material across light, shadow and repeated disconnected regions. Use different colors for different materials or surface classes.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "material-id-classes",
+      "en": "Material Region Classes",
+      "ru": "Классы областей материалов",
+      "category": "Materials",
+      "section": "MATERIAL / SUBJECT",
+      "text": "Separate facade materials, glazing/windows, window and door frames, roof, metal, wood, concrete, stone, brick, road, paving, curb, vegetation, sky, water and people when visibly present. Keep distinct facade materials separate even when they belong to the same building.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "material-id-restrictions",
+      "en": "Material ID Restrictions",
+      "ru": "Ограничения Material ID",
+      "category": "Negative / Restrictions",
+      "section": "RESTRICTIONS",
+      "text": "Output only the flat Material ID map. No textures, lighting, shadows, gradients, reflections, glare, ambient occlusion, photographic detail, outlines, labels, text, legends, watermarks or decorative effects. Do not invent hidden materials.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "material-id-qc",
+      "en": "Material ID QC",
+      "ru": "Проверка Material ID",
+      "category": "Quality",
+      "section": "QC",
+      "text": "Check that every pixel belongs to a clean flat region, repeated instances of the same material use the same RGB color, adjacent different materials use clearly different colors, and region boundaries match the source render without geometry drift.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
     }
   ]
 }
