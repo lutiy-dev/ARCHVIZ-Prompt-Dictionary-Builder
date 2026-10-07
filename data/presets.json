@@ -315,5 +315,18 @@
       "first-last-camera",
       "video-stability"
     ]
+  },
+  {
+    "id": "material-id-map",
+    "name": "Material ID Map / Карта материалов",
+    "blocks": [
+      "material-id-goal",
+      "source",
+      "material-id-preserve",
+      "material-id-rules",
+      "material-id-classes",
+      "material-id-restrictions",
+      "material-id-qc"
+    ]
   }
 ]
