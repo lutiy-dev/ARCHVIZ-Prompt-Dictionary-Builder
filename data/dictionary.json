@@ -688,5 +688,53 @@
     "category": "Video",
     "description_ru": "Фиксированная камера для согласованных первого и последнего кадров.",
     "block_id": "first-last-camera"
+  },
+  {
+    "id": "material-id-goal",
+    "term_en": "Material ID Map",
+    "term_ru": "Карта Material ID",
+    "category": "AI terminology",
+    "description_ru": "Преобразует архитектурный рендер в плоскую цветовую карту материалов для последующего получения масок.",
+    "block_id": "material-id-goal"
+  },
+  {
+    "id": "material-id-preserve",
+    "term_en": "Preserve Region Boundaries",
+    "term_ru": "Сохранить границы областей",
+    "category": "Geometry",
+    "description_ru": "Фиксирует камеру, силуэт, архитектурные контуры, проёмы, рамы, бордюры, мощение и силуэты растительности.",
+    "block_id": "material-id-preserve"
+  },
+  {
+    "id": "material-id-rules",
+    "term_en": "Flat Material Regions",
+    "term_ru": "Плоские области материалов",
+    "category": "AI terminology",
+    "description_ru": "Требует один сплошной RGB-цвет на материал и одинаковый цвет для повторяющихся участков одного материала.",
+    "block_id": "material-id-rules"
+  },
+  {
+    "id": "material-id-classes",
+    "term_en": "Material Region Classes",
+    "term_ru": "Классы областей материалов",
+    "category": "Materials",
+    "description_ru": "Разделяет фасадные материалы, остекление, рамы, кровлю, металл, дерево, бетон, камень, кирпич, дорогу, мощение, бордюр, растительность, небо, воду и людей.",
+    "block_id": "material-id-classes"
+  },
+  {
+    "id": "material-id-restrictions",
+    "term_en": "Material ID Restrictions",
+    "term_ru": "Ограничения Material ID",
+    "category": "Negative / Restrictions",
+    "description_ru": "Запрещает текстуры, свет, тени, градиенты, отражения, AO, подписи, текст, легенды и декоративные эффекты в ID-карте.",
+    "block_id": "material-id-restrictions"
+  },
+  {
+    "id": "material-id-qc",
+    "term_en": "Material ID QC",
+    "term_ru": "Проверка Material ID",
+    "category": "Quality",
+    "description_ru": "Проверяет чистые плоские области, стабильные RGB-цвета и соответствие границ исходному рендеру без дрейфа геометрии.",
+    "block_id": "material-id-qc"
   }
 ]
