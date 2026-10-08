@@ -688,5 +688,53 @@
     "category": "Video",
     "description_ru": "Фиксированная камера для согласованных первого и последнего кадров.",
     "block_id": "first-last-camera"
+  },
+  {
+    "id": "material-id-goal",
+    "term_en": "Material ID Map",
+    "term_ru": "Карта Material ID",
+    "category": "AI terminology",
+    "description_ru": "Преобразовать архитектурный рендер в плоскую цветовую карту материалов для последующего получения масок.",
+    "block_id": "material-id-goal"
+  },
+  {
+    "id": "material-id-preserve",
+    "term_en": "Preserve Region Boundaries",
+    "term_ru": "Сохранить границы областей",
+    "category": "Geometry",
+    "description_ru": "Сохранить камеру, силуэты, проёмы, рамы, бордюры, границы мощения, растительность и все архитектурные кромки без изменения геометрии.",
+    "block_id": "material-id-preserve"
+  },
+  {
+    "id": "material-id-rules",
+    "term_en": "Flat Material Regions",
+    "term_ru": "Плоские области материалов",
+    "category": "AI terminology",
+    "description_ru": "Один материал — один стабильный плоский RGB-цвет во всех участках, независимо от света и тени; разные материалы — разные цвета.",
+    "block_id": "material-id-rules"
+  },
+  {
+    "id": "material-id-classes",
+    "term_en": "Material Region Classes",
+    "term_ru": "Классы областей материалов",
+    "category": "Materials",
+    "description_ru": "Разделять фасадные материалы, стекло, рамы, кровлю, металл, дерево, бетон, камень, кирпич, дорогу, мощение, бордюр, зелень, небо, воду и людей.",
+    "block_id": "material-id-classes"
+  },
+  {
+    "id": "material-id-restrictions",
+    "term_en": "Material ID Restrictions",
+    "term_ru": "Ограничения Material ID",
+    "category": "Negative / Restrictions",
+    "description_ru": "На выходе только плоская ID-карта без текстур, света, теней, градиентов, отражений, контуров, подписей и выдуманных материалов.",
+    "block_id": "material-id-restrictions"
+  },
+  {
+    "id": "material-id-qc",
+    "term_en": "Material ID QC",
+    "term_ru": "Проверка Material ID",
+    "category": "Quality",
+    "description_ru": "Проверить стабильность RGB по одинаковым материалам, различимость соседних классов и точное совпадение границ с исходным рендером.",
+    "block_id": "material-id-qc"
   }
 ]

@@ -175,3 +175,16 @@ The library now has 87 blocks and 21 presets. This preset produces text only: at
 ## Saved Prompts transfer
 
 Use Export on a saved card for one record, or Export All · JSON for the library. Import · JSON validates the entire file before adding records. Existing prompts and combinations are preserved; identical record IDs/content are skipped on repeat import. A matching ID with different content rejects the entire import rather than overwriting it. Unknown block/preset references, invalid schema or records, files over 10 MB and libraries over 500 records are rejected. Storage errors leave the previous data intact. Transfer uses the existing `{schema_version:1,prompts:[...]}` envelope and `archviz-prompt-library-v1` key. JSON includes the frozen English final text and block/parameter snapshot. This is manual file transfer, not account synchronization. Custom private text in the file is shared when you send it.
+
+
+## Current verified data integrity
+
+Current library snapshot:
+- 93 prompt blocks;
+- 93 dictionary entries;
+- 22 presets;
+- every canonical English block must have an exact-source Russian reading-aid entry;
+- translation tests verify all blocks and all presets dynamically, without a hard-coded block count;
+- GitHub Actions runs JavaScript syntax checks and all Node tests on pushes and pull requests.
+
+The Material ID Map preset is part of this validated set.
