@@ -69,10 +69,10 @@ index.html
 
 ```bash
 node --check src/app.mjs
-node --test src/composer.test.mjs
+node --test src/*.test.mjs
 ```
 
-**PASS:** syntax and tests succeed, references resolve, starter presets have no unresolved conflicts, and section ordering/deduplication remains valid.
+**PASS:** syntax and tests succeed, references resolve, every prompt block is exposed in the dictionary, every canonical English block has a reviewed RU preview, starter presets have no unresolved conflicts, and section ordering/deduplication remains valid. Material ID preset translation coverage is included in regression tests.
 
 Manual smoke test: add Facade → change scale → add Facade again → confirm the parameter is preserved → add Night → verify conflict handling → remove Overcast → save/reload → export/import the combination.
 
