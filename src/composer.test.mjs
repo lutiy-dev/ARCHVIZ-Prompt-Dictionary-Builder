@@ -6,3 +6,5 @@ test('merge preserves custom parameters and deduplicates',()=>{const s=[{id:'bri
 test('parameter substitution and exact duplicate removal',()=>{const r=compose(library,[{id:'brick',parameters:{scale:'custom'}},{id:'brick',parameters:{scale:'custom'}}]);assert.ok(r.text.includes('custom'));assert.equal(r.text.match(/aged red brick/g).length,1);assert.ok(!r.text.includes('{{'));});
 test('conflicts reported once, safe presets conflict-free',()=>{assert.equal(compose(library,[{id:'night'},{id:'overcast'}]).warnings.length,1);for(const p of presets)assert.equal(compose(library,p.blocks.map(id=>({id}))).warnings.length,0,p.name);});
 test('unknown blocks fail explicitly',()=>assert.throws(()=>compose(library,[{id:'missing'}])));
+
+test('every prompt block is exposed in dictionary',()=>{const dictionaryIds=new Set(dictionary.map(d=>d.block_id));for(const b of library.blocks)assert.ok(dictionaryIds.has(b.id),b.id);});
