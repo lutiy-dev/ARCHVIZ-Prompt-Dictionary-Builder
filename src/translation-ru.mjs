@@ -424,3 +424,31 @@ Object.assign(translationRu,{
     "defaults": {}
   }
 });
+
+
+Object.assign(translationRu,{
+  "material-id-goal": {
+    "source": "Convert the supplied architectural render into a flat Material ID map for masking and downstream editing.",
+    "ru": "Преобразовать предоставленный архитектурный рендер в плоскую карту Material ID для создания масок и последующего редактирования."
+  },
+  "material-id-preserve": {
+    "source": "Preserve the exact source camera, silhouette, object boundaries, window openings, frames, curbs, paving borders, vegetation silhouettes and all visible architectural edges. Do not move, add, remove or redesign geometry.",
+    "ru": "Точно сохранить исходную камеру, силуэт, границы объектов, оконные проёмы, рамы, бордюры, границы мощения, силуэты растительности и все видимые архитектурные контуры. Не перемещать, не добавлять, не удалять и не перепроектировать геометрию."
+  },
+  "material-id-rules": {
+    "source": "Assign one solid flat RGB color to each visually distinct material or surface class. Use the same color for the same material across light, shadow and repeated disconnected regions. Use different colors for different materials or surface classes.",
+    "ru": "Назначить каждому визуально различимому материалу или классу поверхности один сплошной плоский RGB-цвет. Использовать один и тот же цвет для одного материала в освещённых, затенённых и разнесённых областях. Для разных материалов или классов поверхностей использовать разные цвета."
+  },
+  "material-id-classes": {
+    "source": "Separate facade materials, glazing/windows, window and door frames, roof, metal, wood, concrete, stone, brick, road, paving, curb, vegetation, sky, water and people when visibly present. Keep distinct facade materials separate even when they belong to the same building.",
+    "ru": "Разделять материалы фасада, остекление и окна, оконные и дверные рамы, кровлю, металл, дерево, бетон, камень, кирпич, дорогу, мощение, бордюр, растительность, небо, воду и людей, если они видимы. Разные материалы фасада должны оставаться отдельными даже в пределах одного здания."
+  },
+  "material-id-restrictions": {
+    "source": "Output only the flat Material ID map. No textures, lighting, shadows, gradients, reflections, glare, ambient occlusion, photographic detail, outlines, labels, text, legends, watermarks or decorative effects. Do not invent hidden materials.",
+    "ru": "Вывести только плоскую карту Material ID. Без текстур, освещения, теней, градиентов, отражений, бликов, ambient occlusion, фотографических деталей, контуров, подписей, текста, легенд, водяных знаков и декоративных эффектов. Не придумывать скрытые материалы."
+  },
+  "material-id-qc": {
+    "source": "Check that every pixel belongs to a clean flat region, repeated instances of the same material use the same RGB color, adjacent different materials use clearly different colors, and region boundaries match the source render without geometry drift.",
+    "ru": "Проверить, что каждый пиксель относится к чистой плоской области, повторяющиеся участки одного материала используют один и тот же RGB-цвет, соседние разные материалы имеют явно различающиеся цвета, а границы областей совпадают с исходным рендером без дрейфа геометрии."
+  }
+});
