@@ -1,0 +1,24 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: JavaScript syntax
+        run: |
+          node --check src/app.mjs
+          node --check src/composer.mjs
+          node --check src/translation-ru.mjs
+          node --check src/saved-prompts.mjs
+          node --check src/prompt-transfer.mjs
+          node --check sw.js
+      - name: Unit tests
+        run: node --test src/*.test.mjs
