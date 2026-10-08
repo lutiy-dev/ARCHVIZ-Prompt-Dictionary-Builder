@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'archviz-prompt-studio-shell-';
-const CACHE = CACHE_PREFIX + 'v1';
+const CACHE = CACHE_PREFIX + 'v2';
 const ASSETS = ['./', './index.html', './src/style.css', './src/app.mjs',
   './src/composer.mjs', './src/saved-prompts.mjs', './src/prompt-transfer.mjs', './src/translation-ru.mjs',
   './data/dictionary.json', './data/prompt_blocks.json', './data/presets.json',
