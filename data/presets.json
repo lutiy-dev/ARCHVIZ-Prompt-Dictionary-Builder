@@ -336,5 +336,29 @@
       "hdri-realism-positive",
       "hdri-realism-negative"
     ]
+  },
+  {
+    "id": "hero-photo-clean",
+    "name": "HERO PHOTO CLEAN / Чистый герой-фотореал",
+    "blocks": [
+      "hero-photo-clean-positive",
+      "hero-photo-clean-negative"
+    ]
+  },
+  {
+    "id": "hero-photo-dramatic",
+    "name": "HERO PHOTO DRAMATIC / Драматичный герой-фотореал",
+    "blocks": [
+      "hero-photo-dramatic-positive",
+      "hero-photo-dramatic-negative"
+    ]
+  },
+  {
+    "id": "hero-sunset-gold",
+    "name": "HERO SUNSET GOLD / Золотой час",
+    "blocks": [
+      "hero-sunset-gold-positive",
+      "hero-sunset-gold-negative"
+    ]
   }
 ]
