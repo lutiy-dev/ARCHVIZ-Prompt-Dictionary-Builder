@@ -736,5 +736,21 @@
     "category": "Quality",
     "description_ru": "Проверить стабильность RGB по одинаковым материалам, различимость соседних классов и точное совпадение границ с исходным рендером.",
     "block_id": "material-id-qc"
+  },
+  {
+    "id": "hdri-realism-positive",
+    "term_en": "HDRI Realism",
+    "term_ru": "HDRI реализм",
+    "category": "Lighting",
+    "description_ru": "Проверенный пресет для усиления реалистичного HDRI-освещения, глобального света, отражений, динамического диапазона и читаемости материалов с сохранением архитектуры.",
+    "block_id": "hdri-realism-positive"
+  },
+  {
+    "id": "hdri-realism-negative",
+    "term_en": "HDRI Realism — Negative",
+    "term_ru": "HDRI реализм — запреты",
+    "category": "Negative / Restrictions",
+    "description_ru": "Ограничивает HDRI-проход: без пересветов, проваленных теней, фальшивого свечения, сюрреалистичного света, изменений геометрии, камеры и лишних объектов.",
+    "block_id": "hdri-realism-negative"
   }
 ]
