@@ -29,6 +29,17 @@ export const translationRu={
  mask:{source:'Treat the supplied mask as the edit boundary. Preserve all pixels outside the intended editable region as closely as the editing system allows.',ru:'Считать предоставленную маску границей редактирования. Сохранять все пиксели вне намеченной области настолько точно, насколько позволяет система редактирования.'}
 };
 
+Object.assign(translationRu,{
+ "hdri-realism-positive": {
+  "source": "Preserve original composition and architecture, enhance the image with realistic HDRI lighting, improve global illumination, reflections, dynamic range, highlight rolloff, shadow detail and material realism, keep the result photorealistic and balanced.",
+  "ru": "Сохранить исходную композицию и архитектуру, улучшить изображение реалистичным HDRI-освещением, улучшить глобальное освещение, отражения, динамический диапазон, плавность светов, детализацию теней и реалистичность материалов; сохранить результат фотореалистичным и сбалансированным."
+ },
+ "hdri-realism-negative": {
+  "source": "No overexposure, no crushed shadows, no fake glow, no surreal lighting, no geometry changes, no camera changes, no extra objects, no warped reflections.",
+  "ru": "Не допускать пересветов, проваленных теней, искусственного свечения, сюрреалистичного освещения, изменений геометрии, изменений камеры, дополнительных объектов и искажённых отражений."
+ }
+});
+
 export function translateBlock(block,item){
  const t=translationRu[block.id];
  if(!t||t.source!==block.text)return `[Перевод блока не сверен. EN: ${block.text.replace(/\{\{(\w+)\}\}/g,(_,key)=>String(item.parameters?.[key]??block.parameters[key]??''))}]`;
