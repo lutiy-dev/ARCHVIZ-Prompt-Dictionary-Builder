@@ -1299,6 +1299,78 @@
       "status": "TESTED",
       "version": 1,
       "conflicts": []
+    },
+    {
+      "id": "hero-photo-clean-positive",
+      "en": "HERO PHOTO CLEAN",
+      "ru": "Чистый герой-фотореал",
+      "category": "Lighting",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Preserve the original architecture, geometry, camera and composition. Create a premium high-end architectural visualization with clean realistic daylight, refined facade materials, rich but natural architectural depth, clear glazing, realistic reflections, controlled highlight rolloff, readable soft shadows, detailed natural landscaping and restrained commercial real-estate photography grading. Keep the result photorealistic, elegant, clean and balanced.",
+      "parameters": {},
+      "status": "TESTED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "hero-photo-clean-negative",
+      "en": "HERO PHOTO CLEAN — Negative",
+      "ru": "Чистый герой-фотореал — запреты",
+      "category": "Negative / Restrictions",
+      "section": "RESTRICTIONS",
+      "text": "No geometry changes, no altered facade proportions, no moved or redesigned windows, no extra architectural elements, no excessive darkness, no crushed shadows, no burned highlights, no artificial glow, no grunge, no apocalyptic mood, no oversaturation, no cartoon look, no distorted reflections.",
+      "parameters": {},
+      "status": "TESTED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "hero-photo-dramatic-positive",
+      "en": "HERO PHOTO DRAMATIC",
+      "ru": "Драматичный герой-фотореал",
+      "category": "Lighting",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Preserve the original architecture, geometry, camera and composition. Enhance the image into a dramatic premium architectural hero shot with strong but realistic directional daylight, pronounced architectural depth, refined material definition, elegant light-and-shadow separation, rich glazing reflections, controlled high dynamic range, detailed landscaping and cinematic atmospheric depth. Keep all lighting physically plausible and the architecture visually dominant.",
+      "parameters": {},
+      "status": "TESTED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "hero-photo-dramatic-negative",
+      "en": "HERO PHOTO DRAMATIC — Negative",
+      "ru": "Драматичный герой-фотореал — запреты",
+      "category": "Negative / Restrictions",
+      "section": "RESTRICTIONS",
+      "text": "No geometry changes, no camera changes, no invented facade details, no extreme black shadows, no clipped highlights, no fake glow, no fantasy lighting, no excessive HDR halos, no surreal sky, no oversaturation, no grunge, no distorted windows or reflections.",
+      "parameters": {},
+      "status": "TESTED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "hero-sunset-gold-positive",
+      "en": "HERO SUNSET GOLD",
+      "ru": "Золотой час",
+      "category": "Lighting",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Preserve the original architecture, geometry, camera and composition. Transform the lighting into a premium golden-hour architectural hero shot with warm low-angle sunlight, elegant warm highlights, cooler ambient shadow tones, realistic long soft-edged shadows, refined facade material response, natural glazing reflections, controlled dynamic range, subtle atmospheric depth and polished high-end real-estate photography aesthetics.",
+      "parameters": {},
+      "status": "TESTED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "hero-sunset-gold-negative",
+      "en": "HERO SUNSET GOLD — Negative",
+      "ru": "Золотой час — запреты",
+      "category": "Negative / Restrictions",
+      "section": "RESTRICTIONS",
+      "text": "No geometry changes, no camera changes, no orange color cast over the entire image, no burned sunlight, no black crushed shadows, no fake glow, no excessive lens flare, no fantasy sunset, no surreal colors, no extra objects, no distorted windows or reflections.",
+      "parameters": {},
+      "status": "TESTED",
+      "version": 1,
+      "conflicts": []
     }
   ]
 }
