@@ -328,5 +328,13 @@
       "material-id-restrictions",
       "material-id-qc"
     ]
+  },
+  {
+    "id": "hdri-realism",
+    "name": "HDRI Realism / HDRI реализм",
+    "blocks": [
+      "hdri-realism-positive",
+      "hdri-realism-negative"
+    ]
   }
 ]
