@@ -1275,6 +1275,30 @@
       "status": "GENERATED",
       "version": 1,
       "conflicts": []
+    },
+    {
+      "id": "hdri-realism-positive",
+      "en": "HDRI Realism",
+      "ru": "HDRI реализм",
+      "category": "Lighting",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Preserve original composition and architecture, enhance the image with realistic HDRI lighting, improve global illumination, reflections, dynamic range, highlight rolloff, shadow detail and material realism, keep the result photorealistic and balanced.",
+      "parameters": {},
+      "status": "TESTED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "hdri-realism-negative",
+      "en": "HDRI Realism — Negative",
+      "ru": "HDRI реализм — запреты",
+      "category": "Negative / Restrictions",
+      "section": "RESTRICTIONS",
+      "text": "No overexposure, no crushed shadows, no fake glow, no surreal lighting, no geometry changes, no camera changes, no extra objects, no warped reflections.",
+      "parameters": {},
+      "status": "TESTED",
+      "version": 1,
+      "conflicts": []
     }
   ]
 }
