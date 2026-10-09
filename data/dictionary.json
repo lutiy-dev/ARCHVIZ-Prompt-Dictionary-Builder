@@ -752,5 +752,53 @@
     "category": "Negative / Restrictions",
     "description_ru": "Ограничивает HDRI-проход: без пересветов, проваленных теней, фальшивого свечения, сюрреалистичного света, изменений геометрии, камеры и лишних объектов.",
     "block_id": "hdri-realism-negative"
+  },
+  {
+    "id": "hero-photo-clean-positive",
+    "term_en": "HERO PHOTO CLEAN",
+    "term_ru": "Чистый герой-фотореал",
+    "category": "Lighting",
+    "description_ru": "Проверенный на реальном archviz-кадре сценарий фотореалистичной hero-подачи с сохранением архитектуры, камеры и композиции.",
+    "block_id": "hero-photo-clean-positive"
+  },
+  {
+    "id": "hero-photo-clean-negative",
+    "term_en": "HERO PHOTO CLEAN — Negative",
+    "term_ru": "Чистый герой-фотореал — запреты",
+    "category": "Negative / Restrictions",
+    "description_ru": "Негативные ограничения для соответствующего hero-сценария; защищают геометрию, камеру, свет и отражения от нежелательных изменений.",
+    "block_id": "hero-photo-clean-negative"
+  },
+  {
+    "id": "hero-photo-dramatic-positive",
+    "term_en": "HERO PHOTO DRAMATIC",
+    "term_ru": "Драматичный герой-фотореал",
+    "category": "Lighting",
+    "description_ru": "Проверенный на реальном archviz-кадре сценарий фотореалистичной hero-подачи с сохранением архитектуры, камеры и композиции.",
+    "block_id": "hero-photo-dramatic-positive"
+  },
+  {
+    "id": "hero-photo-dramatic-negative",
+    "term_en": "HERO PHOTO DRAMATIC — Negative",
+    "term_ru": "Драматичный герой-фотореал — запреты",
+    "category": "Negative / Restrictions",
+    "description_ru": "Негативные ограничения для соответствующего hero-сценария; защищают геометрию, камеру, свет и отражения от нежелательных изменений.",
+    "block_id": "hero-photo-dramatic-negative"
+  },
+  {
+    "id": "hero-sunset-gold-positive",
+    "term_en": "HERO SUNSET GOLD",
+    "term_ru": "Золотой час",
+    "category": "Lighting",
+    "description_ru": "Проверенный на реальном archviz-кадре сценарий фотореалистичной hero-подачи с сохранением архитектуры, камеры и композиции.",
+    "block_id": "hero-sunset-gold-positive"
+  },
+  {
+    "id": "hero-sunset-gold-negative",
+    "term_en": "HERO SUNSET GOLD — Negative",
+    "term_ru": "Золотой час — запреты",
+    "category": "Negative / Restrictions",
+    "description_ru": "Негативные ограничения для соответствующего hero-сценария; защищают геометрию, камеру, свет и отражения от нежелательных изменений.",
+    "block_id": "hero-sunset-gold-negative"
   }
 ]
