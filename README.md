@@ -180,11 +180,13 @@ Use Export on a saved card for one record, or Export All · JSON for the library
 ## Current verified data integrity
 
 Current library snapshot:
-- 93 prompt blocks;
-- 93 dictionary entries;
-- 22 presets;
+- 95 prompt blocks;
+- 95 dictionary entries;
+- 23 presets;
 - every canonical English block must have an exact-source Russian reading-aid entry;
 - translation tests verify all blocks and all presets dynamically, without a hard-coded block count;
 - GitHub Actions runs JavaScript syntax checks and all Node tests on pushes and pull requests.
 
 The Material ID Map preset is part of this validated set.
+
+HDRI Realism / HDRI реализм adds a user-tested positive/negative pair for realistic HDRI-style lighting enhancement while preserving architecture and camera.
