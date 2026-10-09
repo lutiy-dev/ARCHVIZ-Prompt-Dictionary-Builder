@@ -180,9 +180,9 @@ Use Export on a saved card for one record, or Export All · JSON for the library
 ## Current verified data integrity
 
 Current library snapshot:
-- 95 prompt blocks;
-- 95 dictionary entries;
-- 23 presets;
+- 101 prompt blocks;
+- 101 dictionary entries;
+- 26 presets;
 - every canonical English block must have an exact-source Russian reading-aid entry;
 - translation tests verify all blocks and all presets dynamically, without a hard-coded block count;
 - GitHub Actions runs JavaScript syntax checks and all Node tests on pushes and pull requests.
@@ -190,3 +190,13 @@ Current library snapshot:
 The Material ID Map preset is part of this validated set.
 
 HDRI Realism / HDRI реализм adds a user-tested positive/negative pair for realistic HDRI-style lighting enhancement while preserving architecture and camera.
+
+
+## Tested HERO exterior presets — 2026-10-09
+
+User-validated on a real exterior ArchViz frame:
+- HERO PHOTO CLEAN / Чистый герой-фотореал;
+- HERO PHOTO DRAMATIC / Драматичный герой-фотореал;
+- HERO SUNSET GOLD / Золотой час.
+
+Each preset stores a dedicated TESTED positive/negative pair and preserves the source architecture, geometry, camera and composition. These are prompt-level production presets; final acceptance still requires image QC on the current model/workflow.
