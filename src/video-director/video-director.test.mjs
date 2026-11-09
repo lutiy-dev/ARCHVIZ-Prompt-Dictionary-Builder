@@ -57,3 +57,15 @@ test('Compile does not mutate input',()=>{
 test('No new references have attached media or public URLs',()=>{
  const p=demonstration();assert.ok(p.references.every(r=>r.asset.state==='DECLARED'&&!('url' in r.asset)));
 });
+
+test('Camera presets are independent snapshots and reject duplicate IDs',()=>{
+ const p=demonstration(),camera=structuredClone(p.shots[4].camera);
+ p.camera_presets=[{id:'camera_1',name:'Lateral tracking',camera}];
+ const c=validateProject(p);p.shots[4].camera.movement='static';
+ assert.equal(c.camera_presets[0].camera.movement,'truck_right');
+ p.camera_presets.push({...p.camera_presets[0]});assert.throws(()=>validateProject(p));
+});
+test('Unexpected project fields and embedded media paths are rejected',()=>{
+ const p=demonstration();p.secret_key='should never be exported';assert.throws(()=>encode(p));
+ delete p.secret_key;p.references[0].asset.file_path='C:\\\\private';assert.throws(()=>encode(p));
+});

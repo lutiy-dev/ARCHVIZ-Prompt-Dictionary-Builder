@@ -46,7 +46,7 @@ function renderAll(){refreshProjectPicker();if(!project){$('vdWorkspace').hidden
  selectField(head,'Режим экспорта',project.target_profile,PROFILE_IDS.map(x=>({value:x,label:PROFILE_LABELS[x]})),v=>project.target_profile=v);
  field(head,'Общий FPS',project.settings.default_fps,v=>project.settings.default_fps=Number(v),{type:'number'});
  field(head,'Формат кадра',project.settings.default_aspect_ratio,v=>project.settings.default_aspect_ratio=v);
- renderGlobalLayers();renderReferences();renderCharacters();renderShots();renderOutput();
+ renderGlobalLayers();renderCameraPresets();renderReferences();renderCharacters();renderShots();renderOutput();
 }
 function renderGlobalLayers(){
  const host=$('vdGlobalLayers');host.replaceChildren();
@@ -56,6 +56,15 @@ function renderGlobalLayers(){
   body.append(button('Remove',()=>{project.global_layers=project.global_layers.filter(x=>x.id!==l.id);persist();renderAll()},'quiet'));d.append(body);host.append(d);
  }
  host.append(button('+ Global Layer',()=>{project.global_layers.push({id:uniqueId('global'),type:'additional',enabled:true,scope:'project',instruction:'',parameters:{},retention:[],priority:30,version:1});persist();renderAll()}));
+}
+function renderCameraPresets(){
+ const host=$('vdCameraPresets');host.replaceChildren();
+ const shot=currentShot();
+ for(const cp of project.camera_presets){const row=el('div');row.className='vd-actions';row.append(el('span',cp.name));
+  row.append(button('Apply',()=>{if(!shot)throw Error('Select a shot');shot.camera=structuredClone(cp.camera);persist();renderAll()}));
+  row.append(button('Delete',()=>{if(!confirm('Удалить camera preset?'))return;project.camera_presets=project.camera_presets.filter(x=>x.id!==cp.id);persist();renderAll()},'quiet'));host.append(row);
+ }
+ host.append(button('+ Save current camera',()=>{if(!shot)throw Error('Select a shot');const name=window.prompt('Название Camera Preset');if(!name?.trim())return;project.camera_presets.push({id:uniqueId('camera'),name:name.slice(0,120),camera:structuredClone(shot.camera)});persist();renderAll()}));
 }
 function renderReferences(){
  const host=$('vdReferences');host.replaceChildren();
