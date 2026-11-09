@@ -29,7 +29,9 @@ async function evaluate(js){
  return r.result?.value;
 }
 async function poll(js,name){for(let i=0;i<100;i++){try{if(await evaluate(js))return;}catch{}await delay(100);}throw Error('Timeout: '+name);}
-async function pass(label,js){assert.equal(await evaluate(js),true,label);console.log('BROWSER PASS '+label);}
+async function pass(label,js){const got=await evaluate(js);
+ if(got!==true){const diagnostics=await evaluate('return {notice:document.querySelector("#vdNotice")?.textContent,projects:document.querySelector("#vdProjects")?.options?.length,shotButtons:document.querySelectorAll("#vdShotList button").length,prompt:document.querySelector("#vdPrompt")?.value?.slice(0,200),manifest:document.querySelector("#vdManifest")?.textContent?.slice(0,200),visible:document.querySelector("#videoDirectorRoot")?.hidden,exceptions:window.__vdErrors||null}');console.error('BROWSER DIAGNOSTICS '+label,JSON.stringify(diagnostics));}
+ assert.equal(got,true,label);console.log('BROWSER PASS '+label);}
 try{
  await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
  const url='http://127.0.0.1:'+server.address().port+'/';
