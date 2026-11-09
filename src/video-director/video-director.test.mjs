@@ -69,3 +69,14 @@ test('Unexpected project fields and embedded media paths are rejected',()=>{
  const p=demonstration();p.secret_key='should never be exported';assert.throws(()=>encode(p));
  delete p.secret_key;p.references[0].asset.file_path='C:\\\\private';assert.throws(()=>encode(p));
 });
+
+test('Architecture lock detects destructive custom instructions',()=>{
+ const p=demonstration();p.shots[4].layers.find(l=>l.type==='additional').instruction='change facade windows';
+ const x=compileShot(p,'shot_05');assert.equal(x.exportable,false);assert.ok(x.issues.some(i=>i.code==='ARCHITECTURE_LOCK_CONFLICT'));
+});
+test('Retention references must resolve and input cannot include hidden asset paths',()=>{
+ const p=demonstration(),layer=p.shots[4].layers[0];
+ layer.retention=[{ref_id:'missing',mode:'fully_preserved',attributes:['architecture']}];
+ assert.throws(()=>validateProject(p));
+ layer.retention=[];p.references[0].asset.display_name='/private/image.png';assert.throws(()=>encode(p));
+});

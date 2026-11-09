@@ -1,0 +1,39 @@
+# Video Director v0.1 — BETA candidate
+
+## Architecture
+
+Separate Standard and Video Director workspaces. The legacy `src/composer.mjs`, existing 127 blocks / 46 presets and both legacy localStorage keys remain untouched.
+
+The implementation is additive under `src/video-director/`:
+
+- `schema.mjs`: versioned project schema, reference and character validation, 12-shot synthetic demo.
+- `store.mjs`: JSON transfer and isolated browser storage key `archviz-video-director-v1`.
+- `compiler.mjs`: deterministic shot text and reference map for Generic, MiniMax H3 FL2VA / Ref2VA and LongMedia Hybrid / Video Ref Edit.
+- `ui.mjs`: independent project, shots, actors, references, camera presets and layered instructions.
+- `mode-tabs.mjs`: Standard / Video Director switching.
+
+## User workflow
+
+1. Select Video Director and create a new project or load the synthetic NABEREJNAYA demo.
+2. Add reference **metadata** and roles. This app does not upload images, video or audio.
+3. Define project characters and identity reference IDs, and select a shot.
+4. Set FIRST/LAST, movement video, actors, lens, camera preset, actions and editable instructions.
+5. Review the compiled English prompt and diagnostics. Fix errors before exporting shot manifest.
+6. Copy the prompt and reference manifest to your ComfyUI workflow and manually connect actual media in the displayed order.
+7. Export project JSON for backup. Import rejects conflicting project IDs instead of overwriting.
+
+## Adapter limitations
+
+The application produces a **text plus manifest**. It does not generate a ComfyUI workflow JSON or verify actual physical input connections. H3 hybrid is a LongMedia-specific route; FL2VA alone rejects additional actor/video references. Presence of FIRST/LAST in a reference manifest is not evidence that the target runtime follows them exactly. Demo placeholders are not attached assets. Other than the known documented mode routing, actual compatibility and quality remain NOT TESTED.
+
+## Security
+
+No media bytes, absolute file paths, API credentials, client assets or cloud sync. LocalStorage contains project metadata and instructions only; however text entered by the user may contain private material. Export JSON shares that text if distributed. Keep client materials out of public repositories. Storage can be cleared by the browser; export backups regularly.
+
+## Test gates
+
+`node --test src/*.test.mjs src/video-director/*.test.mjs`
+
+The new tests cover synthetic shot structure, identity bindings, stable reference numbering, FL2VA incompatibilities, missing references, text stability, JSON transfer safety, architecture and camera contradictions. Existing Standard tests run unchanged.
+
+Browser, offline PWA, fresh installation and physical ComfyUI generation remain NOT TESTED until an independently verified runtime session is available. Do not promote beyond BETA because CI passes.

@@ -34,8 +34,9 @@ export function compileShot(input,shotId){
  if(active.some(r=>r.asset.state==='DECLARED'))push('MEDIA_NOT_ATTACHED','WARNING','references','Reference names are declarations, not verified physical connections','Attach inputs in the generation workflow');
  const instructions=extra.filter(l=>l.instruction.trim()).sort((a,b)=>b.priority-a.priority||a.id.localeCompare(b.id));
  const arch=instructions.filter(l=>l.type==='architecture'),cam=instructions.filter(l=>l.type==='camera');
- if(shot.camera.movement!=='static'&&cam.some(l=>/\b(static camera|locked camera|no camera movement)\b/i.test(l.instruction)))push('STATIC_CAMERA_CONFLICT','ERROR','camera','Camera instruction conflicts with selected movement','Remove locked-camera rule or set static movement');
- if(arch.some(l=>/\b(redesign|change facade|move windows|remove windows)\b/i.test(l.instruction)))push('ARCHITECTURE_LOCK_CONFLICT','ERROR','architecture','Architecture lock contradicts a destructive architecture instruction','Review the explicit architecture rule');
+ const allInstructionText=instructions.map(l=>l.instruction).join('\n');
+ if(shot.camera.movement!=='static'&&/\b(static camera|locked camera|no camera movement)\b/i.test(allInstructionText))push('STATIC_CAMERA_CONFLICT','ERROR','camera','Camera instruction conflicts with selected movement','Remove locked-camera rule or set static movement');
+ if(arch.length>0&&/\b(redesign|change facade|move windows|remove windows)\b/i.test(allInstructionText))push('ARCHITECTURE_LOCK_CONFLICT','ERROR','architecture','Architecture lock contradicts a destructive architecture instruction','Review the explicit architecture rule');
  const endpoints=active.filter(r=>r.id===shot.first_frame_ref||r.id===shot.last_frame_ref);
  const additional=active.filter(r=>!endpoints.includes(r));
  const manifest=[],numbers={image:0,video:0,audio:0};

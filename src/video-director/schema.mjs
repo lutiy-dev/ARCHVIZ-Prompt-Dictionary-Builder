@@ -72,13 +72,15 @@ export function validateProject(p){
  for(const r of p.references){
   if(!isObject(r)||!identifier(r.id)||!['image','video','audio'].includes(r.kind)||!REFERENCE_ROLES.includes(r.role)||r.kind!==refRoleKind[r.role]||!txt(r.label,120)||!txt(r.description,2000)||!isObject(r.asset)||!txt(r.asset.display_name,150)||!['DECLARED','LOCALLY_ATTACHED','EXTERNALLY_CONNECTED_NOT_VERIFIED'].includes(r.asset.state))fail('Invalid reference '+String(r?.id));
   if(Object.keys(r.asset).some(key=>!['display_name','state'].includes(key)))fail('Unexpected asset field: media bytes, URLs and paths are not allowed');
+  if(/[\\/]|^[a-z]+:/i.test(r.asset.display_name))fail('File paths or URLs are not permitted in reference display names');
   only(r,['id','kind','role','label','description','asset']);
   refs.set(r.id,r);
  }
  const charIds=new Set();
  for(const c of p.characters){if(!isObject(c)||!identifier(c.id)||!txt(c.name,120)||!txt(c.description,2000)||!txt(c.clothing,1000)||!txt(c.notes,2000)||!(c.identity_ref===null||identifier(c.identity_ref)))fail('Invalid character');if(c.identity_ref&&(!refs.has(c.identity_ref)||refs.get(c.identity_ref).role!=='character_identity'))fail('Invalid character identity reference');only(c,['id','name','description','identity_ref','clothing','notes']);charIds.add(c.id);}
- function layers(xs){unique(xs.map(l=>l.id),'layer ID');for(const l of xs){if(!isObject(l)||!identifier(l.id)||!LAYERS.includes(l.type)||typeof l.enabled!=='boolean'||!['shot','project'].includes(l.scope)||!txt(l.instruction,10000)||!isObject(l.parameters)||!Array.isArray(l.retention)||l.retention.length>30||!Number.isInteger(l.priority)||l.priority<0||l.priority>100||l.version!==1)fail('Invalid layer '+String(l?.id));only(l,['id','type','enabled','scope','instruction','parameters','retention','priority','version']);for(const v of Object.values(l.parameters))if(!txt(v,2000))fail('Invalid layer parameter');}}
+ function layers(xs){unique(xs.map(l=>l.id),'layer ID');for(const l of xs){if(!isObject(l)||!identifier(l.id)||!LAYERS.includes(l.type)||typeof l.enabled!=='boolean'||!['shot','project'].includes(l.scope)||!txt(l.instruction,10000)||!isObject(l.parameters)||!Array.isArray(l.retention)||l.retention.length>30||!Number.isInteger(l.priority)||l.priority<0||l.priority>100||l.version!==1)fail('Invalid layer '+String(l?.id));only(l,['id','type','enabled','scope','instruction','parameters','retention','priority','version']);for(const v of Object.values(l.parameters))if(!txt(v,2000))fail('Invalid layer parameter');for(const ret of l.retention){if(!isObject(ret)||!identifier(ret.ref_id)||!['fully_preserved','partially_preserved','attribute_transfer','weak_reference'].includes(ret.mode)||!Array.isArray(ret.attributes)||ret.attributes.some(x=>!txt(x,150)))fail('Invalid retention rule');}}}
  layers(p.global_layers);
+ for(const l of p.global_layers)for(const ret of l.retention)if(!refs.has(ret.ref_id))fail('Unknown retention reference');
  for(const s of p.shots){
   if(!isObject(s)||!identifier(s.id)||!txt(s.name,120)||!Number.isFinite(s.duration_seconds)||s.duration_seconds<=0||s.duration_seconds>150||!Array.isArray(s.characters)||!Array.isArray(s.actions)||s.actions.length>40||!Array.isArray(s.layers)||s.layers.length>100||!isObject(s.camera)||!MOVEMENTS.includes(s.camera.movement)||!txt(s.camera.speed,100)||!txt(s.camera.direction,500)||!txt(s.camera.easing,500)||!txt(s.camera.notes,2000)||!txt(s.lighting,4000)||!txt(s.atmosphere,4000)||!txt(s.notes,4000)||!(s.profile===null||PROFILE_IDS.includes(s.profile)))fail('Invalid shot '+String(s?.id));
   for(const key of ['lens_mm','height_m'])if(s.camera[key]!==null&&(!Number.isFinite(s.camera[key])||s.camera[key]<=0||s.camera[key]>10000))fail('Invalid camera '+key);
@@ -87,6 +89,7 @@ export function validateProject(p){
   for(const key of ['first_frame_ref','last_frame_ref','motion_ref']){const id=s[key];if(id!==null&&(!identifier(id)||!refs.has(id)||refs.get(id).role!==(key==='motion_ref'?'motion_reference':key==='first_frame_ref'?'first_frame':'last_frame')))fail('Invalid '+key);}
   unique(s.characters,'shot character');for(const c of s.characters)if(!charIds.has(c))fail('Unknown character '+c);
   layers(s.layers);
+  for(const l of s.layers)for(const ret of l.retention)if(!refs.has(ret.ref_id))fail('Unknown retention reference');
  }
  return structuredClone(p);
 }
