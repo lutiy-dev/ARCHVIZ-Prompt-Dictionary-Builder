@@ -478,3 +478,163 @@ Object.assign(translationRu,{
     "ru": "Проверить, что каждый пиксель относится к чистой плоской области, повторяющиеся экземпляры одного материала используют один и тот же RGB-цвет, соседние разные материалы имеют явно разные цвета, а границы областей совпадают с исходным рендером без смещения геометрии."
   }
 });
+
+// Additive cinematic and controlled Archviz library translations.
+Object.assign(translationRu, {
+  "custom-art-direction": {
+    "source": "Additional art direction: {{instruction}}. Apply only where it does not contradict source architecture, camera, material identities or other protected constraints.",
+    "ru": "Дополнительное художественное задание: {{instruction}}. Применять только если оно не противоречит исходной архитектуре, камере, материалам и другим защищённым ограничениям.",
+    "defaults": {
+      "instruction": [
+        "subtle realism and restrained photographic finishing",
+        "только сдержанная реалистичная фотографическая доводка"
+      ]
+    }
+  },
+  "custom-material": {
+    "source": "Refine the selected existing material: {{material}}. Desired treatment: {{treatment}}. Keep geometry, UV scale, joints, material-region boundaries and all unselected surfaces unchanged.",
+    "ru": "Уточнить выбранный существующий материал: {{material}}. Желаемая обработка: {{treatment}}. Сохранить геометрию, UV-масштаб, швы, границы материала и все невыбранные поверхности.",
+    "defaults": {
+      "material": [
+        "existing stone facade",
+        "существующий каменный фасад"
+      ],
+      "treatment": [
+        "natural fine pores and plausible roughness",
+        "естественные мелкие поры и правдоподобная шероховатость"
+      ]
+    }
+  },
+  "custom-light": {
+    "source": "Set the lighting character to {{lighting}} while retaining physically plausible light sources, source geometry, camera, site and existing material assignments.",
+    "ru": "Настроить характер освещения: {{lighting}}, сохранив физически правдоподобные источники света, исходную геометрию, камеру, участок и назначения материалов.",
+    "defaults": {
+      "lighting": [
+        "soft natural side daylight",
+        "мягкий естественный боковой дневной свет"
+      ]
+    }
+  },
+  "custom-atmosphere": {
+    "source": "Apply {{atmosphere}} with physically credible depth and distance falloff. Preserve architectural silhouette, facade readability and the original camera.",
+    "ru": "Применить {{atmosphere}} с правдоподобной глубиной и затуханием по расстоянию. Сохранить силуэт архитектуры, читаемость фасада и исходную камеру.",
+    "defaults": {
+      "atmosphere": [
+        "subtle atmospheric haze",
+        "лёгкая атмосферная дымка"
+      ]
+    }
+  },
+  "custom-grading": {
+    "source": "Apply {{grading}} as a restrained photographic grade without changing material identity, original objects or composition.",
+    "ru": "Применить {{grading}} как сдержанную фотографическую обработку без изменения материалов, исходных объектов и композиции.",
+    "defaults": {
+      "grading": [
+        "neutral cinematic contrast and gentle highlight rolloff",
+        "нейтральный кинематографический контраст и мягкий спад ярких светов"
+      ]
+    }
+  },
+  "multi-reference-roles": {
+    "source": "Assign these input roles: {{roles}}. Never transfer unrelated architecture, objects or geometry from references; the source render remains the geometric authority.",
+    "ru": "Назначить входным изображениям роли: {{roles}}. Никогда не переносить постороннюю архитектуру, объекты или геометрию из референсов; исходный рендер остаётся эталоном геометрии.",
+    "defaults": {
+      "roles": [
+        "reference 1: lighting; reference 2: material; source render: geometry and camera",
+        "референс 1: свет; референс 2: материал; исходный рендер: геометрия и камера"
+      ]
+    }
+  },
+  "reference-material": {
+    "source": "Use the supplied material reference only for physical texture, reflectance and surface variation within the selected existing material region; retain panel layout and architectural joints.",
+    "ru": "Использовать референс материала только для физической фактуры, отражательной способности и неоднородности поверхности в пределах выбранного существующего материала; сохранить раскладку панелей и архитектурные швы."
+  },
+  "reference-lighting": {
+    "source": "Use the lighting reference only for direction, color temperature, contrast and shadow softness. Do not copy the referenced scene, geometry, camera or objects.",
+    "ru": "Использовать световой референс только для направления света, цветовой температуры, контраста и мягкости теней. Не копировать сцену, геометрию, камеру или объекты референса."
+  },
+  "photorealism-recovery": {
+    "source": "Reduce CGI appearance through natural exposure, credible material response, measured microcontrast and restrained texture variation. Do not invent seams, wear, ornaments, objects or architecture.",
+    "ru": "Уменьшить CGI-вид с помощью естественной экспозиции, достоверной реакции материалов, умеренного микроконтраста и сдержанной неоднородности фактуры. Не придумывать швы, износ, декор, объекты или архитектуру."
+  },
+  "multiview-consistency": {
+    "source": "Across supplied architectural views preserve material identities, colors, lighting logic, site elements and architectural geometry while respecting each camera's original framing.",
+    "ru": "Для предоставленных архитектурных ракурсов сохранять материалы, цвета, логику света, элементы участка и геометрию, соблюдая исходное кадрирование каждой камеры."
+  },
+  "upscale-safety": {
+    "source": "Increase supported photographic detail without inventing mullions, joints, ornaments, plants, new materials or construction. Compare original facade boundaries and reject geometry drift.",
+    "ru": "Увеличить подтверждённую исходником фотографическую детализацию без выдумывания импостов, швов, декора, растений, новых материалов или конструкций. Проверить границы фасада и отклонить изменения геометрии."
+  },
+  "cinema-villeneuve": {
+    "source": "Use a cinematic visual language characterized by monumental scale, deliberate color separation, spacious atmospheric depth. Treat this as color and lighting guidance only; preserve original architectural geometry, approved materials and the camera.",
+    "ru": "Использовать кинематографический визуальный язык, характеризующийся такими приёмами, как монументальный масштаб, осознанное цветовое разделение, просторную атмосферную глубину. Применять только к цвету и освещению; сохранять исходную геометрию, согласованные материалы и камеру."
+  },
+  "cinema-anderson": {
+    "source": "Use a cinematic visual language characterized by balanced graphic composition and carefully ordered pastel color relationships. Treat this as color and lighting guidance only; preserve original architectural geometry, approved materials and the camera.",
+    "ru": "Использовать кинематографический визуальный язык, характеризующийся такими приёмами, как сбалансированную графичную композицию и упорядоченные пастельные цветовые отношения. Применять только к цвету и освещению; сохранять исходную геометрию, согласованные материалы и камеру."
+  },
+  "cinema-nolan": {
+    "source": "Use a cinematic visual language characterized by credible natural contrast, imposing scale and restrained dramatic daylight. Treat this as color and lighting guidance only; preserve original architectural geometry, approved materials and the camera.",
+    "ru": "Использовать кинематографический визуальный язык, характеризующийся такими приёмами, как естественный контраст, впечатляющий масштаб и сдержанный драматичный дневной свет. Применять только к цвету и освещению; сохранять исходную геометрию, согласованные материалы и камеру."
+  },
+  "cinema-fincher": {
+    "source": "Use a cinematic visual language characterized by precise shadow control, muted tones and restrained visual tension. Treat this as color and lighting guidance only; preserve original architectural geometry, approved materials and the camera.",
+    "ru": "Использовать кинематографический визуальный язык, характеризующийся такими приёмами, как точный контроль теней, приглушённые тона и сдержанное визуальное напряжение. Применять только к цвету и освещению; сохранять исходную геометрию, согласованные материалы и камеру."
+  },
+  "cinema-scott": {
+    "source": "Use a cinematic visual language characterized by motivated night illumination, layered urban depth and plausible atmospheric light. Treat this as color and lighting guidance only; preserve original architectural geometry, approved materials and the camera.",
+    "ru": "Использовать кинематографический визуальный язык, характеризующийся такими приёмами, как обоснованное ночное освещение, многослойную городскую глубину и правдоподобный атмосферный свет. Применять только к цвету и освещению; сохранять исходную геометрию, согласованные материалы и камеру."
+  },
+  "cinema-malick": {
+    "source": "Use a cinematic visual language characterized by low-angle natural sunlight, gentle contrast and luminous vegetation. Treat this as color and lighting guidance only; preserve original architectural geometry, approved materials and the camera.",
+    "ru": "Использовать кинематографический визуальный язык, характеризующийся такими приёмами, как низкое естественное солнце, мягкий контраст и светящуюся растительность. Применять только к цвету и освещению; сохранять исходную геометрию, согласованные материалы и камеру."
+  },
+  "photo-editorial-modernist": {
+    "source": "Use architectural photography characteristics: clear structural readability, human scale and precise daylight. Preserve the original building design, material identities and camera perspective.",
+    "ru": "Использовать характеристики архитектурной фотографии: ясную читаемость структуры, человеческий масштаб и точный дневной свет. Сохранить исходный проект здания, материалы и перспективу камеры."
+  },
+  "photo-sculptural-shadows": {
+    "source": "Use architectural photography characteristics: expressive but plausible tonal transitions and geometric light-and-shadow readability. Preserve the original building design, material identities and camera perspective.",
+    "ru": "Использовать характеристики архитектурной фотографии: выразительные, но правдоподобные тональные переходы и ясное чтение геометрии через свет и тень. Сохранить исходный проект здания, материалы и перспективу камеры."
+  },
+  "photo-documentary-context": {
+    "source": "Use architectural photography characteristics: authentic environmental context and natural observational lighting. Preserve the original building design, material identities and camera perspective.",
+    "ru": "Использовать характеристики архитектурной фотографии: достоверный контекст окружения и естественный наблюдательный свет. Сохранить исходный проект здания, материалы и перспективу камеры."
+  },
+  "photo-warm-human-scale": {
+    "source": "Use architectural photography characteristics: warm natural light, inviting depth and credible everyday context. Preserve the original building design, material identities and camera perspective.",
+    "ru": "Использовать характеристики архитектурной фотографии: тёплый естественный свет, привлекательную глубину и достоверный повседневный контекст. Сохранить исходный проект здания, материалы и перспективу камеры."
+  },
+  "video-motion-custom": {
+    "source": "Use {{movement}} as slow coherent camera motion with stable architectural perspective. Avoid revealing unsupported geometry, cuts, camera shake or sudden zooms.",
+    "ru": "Использовать {{movement}} как медленное согласованное движение камеры со стабильной архитектурной перспективой. Не раскрывать неподтверждённую геометрию, избегать склеек, тряски и резких зумов.",
+    "defaults": {
+      "movement": [
+        "a gentle lateral camera move",
+        "плавное медленное боковое движение камеры"
+      ]
+    }
+  },
+  "video-environment-custom": {
+    "source": "Animate only {{motion}} with subtle physically coherent timing. Keep architecture and permanent site objects stable.",
+    "ru": "Анимировать только {{motion}} с тонким физически согласованным таймингом. Сохранять архитектуру и постоянные объекты участка неподвижными.",
+    "defaults": {
+      "motion": [
+        "gentle existing foliage movement",
+        "лёгкое движение существующей листвы"
+      ]
+    }
+  },
+  "video-temporal-qc": {
+    "source": "Reject flicker, facade morphing, shifting joints, inconsistent material colors, moving windows, implausible parallax and new objects appearing between frames.",
+    "ru": "Отклонять мерцание, морфинг фасада, смещение швов, нестабильные цвета материалов, движение окон, неправдоподобный параллакс и появление новых объектов между кадрами."
+  },
+  "developer-story": {
+    "source": "Present the original architectural project through credible high-end real-estate storytelling, clear hierarchy, readable entrance and refined site context without redesign.",
+    "ru": "Представить исходный архитектурный проект в убедительной премиальной девелоперской подаче с ясной иерархией, читаемым входом и выверенным окружением без перепроектирования."
+  },
+  "heritage-protection": {
+    "source": "Treat documented historical architecture and approved cultural details as fixed reference. Do not invent heritage ornaments, construction changes or historically unsupported objects.",
+    "ru": "Считать документированную историческую архитектуру и согласованные культурные детали неизменяемым эталоном. Не придумывать исторические орнаменты, строительные изменения или исторически необоснованные объекты."
+  }
+});

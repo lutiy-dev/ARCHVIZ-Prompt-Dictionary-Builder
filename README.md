@@ -200,3 +200,14 @@ User-validated on a real exterior ArchViz frame:
 - HERO SUNSET GOLD / Золотой час.
 
 Each preset stores a dedicated TESTED positive/negative pair and preserves the source architecture, geometry, camera and composition. These are prompt-level production presets; final acceptance still requires image QC on the current model/workflow.
+
+
+## Cinematic & Controlled Archviz expansion (candidate)
+
+Additive update: 26 GENERATED blocks / 20 new presets (total 127 blocks, 46 presets). Preserves existing blocks, presets, UI, Composer logic, storage schemas, and checkpoint branches.
+
+New adjustable parameters: `instruction`, `material`, `treatment`, `lighting`, `atmosphere`, `grading`, `roles`, `movement`, `motion`. Use `Custom Art Direction` to append missing freeform instructions. Entire predefined block template text remains fixed in the current UI; unrestricted editing would require a separately approved UI change.
+
+Profiles cover six director-associated cinematic visual languages, four architectural photographic languages, reference/material controls, realism, multi-view consistency, developer marketing, heritage and video motion. The profiles describe visual characteristics rather than reproducing specific film frames. All new blocks remain GENERATED / NOT IMAGE-TESTED.
+
+Verification: JSON IDs/references/templates/sections/dictionary parity and exact-source RU data are required to pass the existing CI test suite; deployed PWA and model-generated quality require separate validation.

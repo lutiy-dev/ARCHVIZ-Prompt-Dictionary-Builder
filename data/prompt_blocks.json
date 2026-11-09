@@ -1371,6 +1371,335 @@
       "status": "TESTED",
       "version": 1,
       "conflicts": []
+    },
+    {
+      "id": "custom-art-direction",
+      "en": "Custom Art Direction",
+      "ru": "Настраиваемое арт-задание",
+      "category": "AI terminology",
+      "section": "ALLOWED CHANGES",
+      "text": "Additional art direction: {{instruction}}. Apply only where it does not contradict source architecture, camera, material identities or other protected constraints.",
+      "parameters": {
+        "instruction": "subtle realism and restrained photographic finishing"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "custom-material",
+      "en": "Custom Material",
+      "ru": "Настраиваемый материал",
+      "category": "Materials",
+      "section": "MATERIAL / SUBJECT",
+      "text": "Refine the selected existing material: {{material}}. Desired treatment: {{treatment}}. Keep geometry, UV scale, joints, material-region boundaries and all unselected surfaces unchanged.",
+      "parameters": {
+        "material": "existing stone facade",
+        "treatment": "natural fine pores and plausible roughness"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "custom-light",
+      "en": "Custom Lighting",
+      "ru": "Настраиваемый свет",
+      "category": "Lighting",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Set the lighting character to {{lighting}} while retaining physically plausible light sources, source geometry, camera, site and existing material assignments.",
+      "parameters": {
+        "lighting": "soft natural side daylight"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "custom-atmosphere",
+      "en": "Custom Atmosphere",
+      "ru": "Настраиваемая атмосфера",
+      "category": "Atmosphere",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Apply {{atmosphere}} with physically credible depth and distance falloff. Preserve architectural silhouette, facade readability and the original camera.",
+      "parameters": {
+        "atmosphere": "subtle atmospheric haze"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "custom-grading",
+      "en": "Custom Color Grading",
+      "ru": "Настраиваемый цвет",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Apply {{grading}} as a restrained photographic grade without changing material identity, original objects or composition.",
+      "parameters": {
+        "grading": "neutral cinematic contrast and gentle highlight rolloff"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "multi-reference-roles",
+      "en": "Multi-Reference Roles",
+      "ru": "Роли референсов",
+      "category": "AI terminology",
+      "section": "SOURCE / INPUT",
+      "text": "Assign these input roles: {{roles}}. Never transfer unrelated architecture, objects or geometry from references; the source render remains the geometric authority.",
+      "parameters": {
+        "roles": "reference 1: lighting; reference 2: material; source render: geometry and camera"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "reference-material",
+      "en": "Reference Material",
+      "ru": "Материал по референсу",
+      "category": "Materials",
+      "section": "MATERIAL / SUBJECT",
+      "text": "Use the supplied material reference only for physical texture, reflectance and surface variation within the selected existing material region; retain panel layout and architectural joints.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "reference-lighting",
+      "en": "Reference Lighting",
+      "ru": "Свет по референсу",
+      "category": "Lighting",
+      "section": "LIGHT / ATMOSPHERE",
+      "text": "Use the lighting reference only for direction, color temperature, contrast and shadow softness. Do not copy the referenced scene, geometry, camera or objects.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "photorealism-recovery",
+      "en": "Photorealism Recovery",
+      "ru": "Устранение CGI-вида",
+      "category": "Quality",
+      "section": "QC",
+      "text": "Reduce CGI appearance through natural exposure, credible material response, measured microcontrast and restrained texture variation. Do not invent seams, wear, ornaments, objects or architecture.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "multiview-consistency",
+      "en": "Multi-View Consistency",
+      "ru": "Единство ракурсов",
+      "category": "Quality",
+      "section": "QC",
+      "text": "Across supplied architectural views preserve material identities, colors, lighting logic, site elements and architectural geometry while respecting each camera's original framing.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "upscale-safety",
+      "en": "Architecture-Safe Detail",
+      "ru": "Безопасная детализация",
+      "category": "Quality",
+      "section": "QC",
+      "text": "Increase supported photographic detail without inventing mullions, joints, ornaments, plants, new materials or construction. Compare original facade boundaries and reject geometry drift.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "cinema-villeneuve",
+      "en": "Monumental Atmospheric Cinema",
+      "ru": "Монументальная атмосфера",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Use a cinematic visual language characterized by monumental scale, deliberate color separation, spacious atmospheric depth. Treat this as color and lighting guidance only; preserve original architectural geometry, approved materials and the camera.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "cinema-anderson",
+      "en": "Graphic Pastel Cinema",
+      "ru": "Графичная пастель",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Use a cinematic visual language characterized by balanced graphic composition and carefully ordered pastel color relationships. Treat this as color and lighting guidance only; preserve original architectural geometry, approved materials and the camera.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "cinema-nolan",
+      "en": "Natural Epic Cinema",
+      "ru": "Естественный эпический стиль",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Use a cinematic visual language characterized by credible natural contrast, imposing scale and restrained dramatic daylight. Treat this as color and lighting guidance only; preserve original architectural geometry, approved materials and the camera.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "cinema-fincher",
+      "en": "Precision Low-Key Cinema",
+      "ru": "Точный низкий ключ",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Use a cinematic visual language characterized by precise shadow control, muted tones and restrained visual tension. Treat this as color and lighting guidance only; preserve original architectural geometry, approved materials and the camera.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "cinema-scott",
+      "en": "Layered Night Cinema",
+      "ru": "Многослойная ночь",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Use a cinematic visual language characterized by motivated night illumination, layered urban depth and plausible atmospheric light. Treat this as color and lighting guidance only; preserve original architectural geometry, approved materials and the camera.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "cinema-malick",
+      "en": "Golden-Hour Naturalism",
+      "ru": "Естественный золотой час",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Use a cinematic visual language characterized by low-angle natural sunlight, gentle contrast and luminous vegetation. Treat this as color and lighting guidance only; preserve original architectural geometry, approved materials and the camera.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "photo-editorial-modernist",
+      "en": "Modernist Architectural Editorial",
+      "ru": "Редакционная съёмка модернизма",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Use architectural photography characteristics: clear structural readability, human scale and precise daylight. Preserve the original building design, material identities and camera perspective.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "photo-sculptural-shadows",
+      "en": "Sculptural Architectural Photography",
+      "ru": "Скульптурные тени",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Use architectural photography characteristics: expressive but plausible tonal transitions and geometric light-and-shadow readability. Preserve the original building design, material identities and camera perspective.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "photo-documentary-context",
+      "en": "Documentary Architecture",
+      "ru": "Документальная архитектура",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Use architectural photography characteristics: authentic environmental context and natural observational lighting. Preserve the original building design, material identities and camera perspective.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "photo-warm-human-scale",
+      "en": "Human-Centered Architecture",
+      "ru": "Архитектура в масштабе человека",
+      "category": "Camera",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Use architectural photography characteristics: warm natural light, inviting depth and credible everyday context. Preserve the original building design, material identities and camera perspective.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "video-motion-custom",
+      "en": "Custom Video Camera Motion",
+      "ru": "Настраиваемая видеокамера",
+      "category": "Video",
+      "section": "CAMERA / PHOTOGRAPHY",
+      "text": "Use {{movement}} as slow coherent camera motion with stable architectural perspective. Avoid revealing unsupported geometry, cuts, camera shake or sudden zooms.",
+      "parameters": {
+        "movement": "a gentle lateral camera move"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "video-environment-custom",
+      "en": "Custom Environmental Motion",
+      "ru": "Настраиваемое движение среды",
+      "category": "Video",
+      "section": "ALLOWED CHANGES",
+      "text": "Animate only {{motion}} with subtle physically coherent timing. Keep architecture and permanent site objects stable.",
+      "parameters": {
+        "motion": "gentle existing foliage movement"
+      },
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "video-temporal-qc",
+      "en": "Video Temporal QC",
+      "ru": "Временная стабильность видео",
+      "category": "Video",
+      "section": "QC",
+      "text": "Reject flicker, facade morphing, shifting joints, inconsistent material colors, moving windows, implausible parallax and new objects appearing between frames.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "developer-story",
+      "en": "Developer Storytelling",
+      "ru": "История девелоперского проекта",
+      "category": "Quality",
+      "section": "GOAL",
+      "text": "Present the original architectural project through credible high-end real-estate storytelling, clear hierarchy, readable entrance and refined site context without redesign.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
+    },
+    {
+      "id": "heritage-protection",
+      "en": "Historical Context Protection",
+      "ru": "Защита исторического контекста",
+      "category": "Geometry",
+      "section": "MUST PRESERVE",
+      "text": "Treat documented historical architecture and approved cultural details as fixed reference. Do not invent heritage ornaments, construction changes or historically unsupported objects.",
+      "parameters": {},
+      "status": "GENERATED",
+      "version": 1,
+      "conflicts": []
     }
   ]
 }
