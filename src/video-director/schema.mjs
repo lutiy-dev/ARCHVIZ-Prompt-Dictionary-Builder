@@ -65,6 +65,7 @@ export function validateProject(p){
  const refs=new Map();
  for(const r of p.references){
   if(!isObject(r)||!identifier(r.id)||!['image','video','audio'].includes(r.kind)||!REFERENCE_ROLES.includes(r.role)||r.kind!==refRoleKind[r.role]||!txt(r.label,120)||!txt(r.description,2000)||!isObject(r.asset)||!txt(r.asset.display_name,150)||!['DECLARED','LOCALLY_ATTACHED','EXTERNALLY_CONNECTED_NOT_VERIFIED'].includes(r.asset.state))fail('Invalid reference '+String(r?.id));
+  if(Object.keys(r.asset).some(key=>!['display_name','state'].includes(key)))fail('Unexpected asset field: media bytes, URLs and paths are not allowed');
   refs.set(r.id,r);
  }
  const charIds=new Set();

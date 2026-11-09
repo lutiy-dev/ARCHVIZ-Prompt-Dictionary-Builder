@@ -7,7 +7,7 @@ const el=(tag,txt)=>{const e=document.createElement(tag);if(txt!==undefined)e.te
 const option=(val,title)=>{const o=new Option(title,val);return o;};
 const uuid=()=>typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID().slice(0,8):String(Date.now());
 const uniqueId=prefix=>prefix+'_'+uuid();
-const storage=window.localStorage;
+const storage={getItem:key=>window.localStorage.getItem(key),setItem:(key,value)=>window.localStorage.setItem(key,value)};
 const message=t=>{$('vdNotice').textContent=t};
 let projects=[],project=null,shotId=null,output=null;
 const initial=readProjects(storage);
@@ -19,7 +19,7 @@ function persist(){
  const revised=[...projects.filter(x=>x.id!==project.id),project];
  projects=writeProjects(storage,revised);refreshProjectPicker();
 }
-function safeRun(action){try{action()}catch(e){message('STOP: '+e.message)}}
+function safeRun(action){const before=project?structuredClone(project):null;const previous=[...projects];try{action()}catch(e){project=before;projects=previous;message('STOP: '+e.message);try{renderAll()}catch{/* invalid browser storage remains untouched */}}}
 function bindText(node,value,cb){node.value=value??'';node.onchange=()=>safeRun(()=>{cb(node.value);persist();renderOutput()});}
 function field(parent,title,value,cb,{tag='input',type='text',placeholder=''}={}){
  const label=el('label');label.className='vd-field';label.append(el('span',title));
@@ -46,7 +46,16 @@ function renderAll(){refreshProjectPicker();if(!project){$('vdWorkspace').hidden
  selectField(head,'Режим экспорта',project.target_profile,PROFILE_IDS.map(x=>({value:x,label:PROFILE_LABELS[x]})),v=>project.target_profile=v);
  field(head,'Общий FPS',project.settings.default_fps,v=>project.settings.default_fps=Number(v),{type:'number'});
  field(head,'Формат кадра',project.settings.default_aspect_ratio,v=>project.settings.default_aspect_ratio=v);
- renderReferences();renderCharacters();renderShots();renderOutput();
+ renderGlobalLayers();renderReferences();renderCharacters();renderShots();renderOutput();
+}
+function renderGlobalLayers(){
+ const host=$('vdGlobalLayers');host.replaceChildren();
+ for(const l of project.global_layers){const d=el('details');d.className='vd-item';d.append(el('summary',l.type+(l.enabled?'':' · OFF')));const body=el('div');
+  const label=el('label'),check=el('input');check.type='checkbox';check.checked=l.enabled;check.onchange=()=>safeRun(()=>{l.enabled=check.checked;persist();renderOutput()});label.append(check,el('span','Enabled'));body.append(label);
+  field(body,'Project-wide instruction EN',l.instruction,v=>l.instruction=v,{tag:'textarea'});
+  body.append(button('Remove',()=>{project.global_layers=project.global_layers.filter(x=>x.id!==l.id);persist();renderAll()},'quiet'));d.append(body);host.append(d);
+ }
+ host.append(button('+ Global Layer',()=>{project.global_layers.push({id:uniqueId('global'),type:'additional',enabled:true,scope:'project',instruction:'',parameters:{},retention:[],priority:30,version:1});persist();renderAll()}));
 }
 function renderReferences(){
  const host=$('vdReferences');host.replaceChildren();
@@ -108,8 +117,13 @@ function renderShots(){
   const body=el('div');
   const label=el('label'),check=el('input');check.type='checkbox';check.checked=l.enabled;check.onchange=()=>safeRun(()=>{l.enabled=check.checked;persist();renderOutput()});label.append(check,el('span','Enabled'));body.append(label);
   field(body,'Instruction EN',l.instruction,v=>l.instruction=v,{tag:'textarea'});
-  d.append(body);layers.append(d);
+  const tools=el('div');tools.className='vd-actions';
+  tools.append(button('Duplicate layer',()=>{const copy=structuredClone(l);copy.id=uniqueId('layer');s.layers.push(copy);persist();renderAll()}));
+  tools.append(button('Reset text',()=>{l.instruction='';persist();renderAll()}));
+  tools.append(button('Remove',()=>{if(!confirm('Удалить слой?'))return;s.layers=s.layers.filter(x=>x.id!==l.id);persist();renderAll()},'quiet'));
+  body.append(tools);d.append(body);layers.append(d);
  }
+ layers.append(button('+ Custom Layer',()=>{s.layers.push({id:uniqueId('layer'),type:'additional',enabled:true,scope:'shot',instruction:'',parameters:{},retention:[],priority:50,version:1});persist();renderAll()}));
  host.append(layers);
  const actions=el('div');actions.className='vd-actions';
  actions.append(button('Дублировать шот',()=>{const copy=structuredClone(s);copy.id=uniqueId('shot');copy.name+=' · Copy';copy.layers.forEach(l=>l.id=uniqueId('layer'));project.shots.push(copy);shotId=copy.id;persist();renderAll()}));
