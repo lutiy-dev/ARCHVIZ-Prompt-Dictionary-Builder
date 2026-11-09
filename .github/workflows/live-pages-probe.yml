@@ -1,0 +1,20 @@
+name: Live Pages Module Probe
+on:
+  push:
+    branches:
+      - fix/video-director-live-pages-20261109
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check real GitHub Pages URLs and MIME types
+        shell: bash
+        run: |
+          set -euo pipefail
+          BASE=https://lutiy-dev.github.io/ARCHVIZ-Prompt-Dictionary-Builder
+          for PATH in / /src/app.mjs /src/video-director/ui.mjs /src/video-director/mode-tabs.mjs /src/video-director/schema.mjs /src/video-director/compiler.mjs /src/style.css /sw.js; do
+            echo "::group::GET ${PATH}"
+            curl -sS --max-time 20 -L -o /tmp/archviz-probe-out -w "status=%{http_code} content_type=%{content_type} bytes=%{size_download} final_url=%{url_effective}\n" "$BASE$PATH"
+            head -c 70 /tmp/archviz-probe-out | tr '\n' ' '; echo
+            echo "::endgroup::"
+          done
