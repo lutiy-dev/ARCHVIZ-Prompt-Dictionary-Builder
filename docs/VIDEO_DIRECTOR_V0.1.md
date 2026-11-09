@@ -41,3 +41,7 @@ Browser, offline PWA, fresh installation and physical ComfyUI generation remain 
 ## Retention and reusable layers
 
 Each global or shot layer includes editable Retention Rules: reference ID, mode and attribute list. Conflicting modes on the same reference and overlapping attributes return `RETENTION_CONFLICT` and block export. Rules are explicit strings in the compiled prompt, not proof the target model can enforce them. `Layer Presets` are project-local snapshots: save a shot layer, apply independently to a chosen shot, or delete a preset. Existing Video Director v0.1 JSON with no `layer_presets` is accepted with an empty collection.
+
+## Browser acceptance test
+
+The CI job executes `node tools/test-video-director-browser.mjs` against an isolated local HTTP server using real headless Chromium. It tests tab switching, demo, retention UI, preset reuse, existing Standard localStorage keys, reload persistence, PWA precaching and offline boot. It fails if Chromium is unavailable rather than skipping checks. The test does not verify physical Android PWA installation or any MiniMax model.

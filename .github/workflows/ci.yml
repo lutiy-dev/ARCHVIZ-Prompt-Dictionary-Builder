@@ -28,3 +28,5 @@ jobs:
           node --check src/video-director/mode-tabs.mjs
       - name: Unit tests
         run: node --test src/*.test.mjs src/video-director/*.test.mjs
+      - name: Real Chromium browser and PWA smoke
+        run: node tools/test-video-director-browser.mjs

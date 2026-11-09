@@ -225,3 +225,6 @@ Implementation status: software tests required, actual MiniMax-H3 model output a
 ### Video Director v0.1 retention rules and layer presets
 
 Layers now support editable reference-specific retention modes (fully preserved / partially preserved / attribute transfer / weak reference) with optional attribute scopes. Explicit rules are compiled into the final prompt; conflicting instructions for the same reference and overlapping attributes block shot export. Project-local reusable layer presets store snapshots of instructions and retention settings. Applying a preset creates an independent shot-layer instance. Existing Video Director v0.1 JSON without `layer_presets` remains readable; no Standard storage migration occurs. Browser/PWA and ComfyUI runtime acceptance remain separate gates.
+
+
+Browser acceptance is separately run in CI using real headless Chromium via DevTools protocol, no added npm dependencies. It checks Standard tab preservation, demo, reference retention editing, reusable layer presets, persisted project, service-worker cache and offline reload. CI browser smoke is not a substitute for Android device installation or actual ComfyUI/H3 output quality tests.
