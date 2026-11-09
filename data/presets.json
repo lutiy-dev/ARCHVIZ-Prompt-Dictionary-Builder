@@ -360,5 +360,273 @@
       "hero-sunset-gold-positive",
       "hero-sunset-gold-negative"
     ]
+  },
+  {
+    "id": "director-villeneuve",
+    "name": "DIRECTOR · Monumental Atmospheric Cinema",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "cinema-villeneuve"
+    ]
+  },
+  {
+    "id": "director-anderson",
+    "name": "DIRECTOR · Graphic Pastel Cinema",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "cinema-anderson"
+    ]
+  },
+  {
+    "id": "director-nolan",
+    "name": "DIRECTOR · Natural Epic Cinema",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "cinema-nolan"
+    ]
+  },
+  {
+    "id": "director-fincher",
+    "name": "DIRECTOR · Precision Low-Key Cinema",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "cinema-fincher"
+    ]
+  },
+  {
+    "id": "director-scott",
+    "name": "DIRECTOR · Layered Night Cinema",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "cinema-scott"
+    ]
+  },
+  {
+    "id": "director-malick",
+    "name": "DIRECTOR · Golden-Hour Naturalism",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "cinema-malick"
+    ]
+  },
+  {
+    "id": "photography-editorial-modernist",
+    "name": "PHOTO · Modernist Architectural Editorial",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "photo-editorial-modernist"
+    ]
+  },
+  {
+    "id": "photography-sculptural-shadows",
+    "name": "PHOTO · Sculptural Architectural Photography",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "photo-sculptural-shadows"
+    ]
+  },
+  {
+    "id": "photography-documentary-context",
+    "name": "PHOTO · Documentary Architecture",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "photo-documentary-context"
+    ]
+  },
+  {
+    "id": "photography-warm-human-scale",
+    "name": "PHOTO · Human-Centered Architecture",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "photo-warm-human-scale"
+    ]
+  },
+  {
+    "id": "controlled-custom-material",
+    "name": "CONTROL · Custom Material",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "custom-material",
+      "upscale-safety"
+    ]
+  },
+  {
+    "id": "controlled-material-reference",
+    "name": "CONTROL · Material Reference",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "custom-material",
+      "reference-material"
+    ]
+  },
+  {
+    "id": "controlled-reference-light",
+    "name": "CONTROL · Reference Lighting",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "reference-lighting",
+      "custom-grading"
+    ]
+  },
+  {
+    "id": "controlled-multi-reference",
+    "name": "CONTROL · Multi-Reference",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "multi-reference-roles",
+      "custom-art-direction"
+    ]
+  },
+  {
+    "id": "controlled-photorealism",
+    "name": "CONTROL · Photorealism Recovery",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "photorealism-recovery",
+      "upscale-safety"
+    ]
+  },
+  {
+    "id": "controlled-multi-view",
+    "name": "CONTROL · Multi-View Consistency",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "multiview-consistency"
+    ]
+  },
+  {
+    "id": "controlled-art-direction",
+    "name": "CONTROL · Custom Art Direction",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "custom-art-direction",
+      "custom-light",
+      "custom-atmosphere",
+      "custom-grading"
+    ]
+  },
+  {
+    "id": "marketing-developer",
+    "name": "MARKETING · Developer Hero",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "developer-story",
+      "photo-documentary-context"
+    ]
+  },
+  {
+    "id": "heritage-context",
+    "name": "HERITAGE · Protected Context",
+    "blocks": [
+      "goal",
+      "source",
+      "geometry",
+      "windows",
+      "exclude",
+      "qc",
+      "heritage-protection",
+      "photo-sculptural-shadows"
+    ]
+  },
+  {
+    "id": "video-art-direction",
+    "name": "VIDEO · Camera and Environment",
+    "blocks": [
+      "video-arch-goal",
+      "video-arch-preserve",
+      "video-motion-custom",
+      "video-environment-custom",
+      "video-temporal-qc"
+    ]
   }
 ]

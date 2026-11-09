@@ -800,5 +800,213 @@
     "category": "Negative / Restrictions",
     "description_ru": "Негативные ограничения для соответствующего hero-сценария; защищают геометрию, камеру, свет и отражения от нежелательных изменений.",
     "block_id": "hero-sunset-gold-negative"
+  },
+  {
+    "id": "custom-art-direction",
+    "term_en": "Custom Art Direction",
+    "term_ru": "Настраиваемое арт-задание",
+    "category": "AI terminology",
+    "description_ru": "Свободный текст дополнительной инструкции.",
+    "block_id": "custom-art-direction"
+  },
+  {
+    "id": "custom-material",
+    "term_en": "Custom Material",
+    "term_ru": "Настраиваемый материал",
+    "category": "Materials",
+    "description_ru": "Редактируемые название материала и обработка.",
+    "block_id": "custom-material"
+  },
+  {
+    "id": "custom-light",
+    "term_en": "Custom Lighting",
+    "term_ru": "Настраиваемый свет",
+    "category": "Lighting",
+    "description_ru": "Свободный вариант освещения.",
+    "block_id": "custom-light"
+  },
+  {
+    "id": "custom-atmosphere",
+    "term_en": "Custom Atmosphere",
+    "term_ru": "Настраиваемая атмосфера",
+    "category": "Atmosphere",
+    "description_ru": "Настраиваемая атмосферная перспектива.",
+    "block_id": "custom-atmosphere"
+  },
+  {
+    "id": "custom-grading",
+    "term_en": "Custom Color Grading",
+    "term_ru": "Настраиваемый цвет",
+    "category": "Camera",
+    "description_ru": "Свободная цветокоррекция.",
+    "block_id": "custom-grading"
+  },
+  {
+    "id": "multi-reference-roles",
+    "term_en": "Multi-Reference Roles",
+    "term_ru": "Роли референсов",
+    "category": "AI terminology",
+    "description_ru": "Отдельные задачи нескольким изображениям.",
+    "block_id": "multi-reference-roles"
+  },
+  {
+    "id": "reference-material",
+    "term_en": "Reference Material",
+    "term_ru": "Материал по референсу",
+    "category": "Materials",
+    "description_ru": "Контролируемый перенос материала.",
+    "block_id": "reference-material"
+  },
+  {
+    "id": "reference-lighting",
+    "term_en": "Reference Lighting",
+    "term_ru": "Свет по референсу",
+    "category": "Lighting",
+    "description_ru": "Контролируемый перенос освещения.",
+    "block_id": "reference-lighting"
+  },
+  {
+    "id": "photorealism-recovery",
+    "term_en": "Photorealism Recovery",
+    "term_ru": "Устранение CGI-вида",
+    "category": "Quality",
+    "description_ru": "Доводка реализма.",
+    "block_id": "photorealism-recovery"
+  },
+  {
+    "id": "multiview-consistency",
+    "term_en": "Multi-View Consistency",
+    "term_ru": "Единство ракурсов",
+    "category": "Quality",
+    "description_ru": "Согласованность серии визуализаций.",
+    "block_id": "multiview-consistency"
+  },
+  {
+    "id": "upscale-safety",
+    "term_en": "Architecture-Safe Detail",
+    "term_ru": "Безопасная детализация",
+    "category": "Quality",
+    "description_ru": "Контроль AI-detail и upscale.",
+    "block_id": "upscale-safety"
+  },
+  {
+    "id": "cinema-villeneuve",
+    "term_en": "Monumental Atmospheric Cinema",
+    "term_ru": "Монументальная атмосфера",
+    "category": "Camera",
+    "description_ru": "Кинематографические визуальные приёмы.",
+    "block_id": "cinema-villeneuve"
+  },
+  {
+    "id": "cinema-anderson",
+    "term_en": "Graphic Pastel Cinema",
+    "term_ru": "Графичная пастель",
+    "category": "Camera",
+    "description_ru": "Кинематографические визуальные приёмы.",
+    "block_id": "cinema-anderson"
+  },
+  {
+    "id": "cinema-nolan",
+    "term_en": "Natural Epic Cinema",
+    "term_ru": "Естественный эпический стиль",
+    "category": "Camera",
+    "description_ru": "Кинематографические визуальные приёмы.",
+    "block_id": "cinema-nolan"
+  },
+  {
+    "id": "cinema-fincher",
+    "term_en": "Precision Low-Key Cinema",
+    "term_ru": "Точный низкий ключ",
+    "category": "Camera",
+    "description_ru": "Кинематографические визуальные приёмы.",
+    "block_id": "cinema-fincher"
+  },
+  {
+    "id": "cinema-scott",
+    "term_en": "Layered Night Cinema",
+    "term_ru": "Многослойная ночь",
+    "category": "Camera",
+    "description_ru": "Кинематографические визуальные приёмы.",
+    "block_id": "cinema-scott"
+  },
+  {
+    "id": "cinema-malick",
+    "term_en": "Golden-Hour Naturalism",
+    "term_ru": "Естественный золотой час",
+    "category": "Camera",
+    "description_ru": "Кинематографические визуальные приёмы.",
+    "block_id": "cinema-malick"
+  },
+  {
+    "id": "photo-editorial-modernist",
+    "term_en": "Modernist Architectural Editorial",
+    "term_ru": "Редакционная съёмка модернизма",
+    "category": "Camera",
+    "description_ru": "Обобщённый фотографический визуальный профиль.",
+    "block_id": "photo-editorial-modernist"
+  },
+  {
+    "id": "photo-sculptural-shadows",
+    "term_en": "Sculptural Architectural Photography",
+    "term_ru": "Скульптурные тени",
+    "category": "Camera",
+    "description_ru": "Обобщённый фотографический визуальный профиль.",
+    "block_id": "photo-sculptural-shadows"
+  },
+  {
+    "id": "photo-documentary-context",
+    "term_en": "Documentary Architecture",
+    "term_ru": "Документальная архитектура",
+    "category": "Camera",
+    "description_ru": "Обобщённый фотографический визуальный профиль.",
+    "block_id": "photo-documentary-context"
+  },
+  {
+    "id": "photo-warm-human-scale",
+    "term_en": "Human-Centered Architecture",
+    "term_ru": "Архитектура в масштабе человека",
+    "category": "Camera",
+    "description_ru": "Обобщённый фотографический визуальный профиль.",
+    "block_id": "photo-warm-human-scale"
+  },
+  {
+    "id": "video-motion-custom",
+    "term_en": "Custom Video Camera Motion",
+    "term_ru": "Настраиваемая видеокамера",
+    "category": "Video",
+    "description_ru": "Редактируемое движение камеры.",
+    "block_id": "video-motion-custom"
+  },
+  {
+    "id": "video-environment-custom",
+    "term_en": "Custom Environmental Motion",
+    "term_ru": "Настраиваемое движение среды",
+    "category": "Video",
+    "description_ru": "Редактируемая анимация окружения.",
+    "block_id": "video-environment-custom"
+  },
+  {
+    "id": "video-temporal-qc",
+    "term_en": "Video Temporal QC",
+    "term_ru": "Временная стабильность видео",
+    "category": "Video",
+    "description_ru": "Контроль последовательности кадров.",
+    "block_id": "video-temporal-qc"
+  },
+  {
+    "id": "developer-story",
+    "term_en": "Developer Storytelling",
+    "term_ru": "История девелоперского проекта",
+    "category": "Quality",
+    "description_ru": "Коммерческий hero-сценарий.",
+    "block_id": "developer-story"
+  },
+  {
+    "id": "heritage-protection",
+    "term_en": "Historical Context Protection",
+    "term_ru": "Защита исторического контекста",
+    "category": "Geometry",
+    "description_ru": "Для музейных и исторических сцен.",
+    "block_id": "heritage-protection"
   }
 ]
