@@ -22,6 +22,7 @@ jobs:
           node --check sw.js
           node --check src/video-director/schema.mjs
           node --check src/video-director/compiler.mjs
+          node --check src/video-director/layer-presets.mjs
           node --check src/video-director/store.mjs
           node --check src/video-director/ui.mjs
           node --check src/video-director/mode-tabs.mjs

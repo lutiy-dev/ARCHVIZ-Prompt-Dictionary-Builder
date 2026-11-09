@@ -1,5 +1,6 @@
 
-import {emptyProject,shotTemplate,demonstration,PROFILE_IDS,PROFILE_LABELS,REFERENCE_ROLES,MOVEMENTS,LAYERS,validateProject,STORAGE_KEY} from './schema.mjs';
+import {emptyProject,shotTemplate,demonstration,PROFILE_IDS,PROFILE_LABELS,REFERENCE_ROLES,RETENTION_MODES,MOVEMENTS,LAYERS,validateProject,STORAGE_KEY} from './schema.mjs';
+import {saveLayerPreset,applyLayerPreset} from './layer-presets.mjs';
 import {readProjects,writeProjects,encode,importProject} from './store.mjs';
 import {compileShot} from './compiler.mjs';
 const $=id=>document.getElementById(id);
@@ -46,13 +47,52 @@ function renderAll(){refreshProjectPicker();if(!project){$('vdWorkspace').hidden
  selectField(head,'Режим экспорта',project.target_profile,PROFILE_IDS.map(x=>({value:x,label:PROFILE_LABELS[x]})),v=>project.target_profile=v);
  field(head,'Общий FPS',project.settings.default_fps,v=>project.settings.default_fps=Number(v),{type:'number'});
  field(head,'Формат кадра',project.settings.default_aspect_ratio,v=>project.settings.default_aspect_ratio=v);
- renderGlobalLayers();renderCameraPresets();renderReferences();renderCharacters();renderShots();renderOutput();
+ renderGlobalLayers();renderLayerPresets();renderCameraPresets();renderReferences();renderCharacters();renderShots();renderOutput();
+}
+
+function renderRetention(body,layer){
+ const panel=el('div');panel.className='vd-retention';panel.append(el('h4','Retention Rules / Сохранение свойств'));
+ for(const [index,rule] of layer.retention.entries()){
+  const row=el('div');row.className='vd-retention-row';
+  selectField(row,'Reference',rule.ref_id,project.references.map(r=>({value:r.id,label:r.label+' · '+r.id})),v=>rule.ref_id=v);
+  selectField(row,'Rule',rule.mode,RETENTION_MODES,v=>rule.mode=v);
+  field(row,'Attributes (comma-separated)',rule.attributes.join(', '),v=>rule.attributes=v.split(',').map(s=>s.trim()).filter(Boolean));
+  row.append(button('Remove Rule',()=>{layer.retention.splice(index,1);persist();renderAll()},'quiet'));
+  panel.append(row);
+ }
+ panel.append(button('+ Retention Rule',()=>{
+  const candidate=project.references.find(r=>!layer.retention.some(x=>x.ref_id===r.id));
+  if(!candidate)throw Error('No unused reference; add another reference or edit existing rule');
+  layer.retention.push({ref_id:candidate.id,mode:'partially_preserved',attributes:[]});
+  persist();renderAll();
+ }));
+ body.append(panel);
+}
+function renderLayerPresets(){
+ const host=$('vdLayerPresets');host.replaceChildren();
+ const active=currentShot();
+ for(const item of project.layer_presets??[]){
+  const row=el('div');row.className='vd-actions';row.append(el('span',item.name+' · '+item.layer.type));
+  row.append(button('Apply to shot',()=>{
+   if(!active)throw Error('Select a shot');
+   project=applyLayerPreset(project,active.id,item.id,uniqueId('layer'));
+   persist();renderAll();
+  }));
+  row.append(button('Delete preset',()=>{
+   if(!confirm('Удалить пользовательский пресет слоя?'))return;
+   project.layer_presets=project.layer_presets.filter(x=>x.id!==item.id);
+   persist();renderAll();
+  },'quiet'));
+  host.append(row);
+ }
+ if(!project.layer_presets?.length)host.append(el('p','Сохранённые пользовательские слои появятся здесь.'));
 }
 function renderGlobalLayers(){
  const host=$('vdGlobalLayers');host.replaceChildren();
  for(const l of project.global_layers){const d=el('details');d.className='vd-item';d.append(el('summary',l.type+(l.enabled?'':' · OFF')));const body=el('div');
   const label=el('label'),check=el('input');check.type='checkbox';check.checked=l.enabled;check.onchange=()=>safeRun(()=>{l.enabled=check.checked;persist();renderOutput()});label.append(check,el('span','Enabled'));body.append(label);
   field(body,'Project-wide instruction EN',l.instruction,v=>l.instruction=v,{tag:'textarea'});
+  renderRetention(body,l);
   body.append(button('Remove',()=>{project.global_layers=project.global_layers.filter(x=>x.id!==l.id);persist();renderAll()},'quiet'));d.append(body);host.append(d);
  }
  host.append(button('+ Global Layer',()=>{project.global_layers.push({id:uniqueId('global'),type:'additional',enabled:true,scope:'project',instruction:'',parameters:{},retention:[],priority:30,version:1});persist();renderAll()}));
@@ -126,8 +166,15 @@ function renderShots(){
   const body=el('div');
   const label=el('label'),check=el('input');check.type='checkbox';check.checked=l.enabled;check.onchange=()=>safeRun(()=>{l.enabled=check.checked;persist();renderOutput()});label.append(check,el('span','Enabled'));body.append(label);
   field(body,'Instruction EN',l.instruction,v=>l.instruction=v,{tag:'textarea'});
+  renderRetention(body,l);
   const tools=el('div');tools.className='vd-actions';
   tools.append(button('Duplicate layer',()=>{const copy=structuredClone(l);copy.id=uniqueId('layer');s.layers.push(copy);persist();renderAll()}));
+  tools.append(button('Save preset',()=>{
+   const name=window.prompt('Название пользовательского пресета');
+   if(!name?.trim())return;
+   project=saveLayerPreset(project,l,name.trim(),uniqueId('preset'));
+   persist();renderAll();
+  }));
   tools.append(button('Reset text',()=>{l.instruction='';persist();renderAll()}));
   tools.append(button('Remove',()=>{if(!confirm('Удалить слой?'))return;s.layers=s.layers.filter(x=>x.id!==l.id);persist();renderAll()},'quiet'));
   body.append(tools);d.append(body);layers.append(d);

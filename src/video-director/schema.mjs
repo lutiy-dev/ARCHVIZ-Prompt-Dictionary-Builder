@@ -5,6 +5,7 @@ export const PROFILE_IDS=['generic','minimax_h3_fl2va','minimax_h3_ref2va','mini
 export const PROFILE_LABELS={generic:'Generic Video',minimax_h3_fl2va:'MiniMax H3 · FL2VA',minimax_h3_ref2va:'MiniMax H3 · Ref2VA',minimax_h3_hybrid:'MiniMax H3 LongMedia · Hybrid',minimax_h3_video_ref_edit:'MiniMax H3 LongMedia · Video Ref Edit'};
 export const REFERENCE_ROLES=['first_frame','last_frame','character_identity','motion_reference','camera_reference','architecture_reference','material_reference','lighting_reference','style_reference','audio_reference'];
 export const MOVEMENTS=['static','dolly_in','dolly_out','truck_left','truck_right','pan','tilt','crane_up','crane_down','arc','aerial_push_in','aerial_pull_back','custom'];
+export const RETENTION_MODES=['fully_preserved','partially_preserved','attribute_transfer','weak_reference'];
 export const LAYERS=['source','architecture','characters','blocking','camera','lighting','timing','audio','additional','qc'];
 export const MAX_IMPORT_BYTES=2_000_000;
 const isObject=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
@@ -24,7 +25,7 @@ export const emptyProject=(id='video_project')=>({
  schema_version:1,project_type:'archviz_video_director',id,name:'Untitled Video',
  status:'LAB',target_profile:'generic',
  settings:{language:'en',default_fps:24,default_aspect_ratio:'16:9'},
- references:[],characters:[],camera_presets:[],global_layers:[],shots:[shotTemplate()],
+ references:[],characters:[],camera_presets:[],layer_presets:[],global_layers:[],shots:[shotTemplate()],
  created_at:null,updated_at:null
 });
 const shotNames=[
@@ -59,7 +60,7 @@ export function demonstration(){
 }
 export function validateProject(p){
  if(!isObject(p)||p.schema_version!==1||p.project_type!=='archviz_video_director'||!identifier(p.id)||!txt(p.name,120)||!PROFILE_IDS.includes(p.target_profile)||!['LAB','BETA'].includes(p.status))fail('Invalid project envelope');
- only(p,['schema_version','project_type','id','name','status','target_profile','settings','references','characters','camera_presets','global_layers','shots','created_at','updated_at']);
+ only(p,['schema_version','project_type','id','name','status','target_profile','settings','references','characters','camera_presets','layer_presets','global_layers','shots','created_at','updated_at']);
  if(!isObject(p.settings)||!Number.isInteger(p.settings.default_fps)||p.settings.default_fps<1||p.settings.default_fps>120||!txt(p.settings.default_aspect_ratio,20)||p.settings.language!=='en')fail('Invalid settings');
  only(p.settings,['language','default_fps','default_aspect_ratio']);
  if(!Array.isArray(p.camera_presets)||p.camera_presets.length>40)fail('Invalid camera preset library');
@@ -78,8 +79,12 @@ export function validateProject(p){
  }
  const charIds=new Set();
  for(const c of p.characters){if(!isObject(c)||!identifier(c.id)||!txt(c.name,120)||!txt(c.description,2000)||!txt(c.clothing,1000)||!txt(c.notes,2000)||!(c.identity_ref===null||identifier(c.identity_ref)))fail('Invalid character');if(c.identity_ref&&(!refs.has(c.identity_ref)||refs.get(c.identity_ref).role!=='character_identity'))fail('Invalid character identity reference');only(c,['id','name','description','identity_ref','clothing','notes']);charIds.add(c.id);}
- function layers(xs){unique(xs.map(l=>l.id),'layer ID');for(const l of xs){if(!isObject(l)||!identifier(l.id)||!LAYERS.includes(l.type)||typeof l.enabled!=='boolean'||!['shot','project'].includes(l.scope)||!txt(l.instruction,10000)||!isObject(l.parameters)||!Array.isArray(l.retention)||l.retention.length>30||!Number.isInteger(l.priority)||l.priority<0||l.priority>100||l.version!==1)fail('Invalid layer '+String(l?.id));only(l,['id','type','enabled','scope','instruction','parameters','retention','priority','version']);for(const v of Object.values(l.parameters))if(!txt(v,2000))fail('Invalid layer parameter');for(const ret of l.retention){if(!isObject(ret)||!identifier(ret.ref_id)||!['fully_preserved','partially_preserved','attribute_transfer','weak_reference'].includes(ret.mode)||!Array.isArray(ret.attributes)||ret.attributes.some(x=>!txt(x,150)))fail('Invalid retention rule');}}}
+ function layers(xs){unique(xs.map(l=>l.id),'layer ID');for(const l of xs){if(!isObject(l)||!identifier(l.id)||!LAYERS.includes(l.type)||typeof l.enabled!=='boolean'||!['shot','project'].includes(l.scope)||!txt(l.instruction,10000)||!isObject(l.parameters)||!Array.isArray(l.retention)||l.retention.length>30||!Number.isInteger(l.priority)||l.priority<0||l.priority>100||l.version!==1)fail('Invalid layer '+String(l?.id));only(l,['id','type','enabled','scope','instruction','parameters','retention','priority','version']);for(const v of Object.values(l.parameters))if(!txt(v,2000))fail('Invalid layer parameter');for(const ret of l.retention){if(!isObject(ret)||!identifier(ret.ref_id)||!RETENTION_MODES.includes(ret.mode)||!Array.isArray(ret.attributes)||ret.attributes.length>30||ret.attributes.some(x=>!txt(x,150)))fail('Invalid retention rule');only(ret,['ref_id','mode','attributes']);}}}
+ if(p.layer_presets!==undefined&&(!Array.isArray(p.layer_presets)||p.layer_presets.length>100))fail('Invalid layer preset library');
+ const presetList=p.layer_presets??[];unique(presetList.map(x=>x.id),'layer preset ID');
+ for(const preset of presetList){if(!isObject(preset)||!identifier(preset.id)||!txt(preset.name,120)||!isObject(preset.layer))fail('Invalid layer preset');only(preset,['id','name','layer']);layers([preset.layer]);}
  layers(p.global_layers);
+ for(const preset of presetList)for(const ret of preset.layer.retention)if(!refs.has(ret.ref_id))fail('Unknown preset retention reference');
  for(const l of p.global_layers)for(const ret of l.retention)if(!refs.has(ret.ref_id))fail('Unknown retention reference');
  for(const s of p.shots){
   if(!isObject(s)||!identifier(s.id)||!txt(s.name,120)||!Number.isFinite(s.duration_seconds)||s.duration_seconds<=0||s.duration_seconds>150||!Array.isArray(s.characters)||!Array.isArray(s.actions)||s.actions.length>40||!Array.isArray(s.layers)||s.layers.length>100||!isObject(s.camera)||!MOVEMENTS.includes(s.camera.movement)||!txt(s.camera.speed,100)||!txt(s.camera.direction,500)||!txt(s.camera.easing,500)||!txt(s.camera.notes,2000)||!txt(s.lighting,4000)||!txt(s.atmosphere,4000)||!txt(s.notes,4000)||!(s.profile===null||PROFILE_IDS.includes(s.profile)))fail('Invalid shot '+String(s?.id));
@@ -91,5 +96,5 @@ export function validateProject(p){
   layers(s.layers);
   for(const l of s.layers)for(const ret of l.retention)if(!refs.has(ret.ref_id))fail('Unknown retention reference');
  }
- return structuredClone(p);
+ const result=structuredClone(p);result.layer_presets??=[];return result;
 }

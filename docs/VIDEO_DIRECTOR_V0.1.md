@@ -37,3 +37,7 @@ No media bytes, absolute file paths, API credentials, client assets or cloud syn
 The new tests cover synthetic shot structure, identity bindings, stable reference numbering, FL2VA incompatibilities, missing references, text stability, JSON transfer safety, architecture and camera contradictions. Existing Standard tests run unchanged.
 
 Browser, offline PWA, fresh installation and physical ComfyUI generation remain NOT TESTED until an independently verified runtime session is available. Do not promote beyond BETA because CI passes.
+
+## Retention and reusable layers
+
+Each global or shot layer includes editable Retention Rules: reference ID, mode and attribute list. Conflicting modes on the same reference and overlapping attributes return `RETENTION_CONFLICT` and block export. Rules are explicit strings in the compiled prompt, not proof the target model can enforce them. `Layer Presets` are project-local snapshots: save a shot layer, apply independently to a chosen shot, or delete a preset. Existing Video Director v0.1 JSON with no `layer_presets` is accepted with an empty collection.

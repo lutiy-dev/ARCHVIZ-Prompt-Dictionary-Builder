@@ -172,3 +172,11 @@ main .section-body>label,main .section-body>button,.save{flex:none}
 #vdPrompt{min-height:320px;font-size:12px;line-height:1.5}
 @media(max-width:1200px){.vd-columns{grid-template-columns:1fr 1fr}.vd-column:last-child{grid-column:1/-1}}
 @media(max-width:720px){.vd-columns{display:block}.vd-heading h1{font-size:23px}.vd-toolbar>label{width:100%}.vd-toolbar select{width:100%}.vd-root{padding-inline:12px}}
+
+/* Editable retention rules and reusable layer library */
+.vd-retention{margin:10px 0;padding:10px;border:1px solid var(--border);border-radius:8px}
+.vd-retention h4{font-size:12px;margin:0 0 8px;color:var(--text-soft)}
+.vd-retention-row{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;padding:8px 0;border-top:1px solid var(--border)}
+.vd-retention-row .vd-field:nth-child(3){grid-column:1/-1}
+.vd-retention-row .vd-action{justify-self:start}
+@media(max-width:720px){.vd-retention-row{grid-template-columns:1fr}.vd-retention-row .vd-field:nth-child(3){grid-column:auto}}

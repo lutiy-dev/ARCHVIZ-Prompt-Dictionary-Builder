@@ -4,6 +4,7 @@ import assert from 'node:assert/strict';
 import {emptyProject,demonstration,validateProject,shotTemplate,STORAGE_KEY} from './schema.mjs';
 import {compileShot} from './compiler.mjs';
 import {encode,decode,readProjects,writeProjects,importProject} from './store.mjs';
+import {saveLayerPreset,applyLayerPreset} from './layer-presets.mjs';
 test('synthetic NABEREJNAYA has 12 shots / 90 seconds and five reference declarations',()=>{
  const p=demonstration();assert.equal(p.shots.length,12);assert.equal(p.shots.reduce((sum,s)=>sum+s.duration_seconds,0),90);
  assert.equal(p.references.length,5);assert.equal(validateProject(p).name,p.name);
@@ -84,4 +85,46 @@ test('Retention references must resolve and input cannot include hidden asset pa
 test('Documented model routing does not claim runtime verification',()=>{
  const x=compileShot(demonstration(),'shot_05');
  assert.equal(x.documented_route,true);assert.equal(x.adapter_verified,false);assert.equal(x.runtime_tested,false);
+});
+
+test('Retention rules appear in compiled video prompt and map to the intended reference',()=>{
+ const p=demonstration(),l=p.shots[4].layers.find(l=>l.type==='additional');
+ l.retention=[{ref_id:'male_ref',mode:'attribute_transfer',attributes:['face','hair']}];
+ const out=compileShot(p,'shot_05');
+ assert.equal(out.exportable,true);
+ assert.match(out.text,/<Picture 1>: attribute_transfer \(attributes: face, hair\)/);
+ assert.ok(out.manifest.find(r=>r.id==='male_ref'));
+});
+test('Conflicting retention modes on overlapping attributes block export',()=>{
+ const p=demonstration(),a=p.shots[4].layers.find(l=>l.type==='additional'),b=p.shots[4].layers.find(l=>l.type==='characters');
+ a.retention=[{ref_id:'male_ref',mode:'attribute_transfer',attributes:['face']}];
+ b.retention=[{ref_id:'male_ref',mode:'fully_preserved',attributes:['face']}];
+ const out=compileShot(p,'shot_05');assert.equal(out.exportable,false);
+ assert.ok(out.issues.some(i=>i.code==='RETENTION_CONFLICT'));
+ b.retention[0].attributes=['clothing'];assert.equal(compileShot(p,'shot_05').exportable,true);
+});
+test('Layer preset round-trip and applied instances do not mutate source',()=>{
+ const original=demonstration(),layer=original.shots[4].layers.find(l=>l.type==='additional');
+ layer.instruction='Preserve reflected sunlight on water';
+ layer.retention=[{ref_id:'shot05_animatic',mode:'weak_reference',attributes:['blocking']}];
+ const saved=saveLayerPreset(original,layer,'Reflective Scene','preset_01');
+ assert.equal(saved.layer_presets.length,1);assert.equal(original.layer_presets.length,0);
+ const applied=applyLayerPreset(saved,'shot_06','preset_01','layer_new');
+ assert.equal(applied.shots[5].layers.at(-1).instruction,layer.instruction);
+ applied.shots[5].layers.at(-1).instruction='modified';
+ assert.equal(saved.layer_presets[0].layer.instruction,layer.instruction);
+ assert.deepEqual(decode(encode(applied)).layer_presets,applied.layer_presets);
+ assert.throws(()=>saveLayerPreset(saved,layer,'Duplicate','preset_01'));
+});
+test('Legacy v0.1 projects without layer presets load non-destructively',()=>{
+ const p=demonstration();delete p.layer_presets;
+ const normalized=validateProject(p);assert.deepEqual(normalized.layer_presets,[]);
+ assert.equal(Object.hasOwn(p,'layer_presets'),false);
+});
+test('FL2VA rejects extra reference introduced only by a layer retention rule',()=>{
+ const p=demonstration(),s=p.shots[4];p.target_profile='minimax_h3_fl2va';
+ s.characters=[];s.motion_ref=null;
+ s.layers[0].retention=[{ref_id:'male_ref',mode:'weak_reference',attributes:[]}];
+ const compiled=compileShot(p,s.id);assert.equal(compiled.exportable,false);
+ assert.ok(compiled.issues.some(i=>i.code==='FL2VA_ADDITIONAL_REF'));
 });
