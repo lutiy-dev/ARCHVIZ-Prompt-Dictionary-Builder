@@ -70,5 +70,5 @@ export function compileShot(input,shotId){
   'overall_soundscape:','Natural ambient sound as appropriate; no invented dialogue.',
   'non_diegetic_music:','None specified.'].join('\n\n');
  }else text=['VIDEO SHOT — '+PROFILE_LABELS[profile],subject,body].filter(Boolean).join('\n\n');
- return {text,manifest,issues,profile,shot_id:shot.id,exportable:!issues.some(i=>i.severity==='ERROR'),adapter_verified:caps.verified};
+ return {text,manifest,issues,profile,shot_id:shot.id,exportable:!issues.some(i=>i.severity==='ERROR'),documented_route:caps.verified,adapter_verified:false,runtime_tested:false};
 }

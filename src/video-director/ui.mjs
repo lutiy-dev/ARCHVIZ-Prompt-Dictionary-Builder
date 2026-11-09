@@ -147,7 +147,7 @@ function renderOutput(){
  try{
   output=compileShot(project,s.id);
   $('vdPrompt').value=output.text;
-  $('vdManifest').textContent=JSON.stringify({shot_id:s.id,model:output.profile,reference_map:output.manifest,adapter_verified:output.adapter_verified},null,2);
+  $('vdManifest').textContent=JSON.stringify({shot_id:s.id,model:output.profile,reference_map:output.manifest,documented_route:output.documented_route,adapter_verified:false,runtime_tested:false},null,2);
   const issues=$('vdIssues');issues.replaceChildren();
   if(!output.issues.length)issues.append(el('p','VALIDATED: no known conflicts'));
   for(const i of output.issues){const p=el('p',i.severity+' · '+i.code+' · '+i.message+' / '+i.action);p.className=i.severity==='ERROR'?'vd-error':'vd-warning';issues.append(p);}

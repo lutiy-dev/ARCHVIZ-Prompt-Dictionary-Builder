@@ -80,3 +80,8 @@ test('Retention references must resolve and input cannot include hidden asset pa
  assert.throws(()=>validateProject(p));
  layer.retention=[];p.references[0].asset.display_name='/private/image.png';assert.throws(()=>encode(p));
 });
+
+test('Documented model routing does not claim runtime verification',()=>{
+ const x=compileShot(demonstration(),'shot_05');
+ assert.equal(x.documented_route,true);assert.equal(x.adapter_verified,false);assert.equal(x.runtime_tested,false);
+});
