@@ -217,5 +217,6 @@ function init(){
  $('vdCopyMap').onclick=()=>safeRun(()=>{if(output)copy($('vdManifest').textContent)});
  $('vdExportShot').onclick=()=>safeRun(()=>{if(!output?.exportable)throw Error('Fix validation errors first');download(output.shot_id+'-prompt.json',JSON.stringify({schema_version:1,prompt:output.text,reference_manifest:output.manifest,validation:output.issues,profile:output.profile,shot_id:output.shot_id,not_a_comfyui_workflow:true},null,2));message('Shot manifest exported')});
  renderAll();
+ $('videoDirectorRoot').dataset.ready='true';
 }
 init();

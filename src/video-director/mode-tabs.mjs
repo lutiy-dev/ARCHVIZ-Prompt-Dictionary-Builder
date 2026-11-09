@@ -10,3 +10,4 @@ function show(mode){
 a.addEventListener('click',()=>show('standard'));
 b.addEventListener('click',()=>show('video'));
 show('standard');
+b.dataset.ready='true';

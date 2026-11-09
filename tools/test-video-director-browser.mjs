@@ -54,7 +54,7 @@ try{
   else if(m.method==='Runtime.exceptionThrown')exceptions.push(m.params.exceptionDetails.text);
  });
  await send('Runtime.enable');await send('Page.enable');await send('Network.enable');
- await poll('return !!document.querySelector("#vdTabVideo") && !!document.querySelector("#vdDemo")','DOM');
+ await poll('return document.querySelector("#videoDirectorRoot")?.dataset.ready==="true" && document.querySelector("#vdTabVideo")?.dataset.ready==="true"','app initialization');
  await pass('Standard visible on first load','return !document.querySelector("#standardMode").hidden && document.querySelector("#videoDirectorRoot").hidden');
  const keys=await evaluate('return [localStorage.getItem("archviz-prompt-studio-v1"),localStorage.getItem("archviz-prompt-library-v1")]');
  await evaluate('document.querySelector("#vdTabVideo").click();document.querySelector("#vdDemo").click();return true');
