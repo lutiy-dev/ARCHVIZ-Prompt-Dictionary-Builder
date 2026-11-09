@@ -58,6 +58,7 @@ try{
  await pass('Standard visible on first load','return !document.querySelector("#standardMode").hidden && document.querySelector("#videoDirectorRoot").hidden');
  const keys=await evaluate('return [localStorage.getItem("archviz-prompt-studio-v1"),localStorage.getItem("archviz-prompt-library-v1")]');
  await evaluate('document.querySelector("#vdTabVideo").click();document.querySelector("#vdDemo").click();return true');
+ await poll('return document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:")','demo compilation');
  await pass('Synthetic demo and actor references appear','return !document.querySelector("#videoDirectorRoot").hidden && document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:") && document.querySelector("#vdManifest").textContent.includes("male_ref")');
  await evaluate('document.querySelector("#vdShotFields .vd-item .vd-retention button").click();return true');
  await pass('Retention editor creates a rule','return !!document.querySelector("#vdShotFields .vd-retention-row")');
@@ -74,6 +75,7 @@ try{
  await send('Page.reload',{ignoreCache:true});
  await poll('return !!document.querySelector("#vdProjects") && document.querySelector("#vdProjects").options.length>1','project persists after reload');
  await pass('Video Director project persists','return localStorage.getItem("archviz-video-director-v1").includes("Browser Smoke Preset")');
+ const swDiag=await evaluate('return {secure:isSecureContext,supported:!!navigator.serviceWorker,controlled:!!navigator.serviceWorker?.controller,registrations:await navigator.serviceWorker.getRegistrations().then(rs=>rs.map(r=>({scope:r.scope,active:r.active?.state,installing:r.installing?.state,waiting:r.waiting?.state}))),caches:await caches.keys()}');console.log('PWA DIAGNOSTICS:',JSON.stringify(swDiag));
  await poll('return !!navigator.serviceWorker?.controller','PWA controller');
  const cacheKeys=await evaluate('return await caches.keys()');
  assert.ok(cacheKeys.some(k=>k.startsWith('archviz-prompt-studio-shell-')),'PWA shell cache absent');
