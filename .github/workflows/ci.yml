@@ -20,5 +20,13 @@ jobs:
           node --check src/saved-prompts.mjs
           node --check src/prompt-transfer.mjs
           node --check sw.js
+          node --check src/video-director/schema.mjs
+          node --check src/video-director/compiler.mjs
+          node --check src/video-director/layer-presets.mjs
+          node --check src/video-director/store.mjs
+          node --check src/video-director/ui.mjs
+          node --check src/video-director/mode-tabs.mjs
       - name: Unit tests
-        run: node --test src/*.test.mjs
+        run: node --test src/*.test.mjs src/video-director/*.test.mjs
+      - name: Real Chromium browser and PWA smoke
+        run: node tools/test-video-director-browser.mjs
