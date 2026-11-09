@@ -483,27 +483,67 @@ Object.assign(translationRu,{
 Object.assign(translationRu, {
   "custom-art-direction": {
     "source": "Additional art direction: {{instruction}}. Apply only where it does not contradict source architecture, camera, material identities or other protected constraints.",
-    "ru": "Дополнительное художественное задание: {{instruction}}. Применять только если оно не противоречит исходной архитектуре, камере, материалам и другим защищённым ограничениям."
+    "ru": "Дополнительное художественное задание: {{instruction}}. Применять только если оно не противоречит исходной архитектуре, камере, материалам и другим защищённым ограничениям.",
+    "defaults": {
+      "instruction": [
+        "subtle realism and restrained photographic finishing",
+        "только сдержанная реалистичная фотографическая доводка"
+      ]
+    }
   },
   "custom-material": {
     "source": "Refine the selected existing material: {{material}}. Desired treatment: {{treatment}}. Keep geometry, UV scale, joints, material-region boundaries and all unselected surfaces unchanged.",
-    "ru": "Уточнить выбранный существующий материал: {{material}}. Желаемая обработка: {{treatment}}. Сохранить геометрию, UV-масштаб, швы, границы материала и все невыбранные поверхности."
+    "ru": "Уточнить выбранный существующий материал: {{material}}. Желаемая обработка: {{treatment}}. Сохранить геометрию, UV-масштаб, швы, границы материала и все невыбранные поверхности.",
+    "defaults": {
+      "material": [
+        "existing stone facade",
+        "существующий каменный фасад"
+      ],
+      "treatment": [
+        "natural fine pores and plausible roughness",
+        "естественные мелкие поры и правдоподобная шероховатость"
+      ]
+    }
   },
   "custom-light": {
     "source": "Set the lighting character to {{lighting}} while retaining physically plausible light sources, source geometry, camera, site and existing material assignments.",
-    "ru": "Настроить характер освещения: {{lighting}}, сохранив физически правдоподобные источники света, исходную геометрию, камеру, участок и назначения материалов."
+    "ru": "Настроить характер освещения: {{lighting}}, сохранив физически правдоподобные источники света, исходную геометрию, камеру, участок и назначения материалов.",
+    "defaults": {
+      "lighting": [
+        "soft natural side daylight",
+        "мягкий естественный боковой дневной свет"
+      ]
+    }
   },
   "custom-atmosphere": {
     "source": "Apply {{atmosphere}} with physically credible depth and distance falloff. Preserve architectural silhouette, facade readability and the original camera.",
-    "ru": "Применить {{atmosphere}} с правдоподобной глубиной и затуханием по расстоянию. Сохранить силуэт архитектуры, читаемость фасада и исходную камеру."
+    "ru": "Применить {{atmosphere}} с правдоподобной глубиной и затуханием по расстоянию. Сохранить силуэт архитектуры, читаемость фасада и исходную камеру.",
+    "defaults": {
+      "atmosphere": [
+        "subtle atmospheric haze",
+        "лёгкая атмосферная дымка"
+      ]
+    }
   },
   "custom-grading": {
     "source": "Apply {{grading}} as a restrained photographic grade without changing material identity, original objects or composition.",
-    "ru": "Применить {{grading}} как сдержанную фотографическую обработку без изменения материалов, исходных объектов и композиции."
+    "ru": "Применить {{grading}} как сдержанную фотографическую обработку без изменения материалов, исходных объектов и композиции.",
+    "defaults": {
+      "grading": [
+        "neutral cinematic contrast and gentle highlight rolloff",
+        "нейтральный кинематографический контраст и мягкий спад ярких светов"
+      ]
+    }
   },
   "multi-reference-roles": {
     "source": "Assign these input roles: {{roles}}. Never transfer unrelated architecture, objects or geometry from references; the source render remains the geometric authority.",
-    "ru": "Назначить входным изображениям роли: {{roles}}. Никогда не переносить постороннюю архитектуру, объекты или геометрию из референсов; исходный рендер остаётся эталоном геометрии."
+    "ru": "Назначить входным изображениям роли: {{roles}}. Никогда не переносить постороннюю архитектуру, объекты или геометрию из референсов; исходный рендер остаётся эталоном геометрии.",
+    "defaults": {
+      "roles": [
+        "reference 1: lighting; reference 2: material; source render: geometry and camera",
+        "референс 1: свет; референс 2: материал; исходный рендер: геометрия и камера"
+      ]
+    }
   },
   "reference-material": {
     "source": "Use the supplied material reference only for physical texture, reflectance and surface variation within the selected existing material region; retain panel layout and architectural joints.",
@@ -567,11 +607,23 @@ Object.assign(translationRu, {
   },
   "video-motion-custom": {
     "source": "Use {{movement}} as slow coherent camera motion with stable architectural perspective. Avoid revealing unsupported geometry, cuts, camera shake or sudden zooms.",
-    "ru": "Использовать {{movement}} как медленное согласованное движение камеры со стабильной архитектурной перспективой. Не раскрывать неподтверждённую геометрию, избегать склеек, тряски и резких зумов."
+    "ru": "Использовать {{movement}} как медленное согласованное движение камеры со стабильной архитектурной перспективой. Не раскрывать неподтверждённую геометрию, избегать склеек, тряски и резких зумов.",
+    "defaults": {
+      "movement": [
+        "a gentle lateral camera move",
+        "плавное медленное боковое движение камеры"
+      ]
+    }
   },
   "video-environment-custom": {
     "source": "Animate only {{motion}} with subtle physically coherent timing. Keep architecture and permanent site objects stable.",
-    "ru": "Анимировать только {{motion}} с тонким физически согласованным таймингом. Сохранять архитектуру и постоянные объекты участка неподвижными."
+    "ru": "Анимировать только {{motion}} с тонким физически согласованным таймингом. Сохранять архитектуру и постоянные объекты участка неподвижными.",
+    "defaults": {
+      "motion": [
+        "gentle existing foliage movement",
+        "лёгкое движение существующей листвы"
+      ]
+    }
   },
   "video-temporal-qc": {
     "source": "Reject flicker, facade morphing, shifting joints, inconsistent material colors, moving windows, implausible parallax and new objects appearing between frames.",
