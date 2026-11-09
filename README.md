@@ -211,3 +211,12 @@ New adjustable parameters: `instruction`, `material`, `treatment`, `lighting`, `
 Profiles cover six director-associated cinematic visual languages, four architectural photographic languages, reference/material controls, realism, multi-view consistency, developer marketing, heritage and video motion. The profiles describe visual characteristics rather than reproducing specific film frames. All new blocks remain GENERATED / NOT IMAGE-TESTED.
 
 Verification: JSON IDs/references/templates/sections/dictionary parity and exact-source RU data are required to pass the existing CI test suite; deployed PWA and model-generated quality require separate validation.
+
+
+## Video Director v0.1 — BETA candidate
+
+Video Director is an independent, metadata-only layered prompt composer under a separate `Standard / Video Director` tab. It does **not** execute models, upload media or generate ComfyUI workflow JSON. It stores projects under `archviz-video-director-v1`, leaving both legacy storage keys unchanged. Project JSON exports exclude image/video bytes and filesystem paths. Keep backup exports before clearing browser data.
+
+Features: project reference and character registries; 12-shot synthetic NABEREJNAYA demo; editable camera/actions/light/layers; FIRST/LAST/REF mappings; model-specific text profiles for Generic, MiniMax H3 FL2VA, Ref2VA and LongMedia Hybrid/Video Ref Edit; validation diagnostics; project and shot export. Ref slots are **descriptions**, not verified ComfyUI connections. First/last and actor references may conflict: prepared actor-replaced endpoints are the safer starting strategy for architectural fidelity.
+
+Implementation status: software tests required, actual MiniMax-H3 model output and character consistency NOT TESTED. Synthetic demo contains no client media. Standard prompt library remains 127 blocks / 46 presets. External model adapter correctness requires runtime verification on the chosen ComfyUI stack before PRODUCTION designation.

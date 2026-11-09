@@ -17,7 +17,20 @@
     <div class="brand"><small>CONTROLLED AI · ARCHITECTURAL VISUALIZATION</small><strong>ARCHVIZ <span>Prompt Studio</span></strong></div>
     <div class="top-actions"><button id="installApp" type="button">Установить приложение</button><span class="badge">LAB / v0.1</span></div>
   </header>
-  <div class="shell">
+
+  <nav class="vd-mode-tabs" aria-label="Prompt Studio modes"><button id="vdTabStandard" class="active" type="button" aria-pressed="true">Standard Prompt</button><button id="vdTabVideo" type="button" aria-pressed="false">Video Director · BETA</button></nav>
+  <section id="videoDirectorRoot" class="vd-root" hidden aria-labelledby="vdTitle">
+    <div class="vd-heading"><div><p class="eyebrow">ARCHITECTURE FIRST · LAYERED VIDEO PROMPTS</p><h1 id="vdTitle">Video Director</h1><p>Промпты, референсы и шоты. Видео не генерируется.</p></div><span class="badge">LAB · NOT VIDEO-TESTED</span></div>
+    <div class="vd-toolbar"><label>Проекты<select id="vdProjects"></select></label><button id="vdNew" type="button">+ Project</button><button id="vdDemo" type="button">Synthetic NABEREJNAYA Demo</button><button id="vdSave" type="button">Сохранить</button><button id="vdDuplicate" type="button">Дублировать</button><button id="vdExport" type="button">Export JSON</button><label class="vd-file">Import JSON<input id="vdImport" type="file" accept=".json,application/json"></label></div>
+    <p id="vdNotice" role="status" aria-live="polite"></p>
+    <div id="vdWorkspace" hidden>
+      <section class="vd-panel"><h2>Project Settings</h2><div id="vdHeaderFields" class="vd-grid"></div></section>
+      <div class="vd-columns"><div class="vd-column"><section class="vd-panel"><h2>References · metadata only</h2><p class="vd-note">Файлы не загружаются: их подключение выполняется отдельно в ComfyUI.</p><div id="vdReferences"></div></section><section class="vd-panel"><h2>Characters</h2><div id="vdCharacters"></div></section></div>
+      <div class="vd-column"><section class="vd-panel"><h2>Shot List</h2><div id="vdShotList" class="vd-shot-list"></div></section><section class="vd-panel"><h2>Shot Composer</h2><div id="vdShotFields" class="vd-grid"></div></section></div>
+      <div class="vd-column"><section class="vd-panel"><h2>Compiled Output</h2><p id="vdStatus" role="status"></p><div id="vdIssues" role="alert"></div><label>English Prompt<textarea id="vdPrompt" readonly rows="18"></textarea></label><div class="vd-actions"><button id="vdCopy" type="button">Copy EN</button><button id="vdExportShot" type="button">Export Shot JSON</button></div><details><summary>Reference Mapping</summary><pre id="vdManifest"></pre><button id="vdCopyMap" type="button">Copy Map</button></details><p class="vd-note">JSON содержит текст и привязки. Это не ComfyUI workflow.</p></section></div></div>
+    </div>
+  </section>
+  <div class="shell" id="standardMode">
     <div class="hero"><div><p id="installHelp" role="status" hidden></p><span class="eyebrow">ARCHITECTURE FIRST / PROMPT CONTROL</span><h1>Точность начинается с задания.</h1><p>Технический словарь, контролируемые блоки и проверяемая сборка промпта для архитектурной визуализации.</p></div><div class="hero-status"><b>01 / STRUCTURED PROMPT</b>Source → constraints → material → QC<br>GENERATED · требует теста на кадре</div></div>
     <div class="process-map" aria-labelledby="processTitle"><div class="process-caption"><span id="processTitle">PROCESS MAP / ПРИНЦИП СБОРКИ</span><span>От исходника к заданию</span></div><ol class="process-steps"><li><span class="process-number">01</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-reference"/></svg><strong>REFERENCE</strong><span class="process-description">Исходник и задача</span></li><li><span class="process-number">02</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-geometry"/></svg><strong>PRESERVE</strong><span class="process-description">Геометрия и границы</span></li><li><span class="process-number">03</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-material"/></svg><strong>MATERIAL</strong><span class="process-description">Поверхности и детали</span></li><li><span class="process-number">04</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-light"/></svg><strong>LIGHT</strong><span class="process-description">Свет и время суток</span></li><li><span class="process-number">05</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-atmosphere"/></svg><strong>ATMOSPHERE</strong><span class="process-description">Настроение и среда</span></li><li><span class="process-number">06</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-camera"/></svg><strong>CAMERA</strong><span class="process-description">Кадр и перспектива</span></li><li><span class="process-number">07</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-qc"/></svg><strong>QC</strong><span class="process-description">Проверка результата</span></li><li><span class="process-number">08</span><svg class="ui-icon" aria-hidden="true"><use href="#icon-reference"/></svg><strong>STRUCTURED PROMPT</strong><span class="process-description">Итоговое задание</span></li></ol></div>
     <main>
@@ -31,5 +44,7 @@
     </div>
   </div>
   <script type="module" src="src/app.mjs"></script>
+  <script type="module" src="src/video-director/ui.mjs"></script>
+  <script type="module" src="src/video-director/mode-tabs.mjs"></script>
 </body>
 </html>
