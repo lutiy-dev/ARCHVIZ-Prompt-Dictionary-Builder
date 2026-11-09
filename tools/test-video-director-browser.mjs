@@ -33,8 +33,9 @@ async function pass(label,js){const got=await evaluate(js);
  if(got!==true){const diagnostics=await evaluate('return {notice:document.querySelector("#vdNotice")?.textContent,projects:document.querySelector("#vdProjects")?.options?.length,shotButtons:document.querySelectorAll("#vdShotList button").length,prompt:document.querySelector("#vdPrompt")?.value?.slice(0,200),manifest:document.querySelector("#vdManifest")?.textContent?.slice(0,200),visible:document.querySelector("#videoDirectorRoot")?.hidden,exceptions:window.__vdErrors||null}');console.error('BROWSER DIAGNOSTICS '+label,JSON.stringify(diagnostics));}
  assert.equal(got,true,label);console.log('BROWSER PASS '+label);}
 try{
- await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
- const url='http://127.0.0.1:'+server.address().port+'/';
+ const remote=process.env.ARCHVIZ_BROWSER_URL;
+ if(!remote)await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
+ const url=remote||'http://127.0.0.1:'+server.address().port+'/';
  chrome=spawn(exe,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--remote-allow-origins=*','--remote-debugging-port=0','--user-data-dir='+profile,url],{stdio:'ignore'});
  const portFile=join(profile,'DevToolsActivePort');
  for(let i=0;i<100&&!existsSync(portFile);i++)await delay(100);
@@ -57,7 +58,12 @@ try{
  await poll('return document.querySelector("#videoDirectorRoot")?.dataset.ready==="true" && document.querySelector("#vdTabVideo")?.dataset.ready==="true"','app initialization');
  await pass('Standard visible on first load','return !document.querySelector("#standardMode").hidden && document.querySelector("#videoDirectorRoot").hidden');
  const keys=await evaluate('return [localStorage.getItem("archviz-prompt-studio-v1"),localStorage.getItem("archviz-prompt-library-v1")]');
- await evaluate('document.querySelector("#vdTabVideo").click();document.querySelector("#vdDemo").click();return true');
+ const rect=await evaluate('const r=document.querySelector("#vdTabVideo").getBoundingClientRect();return {x:r.x+r.width/2,y:r.y+r.height/2}');
+ await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:rect.x,y:rect.y});
+ await send('Input.dispatchMouseEvent',{type:'mousePressed',x:rect.x,y:rect.y,button:'left',clickCount:1});
+ await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:rect.x,y:rect.y,button:'left',clickCount:1});
+ await pass('Actual mouse click switches Video Director','return document.querySelector("#vdTabVideo").getAttribute("aria-pressed")==="true" && document.querySelector("#standardMode").hidden && !document.querySelector("#videoDirectorRoot").hidden');
+ await evaluate('document.querySelector("#vdDemo").click();return true');
  await poll('return document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:")','demo compilation');
  await pass('Synthetic demo and actor references appear','return !document.querySelector("#videoDirectorRoot").hidden && document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:") && document.querySelector("#vdManifest").textContent.includes("male_ref")');
  await evaluate('document.querySelector("#vdShotFields .vd-item .vd-retention button").click();return true');
@@ -93,6 +99,6 @@ try{
 }finally{
  try{ws?.close();}catch{}
  if(chrome){const exit=new Promise(ok=>chrome.once('exit',ok));chrome.kill();await Promise.race([exit,delay(2500)]);}
- await new Promise(ok=>server.close(ok));
+ if(server.listening)await new Promise(ok=>server.close(ok));
  try{rmSync(profile,{recursive:true,force:true,maxRetries:8,retryDelay:200});}catch(e){console.error('Chrome cleanup:',e.message);}
 }
