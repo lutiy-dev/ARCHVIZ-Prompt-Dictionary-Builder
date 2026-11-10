@@ -77,7 +77,8 @@ main .section-body>label,main .section-body>button,.save{flex:none}
 
 /* Desktop: grow the workspace to the viewport; keep results at the bottom. */
 @media(min-width:1101px){
- body{height:100dvh;display:grid;grid-template-rows:auto minmax(0,1fr)}
+ /* Header, mode tabs, then the visible workspace: tabs must not shrink. */
+ body{height:100dvh;display:grid;grid-template-rows:auto auto minmax(0,1fr)}
  .shell{width:100%;min-height:0;margin:0;display:grid;grid-template-rows:auto auto minmax(620px,1fr) auto;padding-bottom:16px}
  main{min-height:0;grid-template-rows:minmax(0,1fr)}
  main>section{height:auto;min-height:0}
