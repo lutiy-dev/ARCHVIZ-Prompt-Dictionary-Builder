@@ -56,6 +56,24 @@ try{
  await send('Runtime.enable');await send('Page.enable');await send('Network.enable');
  await poll('return document.querySelector("#videoDirectorRoot")?.dataset.ready==="true" && document.querySelector("#vdTabVideo")?.dataset.ready==="true"','app initialization');
  await pass('Standard visible on first load','return !document.querySelector("#standardMode").hidden && document.querySelector("#videoDirectorRoot").hidden');
+
+ async function mouseClick(selector){
+  const point=await evaluate('const el=document.querySelector('+JSON.stringify(selector)+');const r=el.getBoundingClientRect();const x=r.x+r.width/2,y=r.y+r.height/2;const hit=document.elementFromPoint(x,y);return {x,y,hit:hit?.id||hit?.className,reachable:hit===el||el.contains(hit)}');
+  assert.ok(point.reachable,'Pointer blocked for '+selector+': '+JSON.stringify(point));
+  await send('Input.dispatchMouseEvent',{type:'mouseMoved',x:point.x,y:point.y});
+  await send('Input.dispatchMouseEvent',{type:'mousePressed',x:point.x,y:point.y,button:'left',clickCount:1});
+  await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:point.x,y:point.y,button:'left',clickCount:1});
+ }
+ for(const [width,height] of [[1920,1080],[1366,768],[1101,800],[1100,800],[800,900],[390,844]]){
+  await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+  await evaluate('window.scrollTo(0,0);return true');
+  await pass('Mode tabs have space at '+width+'x'+height,'const nav=document.querySelector(".vd-mode-tabs"),r=nav.getBoundingClientRect(),b=document.querySelector("#vdTabVideo").getBoundingClientRect();return b.height>0 && b.top>=r.top && b.bottom<=r.bottom');
+  await mouseClick('#vdTabVideo');
+  await pass('Pointer opens video at '+width+'x'+height,'return !document.querySelector("#videoDirectorRoot").hidden && document.querySelector("#standardMode").hidden');
+  await mouseClick('#vdTabStandard');
+  await pass('Pointer returns to standard at '+width+'x'+height,'return document.querySelector("#videoDirectorRoot").hidden && !document.querySelector("#standardMode").hidden');
+ }
+ await send('Emulation.clearDeviceMetricsOverride');
  const keys=await evaluate('return [localStorage.getItem("archviz-prompt-studio-v1"),localStorage.getItem("archviz-prompt-library-v1")]');
  await evaluate('document.querySelector("#vdTabVideo").click();document.querySelector("#vdDemo").click();return true');
  await poll('return document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:")','demo compilation');
