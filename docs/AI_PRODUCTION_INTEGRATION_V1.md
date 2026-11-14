@@ -70,3 +70,6 @@ A separate LAB module `src/production/edge-qc.mjs` computes Sobel edge evidence 
 
 ## Windows CI first failure and correction
 On the first Windows Tauri CI, `cargo` failed because Tauri build.rs required `binaries/ovizlab-mcp-x86_64-pc-windows-msvc.exe` before it had been compiled. Root cause: sidecar was declared inside Tauri Cargo package itself. Correction candidate moves the same Rust source to an independently compiled `src-mcp` crate and stages its binary before invoking the Tauri bundler. This is a change to packaging only; Windows rebuild must pass before any INSTALLER PASS statement.
+
+## ComfyUI model inventory check
+Before a user approves a queue request, the execution gate checks supported loader-name inputs (`ckpt_name`, `lora_name`, `vae_name`, `unet_name`, `clip_name`, `control_net_name`, etc.) against exact `object_info` choice lists. Legacy list choices and newer COMBO options are supported. Missing choices or a substituted/absent model cause BLOCKED; no model download or substitution. Unknown custom loaders are not proof of verified dependencies. Tests are synthetic; real installed model inventory has not been obtained.

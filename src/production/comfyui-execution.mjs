@@ -18,6 +18,22 @@ export function graphDigest(graph){
  if(!isRecord(graph)||!Object.keys(graph).length)BLOCK('invalid API prompt');
  return createHash('sha256').update(JSON.stringify(stable(graph))).digest('hex');
 }
+/** Exact installed model choices from object_info; unknown custom loaders remain unverified. */
+export function verifySelectedModels(graph,objectInfo){
+ const keys=/^(ckpt_name|lora_name|vae_name|unet_name|clip_name|control_net_name|model_name|upscale_model_name|style_model_name)$/i;
+ let verified=0;
+ for(const node of Object.values(graph)){
+  for(const [key,value] of Object.entries(node.inputs||{})){
+   if(!keys.test(key)||typeof value!=='string')continue;
+   const types=objectInfo?.[node.class_type]?.input;
+   const descriptor=types?.required?.[key]||types?.optional?.[key];
+   const choices=Array.isArray(descriptor?.[0])?descriptor[0]:(descriptor?.[0]==='COMBO'?descriptor?.[1]?.options:null);
+   if(!Array.isArray(choices)||!choices.includes(value))BLOCK('model not in current node inventory: '+node.class_type+'.'+key);
+   verified++;
+  }
+ }
+ return {verified,model_selection_verified:verified>0};
+}
 export function createComfyExecutionGate({origin='http://127.0.0.1:8188',fetchImpl=globalThis.fetch}={}){
  const url=new URL(origin);
  if(url.protocol!=='http:'||!['127.0.0.1','localhost','[::1]'].includes(url.hostname)||url.pathname!=='/'||url.search||url.hash||url.username||url.password)BLOCK('only direct local ComfyUI');
@@ -35,9 +51,10 @@ export function createComfyExecutionGate({origin='http://127.0.0.1:8188',fetchIm
    const result=validateComfyPrompt(graph,objectInfo);
    if(!result.valid)BLOCK('unsupported workflow: '+result.errors.join('; '));
    if(!ID.test(clientId))BLOCK('invalid client id');
+   const modelAudit=verifySelectedModels(graph,objectInfo);
    const copy=structuredClone(graph),digest=graphDigest(copy);
-   approvedToken=null;candidate={graph:copy,digest,clientId};
-   return {status:'REVIEW_REQUIRED',digest,node_count:result.node_count,dependencies:result.dependencies,client_id:clientId,model_selection_verified:false,queued:false};
+   approvedToken=null;candidate={graph:copy,digest,clientId,modelSelectionVerified:modelAudit.model_selection_verified};
+   return {status:'REVIEW_REQUIRED',digest,node_count:result.node_count,dependencies:result.dependencies,client_id:clientId,model_selection_verified:modelAudit.model_selection_verified,model_count:modelAudit.verified,queued:false};
   },
   /** Must be called only as direct result of a human confirmation in a trusted UI. */
   approve({digest,userConfirmed=false}={}){
@@ -50,7 +67,7 @@ export function createComfyExecutionGate({origin='http://127.0.0.1:8188',fetchIm
    const payload={prompt:candidate.graph,client_id:candidate.clientId};
    const response=await send('/prompt',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
    if(!ID.test(response?.prompt_id))throw Error('ComfyUI returned invalid prompt_id');
-   return {status:'QUEUED_UNVERIFIED',prompt_id:response.prompt_id,digest:candidate.digest,model_selection_verified:false,geometry_verified:false};
+   return {status:'QUEUED_UNVERIFIED',prompt_id:response.prompt_id,digest:candidate.digest,model_selection_verified:candidate.modelSelectionVerified,geometry_verified:false};
   },
   async history(promptId){
    if(!ID.test(promptId))BLOCK('invalid prompt ID');

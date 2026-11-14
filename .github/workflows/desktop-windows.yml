@@ -8,6 +8,9 @@ on:
       - 'src/production/desktop-bridge.mjs'
       - '.github/workflows/desktop-windows.yml'
   workflow_dispatch:
+concurrency:
+  group: desktop-windows-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
 permissions:
   contents: read
 jobs:
