@@ -64,3 +64,6 @@ Tauri 2 Rust source and native Rust MCP read-only diagnostic sidecar were added 
 
 ## Skills Router Git blob integrity checkpoint
 The server-side Skills Router can now verify the exact Git blob SHA-1 obtained independently from a pinned GitHub tree entry. A mismatching fetched Skill is blocked. Without a trusted expectedBlobSha it remains SOURCE_FETCHED_AT_PINNED_SHA and verified_source_integrity=false; no tool execution is ever granted by the Skill content. Actual live skill discovery/execution remains a separate runtime gate.
+
+## Protected-region edge QC checkpoint
+A separate LAB module `src/production/edge-qc.mjs` computes Sobel edge evidence within an explicit one-channel protected-area mask on strictly same-size prealigned RGBA frames. It reports missing and unexpected edge ratios with a configurable tolerance. Synthetic tests include a uniform lighting shift (no extra false mismatch) and moved rectangular geometry (detected advisory mismatch). Masks must come from trusted Corona ID/manual selection; there is no automatic landmark alignment and no calibrated real-render benchmark yet. Output always REVIEW_REQUIRED, geometry_verified=false and alignment_verified=false.
