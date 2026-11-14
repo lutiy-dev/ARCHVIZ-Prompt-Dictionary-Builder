@@ -1,8 +1,11 @@
 import {prepareTask,authorizeToolCall,integrationStatus,evaluateGeometryQC,appendHistory} from './core.mjs';
+import {readHistory,addHistoryRecord,exportHistory} from './history-store.mjs';
 
 const $=id=>document.getElementById(id);
 const names={art_director:'AI Art Director',geometry_guardian:'Geometry Guardian',skills:'OVizLAB Skills',mcp_comfyui:'MCP / ComfyUI',history:'Production History'};
-let chosen='art_director',currentTask=null,history=[];
+const initialHistory=readHistory(localStorage);
+let chosen='art_director',currentTask=null,history=initialHistory.records;
+let historyError=initialHistory.error;
 function node(tag,value){const e=document.createElement(tag);if(value!==undefined)e.textContent=value;return e;}
 function field(label,id,placeholder='',multiline=false){
  const wrap=node('label');wrap.className='production-field';
@@ -30,8 +33,10 @@ function redraw(){
   p.append(action('Prepare task · no execution',()=>{
    try{const id='task_'+(crypto.randomUUID?.()||String(Date.now())).replaceAll('-','').slice(0,20);
     currentTask=prepareTask({id,project_id:$('productionProject').value.trim(),shot_id:$('productionShot').value.trim()||null,cabinet:'art_director',description:$('productionBrief').value.trim(),architecture_lock:$('productionLock').value});
-    history=appendHistory(history,{id:'log_'+id,task_id:id,status:'GENERATED',note:'Prepared in Web/PWA with no AI call'});
-    result(currentTask);feedback('GENERATED · локальное задание, AI не подключён');
+    const entry={id:'log_'+id,task_id:id,status:'GENERATED',note:'Prepared in Web/PWA with no AI call'};
+    history=appendHistory(history,entry);
+    try{if(historyError)throw Error(historyError);addHistoryRecord(localStorage,entry)}catch(error){historyError=error.message;feedback('GENERATED · task prepared; history not persisted: '+historyError,true);result(currentTask);return}
+    result(currentTask);feedback('GENERATED · локальное задание сохранено в отдельную историю, AI не подключён');
    }catch(e){feedback('BLOCKED · '+e.message,true);}
   }));host.append(p);
  }else if(chosen==='geometry_guardian'){
@@ -57,9 +62,10 @@ function redraw(){
    result(decision);feedback('Tool call denied · '+decision.reason);
   }));host.append(p);
  }else{
-  const p=panel('Production History · Session','История этой вкладки, без постоянного хранения и без межустройственной синхронизации.');
+  const p=panel('Production History · Local','История хранится только в данном браузере под отдельным ключом. Экспортируйте JSON для резервной копии.');
+  if(historyError)p.append(node('p','BLOCKED: existing history cannot be safely read or overwritten: '+historyError));
   const pre=node('pre',JSON.stringify(history,null,2));pre.className='production-history';p.append(pre);
-  p.append(action('Export session JSON',()=>exportJson('archviz-production-session.json',{schema_version:1,records:history})));host.append(p);
+  p.append(action('Export history JSON',()=>{if(historyError){feedback('BLOCKED · history unreadable; original storage retained',true);return;}try{exportJson('archviz-production-history.json',JSON.parse(exportHistory(localStorage)))}catch(e){feedback('BLOCKED · '+e.message,true)}}));host.append(p);
  }
 }
 for(const [name,label] of Object.entries(names)){const b=action(label,()=>{chosen=name;redraw();feedback('LAB · внешние интеграции отключены')});b.dataset.cabinet=name;$('productionCabinets').append(b);}

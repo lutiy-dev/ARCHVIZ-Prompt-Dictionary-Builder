@@ -44,3 +44,6 @@ MCP smoke command (requires Node 22 installed):
 Connect only through MCP stdio; the server is **not** an automatically launched Tauri sidecar nor a production-ready installer. Tests use synthetic metadata, not user's real models, paths or client media.
 
 **Still not implemented**: Windows Tauri binary or automatic sidecar startup; secure user consent boundary for actual ComfyUI queue; real OpenAI API invocation; geometry image registration/diff model; interactive persistent History UI; final integrated cabinet acceptance. Single-stage release gate remains OPEN. No billing or external actions during tests.
+
+## Persistent History UI checkpoint
+The LAB History cabinet now reads and writes only `archviz-production-history-v1`, independently from legacy keys. Corrupt history is not overwritten; its error is visible and export is disabled until recovery. History survives a browser reload, but not cross-device and not browser-data clearing. PWA shell cache v6 includes this module; CI includes browser regression for separate history key. No changes to existing Standard/Video Director data.

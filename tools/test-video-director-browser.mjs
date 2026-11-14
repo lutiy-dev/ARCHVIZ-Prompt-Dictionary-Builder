@@ -61,6 +61,8 @@ try{
  await pass('Production cabinet navigation','return !document.querySelector("#productionRoot").hidden && document.querySelector("#standardMode").hidden && document.querySelector("#productionCabinets").querySelectorAll("button").length===5');
  await evaluate('document.querySelector("#productionProject").value="project_01";document.querySelector("#productionBrief").value="Preserve hotel geometry";document.querySelector(".production-panel button").click();return true');
  await pass('Art Director prepares a safe local draft','return document.querySelector("#productionTask").value.includes("archviz_production_task") && document.querySelector("#productionTask").value.includes("HARD")');
+ await pass('Independent Production History key written','return JSON.parse(localStorage.getItem("archviz-production-history-v1")).records.length===1');
+
  await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="mcp_comfyui").click();return true');
  await pass('MCP integrations are disconnected by default','return document.querySelector("#productionContent").textContent.includes("NOT CONNECTED")');
  await evaluate('document.querySelector("#vdTabStandard").click();return true');
@@ -102,6 +104,7 @@ try{
  await evaluate('window.__vdBeforeReload=1;return true');
  await send('Page.reload',{ignoreCache:false});
  await poll('return window.__vdBeforeReload===undefined && document.readyState==="complete" && !!document.querySelector("#vdProjects") && document.querySelector("#vdProjects").options.length>1','project persists after reload');
+ await pass('Production History persists after browser reload','return JSON.parse(localStorage.getItem("archviz-production-history-v1")).records.length===1');
  await pass('Video Director project persists','return localStorage.getItem("archviz-video-director-v1").includes("Browser Smoke Preset")');
  const swDiag=await evaluate('return {secure:isSecureContext,supported:!!navigator.serviceWorker,controlled:!!navigator.serviceWorker?.controller,registrations:await navigator.serviceWorker.getRegistrations().then(rs=>rs.map(r=>({scope:r.scope,active:r.active?.state,installing:r.installing?.state,waiting:r.waiting?.state}))),caches:await caches.keys()}');console.log('PWA DIAGNOSTICS:',JSON.stringify(swDiag));
  await send('Page.navigate',{url});
