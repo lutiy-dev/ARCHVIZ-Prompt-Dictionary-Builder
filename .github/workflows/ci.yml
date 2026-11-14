@@ -34,6 +34,7 @@ jobs:
           node --check src/production/history-store.mjs
           node --check src/production/mcp-sidecar.mjs
           node --check tools/desktop-lab.mjs
+          node --check src/production/image-qc.mjs
       - name: Unit tests
         run: node --test src/*.test.mjs src/video-director/*.test.mjs src/production/*.test.mjs
       - name: Desktop LAB subprocess and HTTP integration

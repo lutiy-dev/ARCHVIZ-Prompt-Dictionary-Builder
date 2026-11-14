@@ -1,5 +1,6 @@
 import {prepareTask,authorizeToolCall,integrationStatus,evaluateGeometryQC,appendHistory} from './core.mjs';
 import {readHistory,addHistoryRecord,exportHistory} from './history-store.mjs';
+import {compareImageFiles} from './image-qc.mjs';
 
 const $=id=>document.getElementById(id);
 const names={art_director:'AI Art Director',geometry_guardian:'Geometry Guardian',skills:'OVizLAB Skills',mcp_comfyui:'MCP / ComfyUI',history:'Production History'};
@@ -42,6 +43,23 @@ function redraw(){
  }else if(chosen==='geometry_guardian'){
   const p=panel('Geometry Guardian · Advisory QC','Проверка только вручную введённых метрик. Изображения не анализируются; автоматический PASS запрещён.');
   for(const [label,id,placeholder] of [['Original ID','productionSource','original'],['AI Result ID','productionResult','result'],['Alignment error px','productionAlignment','0'],['Contour mismatch ratio 0-1','productionContour','0'],['Reviewed regions','productionRegions','0'],['Protected regions','productionProtected','0']])p.append(field(label,id,placeholder));
+  const files=node('div');files.className='production-image-pair';
+  const imageInput=(title,id)=>{const row=node('label');row.className='production-field';const input=node('input');input.type='file';input.accept='image/png,image/jpeg,image/webp';input.id=id;row.append(node('span',title),input);return row};
+  files.append(imageInput('Original Corona render','productionOriginalFile'),imageInput('AI candidate','productionCandidateFile'));
+  p.append(files);
+  p.append(action('Compare local image pixels · LAB',async()=>{
+   const a=$('productionOriginalFile')?.files?.[0],b=$('productionCandidateFile')?.files?.[0];
+   if(!a||!b){feedback('BLOCKED · select two image files',true);return}
+   try{
+    feedback('Comparing images locally · no cloud upload');
+    const comparison=await compareImageFiles(a,b);
+    result(comparison.report);
+    const previous=document.getElementById('productionDifferenceCanvas');previous?.remove();
+    const overlay=comparison.canvas;overlay.id='productionDifferenceCanvas';overlay.setAttribute('aria-label','Red regions indicate changed pixels, not confirmed geometry defects');overlay.className='production-difference-canvas';
+    p.append(node('p','Difference overlay · red = pixel change; verify windows/facade manually'),overlay);
+    feedback('REVIEW REQUIRED · pixel difference is not geometry validation');
+   }catch(e){feedback('BLOCKED · '+e.message,true)}
+  }));
   p.append(action('Review metrics',()=>{try{
    const v=evaluateGeometryQC({source_id:$('productionSource').value.trim(),result_id:$('productionResult').value.trim(),alignment_error_px:Number($('productionAlignment').value),contour_mismatch_ratio:Number($('productionContour').value),reviewed_regions:Number($('productionRegions').value),protected_regions:Number($('productionProtected').value)});
    result(v);feedback('REVIEW REQUIRED · оценка не подтверждает сохранение геометрии');

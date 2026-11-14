@@ -206,3 +206,7 @@ main .section-body>label,main .section-body>button,.save{flex:none}
 .production-root :is(button,input,select,textarea):focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
 @media(max-width:1200px){.production-layout{grid-template-columns:minmax(175px,220px) minmax(0,1fr)}.production-output{grid-column:2}}
 @media(max-width:720px){.production-root{padding-inline:12px}.production-layout{display:flex;flex-direction:column}.production-layout>*{width:100%}.production-cabinets{flex-direction:row;flex-wrap:wrap}.production-cabinets button{flex:1 1 125px}}
+
+.production-image-pair{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.production-difference-canvas{max-width:100%;height:auto;display:block;border:1px solid var(--border);background:var(--soft)}
+@media(max-width:720px){.production-image-pair{grid-template-columns:1fr}}
