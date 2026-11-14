@@ -2,6 +2,7 @@ import {prepareTask,authorizeToolCall,integrationStatus,evaluateGeometryQC,appen
 import {readHistory,addHistoryRecord,exportHistory} from './history-store.mjs';
 import {compareImageFiles} from './image-qc.mjs';
 import {getDesktopStatus,probeComfyUi} from './desktop-bridge.mjs';
+import {validateOfflineComfyFiles} from './offline-comfyui-check.mjs';
 import {stageArtCandidate,decideArtCandidate} from './candidate-review.mjs';
 
 const $=id=>document.getElementById(id);
@@ -99,7 +100,7 @@ function redraw(){
    feedback('NOT VERIFIED · метаданные проверены, источник не загружен');
   }));host.append(p);
  }else if(chosen==='mcp_comfyui'){
-  const p=panel('MCP / ComfyUI · Connection Readiness','Web/PWA не запускает локальные процессы. Защищённый desktop bridge пока отсутствует.');
+  const p=panel('MCP / ComfyUI · Connection Readiness','Web/PWA не запускает локальные процессы. Desktop имеет ограниченный read-only bridge; очередь генерации пока не подключена.');
   for(const name of ['OpenAI API','Local MCP','ComfyUI'])p.append(node('div',name+' · '+integrationStatus().status+' / NOT CONNECTED'));
   const native=node('div','Desktop Sidecar · CHECKING');p.append(native);
   void getDesktopStatus().then(s=>{native.textContent='Desktop Sidecar · '+s.runtime+(s.mcp_ready?' / STDIO READY':' / NOT CONNECTED');});
@@ -108,6 +109,17 @@ function redraw(){
    const state=await probeComfyUi();
    result(state);
    feedback('ComfyUI · '+state.status+(state.reason?' / '+state.reason:''));
+  }));
+  const offline=node('div');offline.className='production-image-pair';
+  for(const [label,id] of [['ComfyUI API prompt (.json)','productionComfyApiFile'],['ComfyUI object_info (.json)','productionComfyInfoFile']]){
+   const l=node('label');l.className='production-field';const input=node('input');input.type='file';input.accept='.json,application/json';input.id=id;l.append(node('span',label),input);offline.append(l);
+  }
+  p.append(offline);
+  p.append(action('Validate API prompt offline · no execution',async()=>{
+   try{
+    const report=await validateOfflineComfyFiles($('productionComfyApiFile')?.files?.[0],$('productionComfyInfoFile')?.files?.[0]);
+    result(report);feedback(report.status+' · '+(report.valid?'structural check only; runtime NOT TESTED':report.errors.join('; ')),!report.valid);
+   }catch(e){feedback('BLOCKED · '+e.message,true)}
   }));
   p.append(action('Check execution policy (dry-run)',()=>{
    const decision=authorizeToolCall({server_id:'comfyui',tool_id:'queue',effect:'execute'},{allow:[]});
