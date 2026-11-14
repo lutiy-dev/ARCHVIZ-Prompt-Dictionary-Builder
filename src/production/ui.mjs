@@ -2,11 +2,12 @@ import {prepareTask,authorizeToolCall,integrationStatus,evaluateGeometryQC,appen
 import {readHistory,addHistoryRecord,exportHistory} from './history-store.mjs';
 import {compareImageFiles} from './image-qc.mjs';
 import {getDesktopStatus} from './desktop-bridge.mjs';
+import {stageArtCandidate,decideArtCandidate} from './candidate-review.mjs';
 
 const $=id=>document.getElementById(id);
 const names={art_director:'AI Art Director',geometry_guardian:'Geometry Guardian',skills:'OVizLAB Skills',mcp_comfyui:'MCP / ComfyUI',history:'Production History'};
 const initialHistory=readHistory(localStorage);
-let chosen='art_director',currentTask=null,history=initialHistory.records;
+let chosen='art_director',currentTask=null,stagedCandidate=null,history=initialHistory.records;
 let historyError=initialHistory.error;
 function node(tag,value){const e=document.createElement(tag);if(value!==undefined)e.textContent=value;return e;}
 function field(label,id,placeholder='',multiline=false){
@@ -34,13 +35,37 @@ function redraw(){
   const lock=node('select');lock.id='productionLock';for(const value of ['HARD','SOFT','EDITABLE']){const o=node('option',value);o.value=value;lock.append(o);}l.append(lock);p.append(l);
   p.append(action('Prepare task · no execution',()=>{
    try{const id='task_'+(crypto.randomUUID?.()||String(Date.now())).replaceAll('-','').slice(0,20);
+    stagedCandidate=null;
     currentTask=prepareTask({id,project_id:$('productionProject').value.trim(),shot_id:$('productionShot').value.trim()||null,cabinet:'art_director',description:$('productionBrief').value.trim(),architecture_lock:$('productionLock').value});
     const entry={id:'log_'+id,task_id:id,status:'GENERATED',note:'Prepared in Web/PWA with no AI call'};
     history=appendHistory(history,entry);
     try{if(historyError)throw Error(historyError);addHistoryRecord(localStorage,entry)}catch(error){historyError=error.message;feedback('GENERATED · task prepared; history not persisted: '+historyError,true);result(currentTask);return}
     result(currentTask);feedback('GENERATED · локальное задание сохранено в отдельную историю, AI не подключён');
    }catch(e){feedback('BLOCKED · '+e.message,true);}
-  }));host.append(p);
+  }));
+  p.append(field('Structured AI Candidate JSON · review only','productionCandidateJson','Paste structured output from an approved AI call',true));
+  const reviewLabel=node('label');reviewLabel.className='production-field';
+  const reviewBox=node('input');reviewBox.type='checkbox';reviewBox.id='productionGeometryAcknowledged';
+  reviewLabel.append(reviewBox,node('span','Geometry risk reviewed manually (not an automatic QC PASS)'));p.append(reviewLabel);
+  p.append(action('Stage candidate JSON',()=>{
+   try{
+    if(!currentTask)throw Error('Prepare an Art Director task first');
+    stagedCandidate=stageArtCandidate(currentTask,$('productionCandidateJson').value);
+    result(stagedCandidate);feedback('CANDIDATE_REVIEW_REQUIRED · source project unchanged');
+   }catch(e){feedback('BLOCKED · '+e.message,true)}
+  }));
+  for(const decision of ['ACCEPTED','REJECTED'])p.append(action(decision==='ACCEPTED'?'Accept recommendations':'Reject recommendations',()=>{
+   try{
+    const decided=decideArtCandidate(stagedCandidate,{decision,userConfirmed:true,geometryReviewed:$('productionGeometryAcknowledged').checked});
+    const id='decision_'+(crypto.randomUUID?.()||String(Date.now())).replaceAll('-','').slice(0,18);
+    const entry={id,task_id:decided.task_id,status:decision,note:'Recommendation decision only; project NOT modified'};
+    if(historyError)throw Error(historyError);
+    addHistoryRecord(localStorage,entry);
+    history=appendHistory(history,entry);
+    stagedCandidate=null;result(decided);feedback(decision+' · recommendations only; no project data modified');
+   }catch(e){feedback('BLOCKED · '+e.message,true)}
+  }));
+  host.append(p);
  }else if(chosen==='geometry_guardian'){
   const p=panel('Geometry Guardian · Advisory QC','Проверка только вручную введённых метрик. Изображения не анализируются; автоматический PASS запрещён.');
   for(const [label,id,placeholder] of [['Original ID','productionSource','original'],['AI Result ID','productionResult','result'],['Alignment error px','productionAlignment','0'],['Contour mismatch ratio 0-1','productionContour','0'],['Reviewed regions','productionRegions','0'],['Protected regions','productionProtected','0']])p.append(field(label,id,placeholder));

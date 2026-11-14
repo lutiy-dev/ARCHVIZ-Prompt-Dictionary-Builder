@@ -61,6 +61,8 @@ try{
  await pass('Production cabinet navigation','return !document.querySelector("#productionRoot").hidden && document.querySelector("#standardMode").hidden && document.querySelector("#productionCabinets").querySelectorAll("button").length===5');
  await evaluate('document.querySelector("#productionProject").value="project_01";document.querySelector("#productionBrief").value="Preserve hotel geometry";document.querySelector(".production-panel button").click();return true');
  await pass('Art Director prepares a safe local draft','return document.querySelector("#productionTask").value.includes("archviz_production_task") && document.querySelector("#productionTask").value.includes("HARD")');
+ await pass('Art Director candidate review requires explicit input','return document.querySelector("#productionCandidateJson")?.tagName==="TEXTAREA" && document.querySelector("#productionContent").textContent.includes("Accept recommendations")');
+
  await pass('Independent Production History key written','return JSON.parse(localStorage.getItem("archviz-production-history-v1")).records.length===1');
 
  await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="mcp_comfyui").click();return true');

@@ -76,3 +76,6 @@ Before a user approves a queue request, the execution gate checks supported load
 
 ## Art Director structured-response candidate checkpoint
 OpenAI request builder now sends an explicit strict JSON schema for improvement proposals, geometry risk and human review. Server adapter parses response into `CANDIDATE_REVIEW_REQUIRED`; it never edits original projects or declares geometry PASS. A real API call is still gated by the existing billing consent and was NOT run in this checkpoint. Schema contract is validated with synthetic tests. Actual AI UI interaction, secure OS credential storage and approved live model execution remain BLOCKED.
+
+## AI Art Director Accept/Reject checkpoint
+The Art Director LAB can stage strict AI Candidate JSON locally and explicitly ACCEPT or REJECT its recommendations, recording the decision in the isolated history key. A candidate is bound to the current task; risky proposals under HARD lock require a separate manual review acknowledgement. It NEVER edits the original project or claims geometry has been validated. A real OpenAI API invocation and Video Director write-back are still NOT TESTED. Service Worker cache v9 includes this offline review feature.
