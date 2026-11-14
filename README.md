@@ -233,3 +233,7 @@ Browser acceptance is separately run in CI using real headless Chromium via DevT
 ## Windows Desktop LAB (development only)
 
 With Node.js 22+ already installed, run `tools\\start-desktop-lab.cmd` on Windows. The launcher starts the local, private MCP stdio subprocess and browser-served UI, then stops its owned process when the launcher is closed. This is not a Tauri package or a verified Windows installer. See [Desktop LAB instructions](docs/DESKTOP_LAB.md). The published PWA is unchanged.
+
+
+### Tauri 2 Desktop Candidate
+An isolated Rust-native MCP sidecar and Windows installer source scaffold are available in `src-tauri/`. This is not a released or Windows-runtime-certified build; see [Desktop build and gate](docs/TAURI_DESKTOP.md). The existing browser PWA remains untouched until approved merge.

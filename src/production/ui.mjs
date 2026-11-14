@@ -1,6 +1,7 @@
 import {prepareTask,authorizeToolCall,integrationStatus,evaluateGeometryQC,appendHistory} from './core.mjs';
 import {readHistory,addHistoryRecord,exportHistory} from './history-store.mjs';
 import {compareImageFiles} from './image-qc.mjs';
+import {getDesktopStatus} from './desktop-bridge.mjs';
 
 const $=id=>document.getElementById(id);
 const names={art_director:'AI Art Director',geometry_guardian:'Geometry Guardian',skills:'OVizLAB Skills',mcp_comfyui:'MCP / ComfyUI',history:'Production History'};
@@ -74,7 +75,9 @@ function redraw(){
   }));host.append(p);
  }else if(chosen==='mcp_comfyui'){
   const p=panel('MCP / ComfyUI · Connection Readiness','Web/PWA не запускает локальные процессы. Защищённый desktop bridge пока отсутствует.');
-  for(const name of ['OpenAI API','Local MCP','ComfyUI','Windows Sidecar'])p.append(node('div',name+' · '+integrationStatus().status+' / NOT CONNECTED'));
+  for(const name of ['OpenAI API','Local MCP','ComfyUI'])p.append(node('div',name+' · '+integrationStatus().status+' / NOT CONNECTED'));
+  const native=node('div','Desktop Sidecar · CHECKING');p.append(native);
+  void getDesktopStatus().then(s=>{native.textContent='Desktop Sidecar · '+s.runtime+(s.mcp_ready?' / STDIO READY':' / NOT CONNECTED');});
   p.append(action('Check execution policy (dry-run)',()=>{
    const decision=authorizeToolCall({server_id:'comfyui',tool_id:'queue',effect:'execute'},{allow:[]});
    result(decision);feedback('Tool call denied · '+decision.reason);

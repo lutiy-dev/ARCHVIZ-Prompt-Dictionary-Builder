@@ -35,8 +35,12 @@ jobs:
           node --check src/production/mcp-sidecar.mjs
           node --check tools/desktop-lab.mjs
           node --check src/production/image-qc.mjs
+          node --check src/production/desktop-bridge.mjs
+          node --check tools/prepare-desktop.mjs
       - name: Unit tests
         run: node --test src/*.test.mjs src/video-director/*.test.mjs src/production/*.test.mjs
+      - name: Verify static Desktop asset assembly
+        run: node tools/prepare-desktop.mjs --assets-only
       - name: Desktop LAB subprocess and HTTP integration
         run: node --test tools/desktop-lab.test.mjs
       - name: Real Chromium browser and PWA smoke

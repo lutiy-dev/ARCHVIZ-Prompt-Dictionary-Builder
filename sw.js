@@ -1,8 +1,8 @@
 const CACHE_PREFIX = 'archviz-prompt-studio-shell-';
-const CACHE = CACHE_PREFIX + 'v7-production-image-qc';
+const CACHE = CACHE_PREFIX + 'v8-desktop-bridge';
 const ASSETS = ['./', './index.html', './src/style.css', './src/app.mjs',
   './src/composer.mjs', './src/video-director/ui.mjs', './src/video-director/mode-tabs.mjs',
-  './src/video-director/schema.mjs', './src/production/core.mjs', './src/production/ui.mjs', './src/production/history-store.mjs', './src/production/image-qc.mjs', './src/video-director/layer-presets.mjs', './src/video-director/compiler.mjs', './src/video-director/store.mjs', './src/saved-prompts.mjs', './src/prompt-transfer.mjs', './src/translation-ru.mjs',
+  './src/video-director/schema.mjs', './src/production/core.mjs', './src/production/ui.mjs', './src/production/history-store.mjs', './src/production/image-qc.mjs', './src/production/desktop-bridge.mjs', './src/video-director/layer-presets.mjs', './src/video-director/compiler.mjs', './src/video-director/store.mjs', './src/saved-prompts.mjs', './src/prompt-transfer.mjs', './src/translation-ru.mjs',
   './data/dictionary.json', './data/prompt_blocks.json', './data/presets.json',
   './manifest.webmanifest', './pwa-install-capture.js', './icons/icon-192.png',
   './icons/icon-512.png', './icons/icon-maskable-512.png', './icons/apple-touch-icon.png'];
