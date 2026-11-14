@@ -79,3 +79,6 @@ OpenAI request builder now sends an explicit strict JSON schema for improvement 
 
 ## AI Art Director Accept/Reject checkpoint
 The Art Director LAB can stage strict AI Candidate JSON locally and explicitly ACCEPT or REJECT its recommendations, recording the decision in the isolated history key. A candidate is bound to the current task; risky proposals under HARD lock require a separate manual review acknowledgement. It NEVER edits the original project or claims geometry has been validated. A real OpenAI API invocation and Video Director write-back are still NOT TESTED. Service Worker cache v9 includes this offline review feature.
+
+## Windows compilation correction #2
+After the independent MCP crate resolved the resource cycle, the Windows compiler reached `src-tauri/src/main.rs` and reported E0597 on the final `if let` lock guard in `on_window_event`. Minimal fix takes the owned child out of Mutex in a scoped match before calling kill. Rebuild required before asserting PASS; no runtime behavior intentionally changed.

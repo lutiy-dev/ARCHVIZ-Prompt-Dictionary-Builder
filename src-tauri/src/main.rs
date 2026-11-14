@@ -73,9 +73,11 @@ fn main() {
             if matches!(event, tauri::WindowEvent::Destroyed) {
                 let state = window.app_handle().state::<SidecarState>();
                 state.ready.store(false, Ordering::Release);
-                if let Ok(mut guard) = state.child.lock() {
-                    if let Some(child) = guard.take() { let _ = child.kill(); }
-                }
+                let owned_child = match state.child.lock() {
+                    Ok(mut guard) => guard.take(),
+                    Err(_) => None,
+                };
+                if let Some(child) = owned_child { let _ = child.kill(); }
             }
         })
         .run(tauri::generate_context!())
