@@ -56,6 +56,15 @@ try{
  await send('Runtime.enable');await send('Page.enable');await send('Network.enable');
  await poll('return document.querySelector("#videoDirectorRoot")?.dataset.ready==="true" && document.querySelector("#vdTabVideo")?.dataset.ready==="true"','app initialization');
  await pass('Standard visible on first load','return !document.querySelector("#standardMode").hidden && document.querySelector("#videoDirectorRoot").hidden');
+ await poll('return document.querySelector("#productionRoot")?.dataset.ready==="true"','production initialization');
+ await evaluate('document.querySelector("#productionTab").click();return true');
+ await pass('Production cabinet navigation','return !document.querySelector("#productionRoot").hidden && document.querySelector("#standardMode").hidden && document.querySelector("#productionCabinets").querySelectorAll("button").length===5');
+ await evaluate('document.querySelector("#productionProject").value="project_01";document.querySelector("#productionBrief").value="Preserve hotel geometry";document.querySelector(".production-panel button").click();return true');
+ await pass('Art Director prepares a safe local draft','return document.querySelector("#productionTask").value.includes("archviz_production_task") && document.querySelector("#productionTask").value.includes("HARD")');
+ await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="mcp_comfyui").click();return true');
+ await pass('MCP integrations are disconnected by default','return document.querySelector("#productionContent").textContent.includes("NOT CONNECTED")');
+ await evaluate('document.querySelector("#vdTabStandard").click();return true');
+
 
  async function mouseClick(selector){
   const point=await evaluate('const el=document.querySelector('+JSON.stringify(selector)+');const r=el.getBoundingClientRect();const x=r.x+r.width/2,y=r.y+r.height/2;const hit=document.elementFromPoint(x,y);return {x,y,hit:hit?.id||hit?.className,reachable:hit===el||el.contains(hit)}');

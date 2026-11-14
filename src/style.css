@@ -183,3 +183,26 @@ main .section-body>label,main .section-body>button,.save{flex:none}
 .vd-retention-row .vd-field:nth-child(3){grid-column:1/-1}
 .vd-retention-row .vd-action{justify-self:start}
 @media(max-width:720px){.vd-retention-row{grid-template-columns:1fr}.vd-retention-row .vd-field:nth-child(3){grid-column:auto}}
+
+/* AI Production LAB: additive layout using existing theme variables. */
+.production-root{max-width:1800px;margin:0 auto;padding:22px clamp(14px,2.6vw,40px) 60px}
+.production-heading{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;align-items:center;margin-bottom:20px}
+.production-heading h1{font-size:28px;margin:4px 0}.production-heading p{color:var(--text-soft)}
+.production-layout{display:grid;grid-template-columns:minmax(175px,230px) minmax(300px,1.4fr) minmax(270px,.95fr);gap:14px;align-items:start}
+.production-layout>*{min-width:0}
+.production-cabinets{display:flex;flex-direction:column;gap:8px}
+.production-cabinets button{padding:10px;text-align:left;border:1px solid var(--border);border-radius:7px;background:var(--panel);color:var(--foreground)}
+.production-cabinets button.active{border-color:var(--yellow);color:var(--yellow)}
+.production-panel,.production-output{padding:16px;border:1px solid var(--border);border-radius:12px;background:var(--panel);margin-bottom:12px}
+.production-panel h2,.production-output h2{font-size:16px;margin:0 0 10px}
+.production-panel p{color:var(--text-soft);font-size:13px}
+.production-field{display:flex;flex-direction:column;gap:4px;margin:10px 0;font-size:13px}
+.production-field :is(input,textarea,select),.production-output textarea{width:100%;max-width:100%;padding:9px;border:1px solid var(--border);border-radius:6px;background:var(--soft);color:var(--foreground)}
+.production-field textarea{min-height:130px}.production-output textarea{min-height:290px;font:12px/1.5 var(--mono)}
+.production-panel button,.production-output button{padding:8px 12px;margin-top:9px}
+.production-history{white-space:pre-wrap;overflow-wrap:anywhere}
+#productionNotice{font-size:12px;color:var(--text-soft);overflow-wrap:anywhere}
+#productionNotice[data-failed=true]{color:var(--red)}
+.production-root :is(button,input,select,textarea):focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+@media(max-width:1200px){.production-layout{grid-template-columns:minmax(175px,220px) minmax(0,1fr)}.production-output{grid-column:2}}
+@media(max-width:720px){.production-root{padding-inline:12px}.production-layout{display:flex;flex-direction:column}.production-layout>*{width:100%}.production-cabinets{flex-direction:row;flex-wrap:wrap}.production-cabinets button{flex:1 1 125px}}

@@ -18,7 +18,7 @@
     <div class="top-actions"><button id="installApp" type="button">Установить приложение</button><span class="badge">LAB / v0.1</span></div>
   </header>
 
-  <nav class="vd-mode-tabs" aria-label="Prompt Studio modes"><button id="vdTabStandard" class="active" type="button" aria-pressed="true">Standard Prompt</button><button id="vdTabVideo" type="button" aria-pressed="false">Video Director · BETA</button></nav>
+  <nav class="vd-mode-tabs" aria-label="Prompt Studio modes"><button id="vdTabStandard" class="active" type="button" aria-pressed="true">Standard Prompt</button><button id="vdTabVideo" type="button" aria-pressed="false">Video Director · BETA</button><button id="productionTab" type="button" aria-pressed="false">AI Production · LAB</button></nav>
   <section id="videoDirectorRoot" class="vd-root" hidden aria-labelledby="vdTitle">
     <div class="vd-heading"><div><p class="eyebrow">ARCHITECTURE FIRST · LAYERED VIDEO PROMPTS</p><h1 id="vdTitle">Video Director</h1><p>Промпты, референсы и шоты. Видео не генерируется.</p></div><span class="badge">LAB · NOT VIDEO-TESTED</span></div>
     <div class="vd-toolbar"><label>Проекты<select id="vdProjects"></select></label><button id="vdNew" type="button">+ Project</button><button id="vdDemo" type="button">Synthetic NABEREJNAYA Demo</button><button id="vdSave" type="button">Сохранить</button><button id="vdDuplicate" type="button">Дублировать</button><button id="vdExport" type="button">Export JSON</button><label class="vd-file">Import JSON<input id="vdImport" type="file" accept=".json,application/json"></label></div>
@@ -28,6 +28,14 @@
       <div class="vd-columns"><div class="vd-column"><section class="vd-panel"><h2>References · metadata only</h2><p class="vd-note">Файлы не загружаются: их подключение выполняется отдельно в ComfyUI.</p><div id="vdReferences"></div></section><section class="vd-panel"><h2>Characters</h2><div id="vdCharacters"></div></section><section class="vd-panel"><h2>Project-wide Layers</h2><div id="vdGlobalLayers"></div></section><section class="vd-panel"><h2>Camera Presets</h2><div id="vdCameraPresets"></div></section><section class="vd-panel"><h2>Layer Presets</h2><div id="vdLayerPresets"></div></section></div>
       <div class="vd-column"><section class="vd-panel"><h2>Shot List</h2><div id="vdShotList" class="vd-shot-list"></div></section><section class="vd-panel"><h2>Shot Composer</h2><div id="vdShotFields" class="vd-grid"></div></section></div>
       <div class="vd-column"><section class="vd-panel"><h2>Compiled Output</h2><p id="vdStatus" role="status"></p><div id="vdIssues" role="alert"></div><label>English Prompt<textarea id="vdPrompt" readonly rows="18"></textarea></label><div class="vd-actions"><button id="vdCopy" type="button">Copy EN</button><button id="vdExportShot" type="button">Export Shot JSON</button></div><details><summary>Reference Mapping</summary><pre id="vdManifest"></pre><button id="vdCopyMap" type="button">Copy Map</button></details><p class="vd-note">JSON содержит текст и привязки. Это не ComfyUI workflow.</p></section></div></div>
+    </div>
+  </section>
+  <section id="productionRoot" class="production-root" hidden aria-labelledby="productionTitle">
+    <div class="production-heading"><div><p class="eyebrow">ARCHITECTURE FIRST · SAFE INTEGRATION</p><h1 id="productionTitle">AI Production · LAB</h1><p>Art direction, geometry QC, skills, MCP and history — no external execution.</p></div><span class="badge">LOCAL DRAFT · NOT CONNECTED</span></div>
+    <div class="production-layout">
+      <nav id="productionCabinets" class="production-cabinets" aria-label="AI Production cabinets"></nav>
+      <main id="productionContent" class="production-content"></main>
+      <aside class="production-output"><h2>Task / QC output</h2><textarea id="productionTask" readonly aria-label="Production task JSON" rows="18"></textarea><button type="button" id="productionExportTask">Export Task JSON</button><p id="productionNotice" role="status" aria-live="polite">LAB · integrations disconnected</p></aside>
     </div>
   </section>
   <div class="shell" id="standardMode">
@@ -46,5 +54,6 @@
   <script type="module" src="src/app.mjs"></script>
   <script type="module" src="src/video-director/ui.mjs"></script>
   <script type="module" src="src/video-director/mode-tabs.mjs"></script>
+  <script type="module" src="src/production/ui.mjs"></script>
 </body>
 </html>

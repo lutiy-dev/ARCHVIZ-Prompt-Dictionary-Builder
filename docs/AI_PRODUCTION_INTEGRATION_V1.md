@@ -25,3 +25,7 @@ Implement and verify integrated UI for all cabinets; secure Windows local sideca
 Existing CI and browser/PWA tests must remain green. These tests alone do not satisfy v1.0 integration acceptance.
 
 STOP on any unknown migration, model substitution, unsafe tool privilege, unverified executable download, leaked key, live-side-effect request or loss of the verified baseline.
+
+## Additive UI checkpoint
+
+The new AI Production LAB tab contains five independent cabinet panels: Art Director (local non-executable tasks), Geometry Guardian (manual advisory metrics), Skills (SHA metadata format validation only), MCP / ComfyUI (explicitly disconnected and deny-by-default tool dry-run), and session-only History export. No calls to OpenAI, MCP, ComfyUI or any external service. The standard saved-project keys are unchanged. This is a prototype surface, not completion of v1.0. Service Worker precache version advances to include the two new modules.
