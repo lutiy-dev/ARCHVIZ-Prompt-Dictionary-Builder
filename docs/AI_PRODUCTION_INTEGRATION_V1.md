@@ -1,7 +1,7 @@
 # ARCHVIZ Prompt Studio — AI Production Integration v1.0
 
-Status: **IN PROGRESS / FOUNDATION ONLY / NOT RELEASED**
-Baseline main: \`c65ad742d49ae0410c82595f4b11bddcfb0c788d\`
+Status: **IN PROGRESS / PARTIAL INTEGRATION / VALIDATED LAB / NOT RELEASED**
+Baseline main: `c65ad742d49ae0410c82595f4b11bddcfb0c788d`
 
 ## Unified acceptance boundary
 One feature branch, one PR, one final acceptance for all cabinets: Standard, AI Art Director, Video Director, Geometry Guardian, Skills Router, MCP / ComfyUI, Production History. No partial production releases.
@@ -9,11 +9,11 @@ One feature branch, one PR, one final acceptance for all cabinets: Standard, AI 
 ## Ground rules
 - Keep Standard, Video Director and legacy storage schemas unchanged.
 - Geometry truth remains 3ds Max / Corona; AI suggestions require explicit human review.
-- Real backend, MCP tools, ComfyUI runtime, OpenAI API credentials and Tauri desktop packaging are **NOT IMPLEMENTED** by the foundation module.
+- The standalone foundation core does not contain an executable backend. Separate Node/Rust MCP implementations and Tauri Windows source and LAB NSIS build now exist; real OpenAI authorization and ComfyUI runtime are still **NOT VERIFIED**.
 - Existing Pages/PWA remains the production baseline until integration verification.
 - No API secrets, client images, auto-execution or data migrations.
 
-## Current foundation
+## Original foundation checkpoint
 \`src/production/core.mjs\` defines: versioned, non-executable tasks with default HARD architecture lock; exact skill SHA references; deny-by-default tool-call policy; honest connected/verified/tested statuses; append-only history helper; preliminary QC review. It has no DOM, network or filesystem side effects. The QC thresholds (2 pixels registration error, 1.5% contour mismatch) are **illustrative LAB values only**, not calibrated industry thresholds, and **never** produce an automatic PASS or ACCEPTED result.
 
 ## Remaining mandatory work before PR acceptance
@@ -88,3 +88,7 @@ Windows Actions run 43647183905 on commit 2b90dc6d594e4e5add126f345ddb9715ac63cb
 
 ## Native ComfyUI health probe checkpoint
 Tauri backend adds `comfyui_health`, a restricted read-only TCP check against the fixed loopback 127.0.0.1:8188 `/system_stats`. The Desktop UI requires an explicit click and shows CONNECTED_UNVERIFIED/DISCONNECTED; the Web/PWA bridge always returns BLOCKED. This does not validate installed models, grant execution, change workflow, or establish a safe authentication boundary for remote ComfyUI. Real Windows runtime health and generation remain NOT TESTED. Browser cache v10 changes only offline shell assets.
+
+## 15 November 2026 verified status and browser CI flake
+At `af5e90fe5f7b915f6339240e1325f1971ae1d0f5`, Windows Action 43647809885 completed successfully, producing an unsigned NSIS installer and executing the exact bundled Rust MCP stdio handshake, read-only tool and unknown-tool denial. At `15e75a5b5246d77204d7aac542660543f3d84353`, Linux CI run 43648208776 passed 111 unit tests, Desktop LAB and Chromium/PWA smoke. Its parallel CI run 43648213429 had 111 unit tests PASS but failed before browser initialization because Chrome DevTools port did not appear in the 10-second startup window, without any app assertion. A narrow browser-smoke timeout/diagnostic improvement is prepared; final acceptance requires repeatable passing checks.
+A Windows installer from Actions does not prove physical fresh install or lifecycle. Native ComfyUI health probe is new and remains NOT TESTED with running user ComfyUI. Real OpenAI API, Video Director AI runtime integration, model-level ComfyUI queue and geometry benchmark are still release blockers. PR stays Draft. See docs/WINDOWS_QA.md.

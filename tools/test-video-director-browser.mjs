@@ -35,10 +35,11 @@ async function pass(label,js){const got=await evaluate(js);
 try{
  await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
  const url='http://127.0.0.1:'+server.address().port+'/';
- chrome=spawn(exe,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--remote-allow-origins=*','--remote-debugging-port=0','--user-data-dir='+profile,url],{stdio:'ignore'});
+ chrome=spawn(exe,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--remote-allow-origins=*','--remote-debugging-port=0','--user-data-dir='+profile,url],{stdio:['ignore','ignore','pipe']});
+ let chromeStderr='';chrome.stderr.on('data',part=>{chromeStderr=(chromeStderr+part.toString()).slice(-2000)});
  const portFile=join(profile,'DevToolsActivePort');
- for(let i=0;i<100&&!existsSync(portFile);i++)await delay(100);
- assert.ok(existsSync(portFile),'Chrome debugging port not created');
+ for(let i=0;i<250&&!existsSync(portFile)&&chrome.exitCode===null;i++)await delay(100);
+ assert.ok(existsSync(portFile),'Chrome debugging port not created within 25s; exit='+chrome.exitCode+' stderr='+chromeStderr);
  const port=Number(readFileSync(portFile,'utf8').split('\n')[0]);
  let target;
  for(let i=0;i<100&&!target;i++){
