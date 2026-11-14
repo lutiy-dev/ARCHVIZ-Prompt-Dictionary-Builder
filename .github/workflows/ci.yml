@@ -41,6 +41,7 @@ jobs:
           node --check src/production/comfyui-execution.mjs
           node --check src/production/edge-qc.mjs
           node --check tools/prepare-desktop.mjs
+          node --check tools/test-native-mcp.mjs
       - name: Unit tests
         run: node --test src/*.test.mjs src/video-director/*.test.mjs src/production/*.test.mjs
       - name: Verify static Desktop asset assembly

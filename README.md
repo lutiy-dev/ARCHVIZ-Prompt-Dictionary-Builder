@@ -237,3 +237,7 @@ With Node.js 22+ already installed, run `tools\\start-desktop-lab.cmd` on Window
 
 ### Tauri 2 Desktop Candidate
 An isolated Rust-native MCP sidecar and Windows installer source scaffold are available in `src-tauri/`. This is not a released or Windows-runtime-certified build; see [Desktop build and gate](docs/TAURI_DESKTOP.md). The existing browser PWA remains untouched until approved merge.
+
+
+### Windows Desktop QC
+The unsigned Windows LAB installer is produced as a GitHub Actions artifact only after a successful NSIS build. See [Windows Fresh Install QC](docs/WINDOWS_QA.md) before using it; it is not a production release.

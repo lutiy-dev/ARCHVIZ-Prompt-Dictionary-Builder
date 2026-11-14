@@ -18,3 +18,6 @@ STOP before shipping or enabling real execution if packaging fails, Sidecar does
 
 ## Windows build root-cause fix
 The MCP binary is built from a separate `src-mcp` Rust crate before Tauri packaging. Building it from the Tauri Cargo package created a dependency cycle: the Tauri build script required `externalBin` before the sidecar existed. The dedicated crate breaks that cycle. Verify actual Windows CI before calling this fixed.
+
+## Native MCP binary runtime smoke
+After successful Windows packaging, CI executes the exact bundled sidecar executable through stdio, checks initialize, tools/list, a read-only runtime_info call and explicit rejection of an unknown tool. This verifies the binary protocol, not Tauri app GUI launch or automatic Sidecar lifecycle on a user's Windows device.

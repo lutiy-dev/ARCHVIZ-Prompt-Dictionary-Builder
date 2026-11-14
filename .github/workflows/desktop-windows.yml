@@ -28,6 +28,8 @@ jobs:
           targets: x86_64-pc-windows-msvc
       - name: Build Windows Tauri NSIS candidate
         run: npx --yes @tauri-apps/cli@2.12.2 build
+      - name: Native MCP stdio handshake and permission denial
+        run: node tools/test-native-mcp.mjs src-tauri/binaries/ovizlab-mcp-x86_64-pc-windows-msvc.exe
       - name: Inventory installer (no release publication)
         shell: pwsh
         run: |

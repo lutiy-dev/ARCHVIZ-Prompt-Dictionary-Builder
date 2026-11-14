@@ -82,3 +82,6 @@ The Art Director LAB can stage strict AI Candidate JSON locally and explicitly A
 
 ## Windows compilation correction #2
 After the independent MCP crate resolved the resource cycle, the Windows compiler reached `src-tauri/src/main.rs` and reported E0597 on the final `if let` lock guard in `on_window_event`. Minimal fix takes the owned child out of Mutex in a scoped match before calling kill. Rebuild required before asserting PASS; no runtime behavior intentionally changed.
+
+## Confirmed Windows installer build checkpoint
+Windows Actions run 43647183905 on commit 2b90dc6d594e4e5add126f345ddb9715ac63cbcc completed SUCCESS: Rust Tauri release build, NSIS candidate creation and artifact upload `archviz-desktop-windows-lab` (unsigned Windows x64 installer). This is **BUILD VERIFIED**, not fresh install or graphical runtime. The prior Cargo cycle and Rust E0597 errors were fixed and the fixes are reproducible in this run. Subsequent commits require their own CI. Pending next: native MCP stdio executable runtime smoke, physical installation, app startup/shutdown lifecycle, actual OpenAI/ComfyUI and full geometry QC benchmark.
