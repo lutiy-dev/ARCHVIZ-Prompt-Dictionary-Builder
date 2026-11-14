@@ -29,3 +29,18 @@ STOP on any unknown migration, model substitution, unsafe tool privilege, unveri
 ## Additive UI checkpoint
 
 The new AI Production LAB tab contains five independent cabinet panels: Art Director (local non-executable tasks), Geometry Guardian (manual advisory metrics), Skills (SHA metadata format validation only), MCP / ComfyUI (explicitly disconnected and deny-by-default tool dry-run), and session-only History export. No calls to OpenAI, MCP, ComfyUI or any external service. The standard saved-project keys are unchanged. This is a prototype surface, not completion of v1.0. Service Worker precache version advances to include the two new modules.
+
+## Adapter & MCP protocol checkpoint (single-stage PR #24)
+Code included without changing deployed Pages or the legacy storage:
+- `src/production/comfyui-adapter.mjs`: loopback-only read-only health/node inventory, explicit API graph validator against provided node definitions. Queue execution deliberately BLOCKED. Node validation is a LAB subset, not schema-complete ComfyUI compatibility.
+- `src/production/openai-adapter.mjs`: builds structured recommendation-only requests. Explicit model selection, max-output-token cap, `store:false`, and user approval before any request. Credentials must be provided only by a trusted backend. Real API/network NOT TESTED.
+- `src/production/skills-router.mjs`: pinned allowlisted GitHab-Skills text source, network fetch requires opt-in. It does not execute Skill instructions, and byte-integrity verification is NOT YET IMPLEMENTED.
+- `src/production/history-store.mjs`: independent `archviz-production-history-v1` localStorage contract, bounded validation, export, fail-closed corrupted-state preservation. Existing keys unmodified; UI is still session-only.
+- `src/production/mcp-sidecar.mjs`: actual Node 22+ MCP stdio JSON-RPC LAB server with three read-only, pure calculation tools: `prepare_archviz_task`, `review_geometry_metrics`, `validate_comfy_prompt`. No HTTP listener, shell, disk IO, images or model execution.
+- `src/production/adapters.test.mjs`, `src/production/mcp-sidecar.test.mjs`: deterministic mocked-adapter tests plus a real MCP stdio subprocess handshake.
+
+MCP smoke command (requires Node 22 installed):
+`node src/production/mcp-sidecar.mjs`
+Connect only through MCP stdio; the server is **not** an automatically launched Tauri sidecar nor a production-ready installer. Tests use synthetic metadata, not user's real models, paths or client media.
+
+**Still not implemented**: Windows Tauri binary or automatic sidecar startup; secure user consent boundary for actual ComfyUI queue; real OpenAI API invocation; geometry image registration/diff model; interactive persistent History UI; final integrated cabinet acceptance. Single-stage release gate remains OPEN. No billing or external actions during tests.

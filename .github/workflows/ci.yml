@@ -28,6 +28,11 @@ jobs:
           node --check src/video-director/mode-tabs.mjs
           node --check src/production/core.mjs
           node --check src/production/ui.mjs
+          node --check src/production/comfyui-adapter.mjs
+          node --check src/production/skills-router.mjs
+          node --check src/production/openai-adapter.mjs
+          node --check src/production/history-store.mjs
+          node --check src/production/mcp-sidecar.mjs
       - name: Unit tests
         run: node --test src/*.test.mjs src/video-director/*.test.mjs src/production/*.test.mjs
       - name: Real Chromium browser and PWA smoke
