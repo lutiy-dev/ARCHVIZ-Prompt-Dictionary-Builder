@@ -1,0 +1,13 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {prepareTask,authorizeToolCall,integrationStatus,appendHistory,evaluateGeometryQC,STATUS} from './core.mjs';
+const base={id:'task_01',project_id:'project_01',cabinet:'video_director',description:'Preserve hotel facade'};
+test('Default HARD lock and no executable task',()=>{const t=prepareTask(base);assert.equal(t.architecture_lock,'HARD');assert.equal(t.status,STATUS.GENERATED);assert.equal('executor' in t,false)});
+test('Skill pins exact SHA',()=>{assert.throws(()=>prepareTask({...base,skill:{id:'s',repository:'repo',path:'file',sha:'main'}}));assert.equal(prepareTask({...base,skill:{id:'s',repository:'repo',path:'file',sha:'a'.repeat(40)}}).skill.sha.length,40)});
+test('Rejects unknown lock',()=>assert.throws(()=>prepareTask({...base,architecture_lock:'INVISIBLE'})));
+test('Deny tool access by default',()=>{const r={server_id:'comfyui',tool_id:'queue',effect:'execute'};assert.equal(authorizeToolCall(r,{}).allowed,false);assert.equal(authorizeToolCall(r,{allow:['comfyui:queue']}).reason,'USER_APPROVAL_REQUIRED');assert.equal(authorizeToolCall(r,{allow:['comfyui:queue'],user_approved:true}).reason,'EXECUTION_DISABLED');assert.equal(authorizeToolCall(r,{allow:['comfyui:queue'],user_approved:true,execution_enabled:true}).allowed,true)});
+test('Read tools still require allowlist',()=>assert.equal(authorizeToolCall({server_id:'github',tool_id:'inspect',effect:'read'},{allow:[]}).allowed,false));
+test('Connected is not runtime tested',()=>{assert.equal(integrationStatus({connected:true}).status,'NOT_TESTED');assert.equal(integrationStatus({connected:true,adapter_verified:true}).status,'NOT_TESTED');assert.equal(integrationStatus({connected:true,adapter_verified:true,runtime_tested:true}).status,'TESTED')});
+test('History append does not overwrite',()=>{const r={id:'record_1',task_id:'task_01',status:'GENERATED',note:'prepared'};const a=[];const b=appendHistory(a,r);assert.equal(a.length,0);assert.equal(b.length,1);assert.throws(()=>appendHistory(b,r))});
+test('Geometry QC never silently accepts',()=>assert.equal(evaluateGeometryQC({source_id:'base',result_id:'ai',alignment_error_px:0.1,contour_mismatch_ratio:0.001,reviewed_regions:3,protected_regions:3}).status,'REVIEW_REQUIRED'));
+test('Unknown and inconsistent QC metrics require review',()=>{const x={source_id:'base',result_id:'ai',alignment_error_px:3,contour_mismatch_ratio:0.1,reviewed_regions:1,protected_regions:1};assert.equal(evaluateGeometryQC(x).reasons[0],'ALIGNMENT_UNCERTAIN');assert.equal(evaluateGeometryQC({...x,alignment_error_px:NaN}).reasons[0],'UNRELIABLE_METRICS')});
