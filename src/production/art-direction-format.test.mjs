@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {ART_DIRECTION_FORMAT,parseArtDirectionCandidate} from './art-direction-format.mjs';
+import {buildOpenAIAnalysis} from './openai-adapter.mjs';
+test('Art Director requests strict structured candidate, never automatic acceptance',()=>{const task={kind:'archviz_production_task',schema_version:1,id:'task_1',description:'Protect facade',architecture_lock:'HARD'};const payload=buildOpenAIAnalysis(task,{model:'approved-model'});assert.deepEqual(payload.text.format,ART_DIRECTION_FORMAT);assert.equal(payload.store,false)});
+test('Candidate output remains unverified review material',()=>{const draft={summary:'Soft light',improvements:[],potential_geometry_change:false,requires_human_review:true};const r=parseArtDirectionCandidate([{type:'message',content:[{type:'output_text',text:JSON.stringify(draft)}]}]);assert.equal(r.status,'CANDIDATE_REVIEW_REQUIRED');assert.equal(r.geometry_verified,false)});
+test('Missing or malformed model response is rejected',()=>{assert.throws(()=>parseArtDirectionCandidate([]),/structured/);assert.throws(()=>parseArtDirectionCandidate([{type:'message',content:[{type:'output_text',text:'{}'}]}]),/Invalid/)});

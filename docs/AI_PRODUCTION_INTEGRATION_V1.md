@@ -73,3 +73,6 @@ On the first Windows Tauri CI, `cargo` failed because Tauri build.rs required `b
 
 ## ComfyUI model inventory check
 Before a user approves a queue request, the execution gate checks supported loader-name inputs (`ckpt_name`, `lora_name`, `vae_name`, `unet_name`, `clip_name`, `control_net_name`, etc.) against exact `object_info` choice lists. Legacy list choices and newer COMBO options are supported. Missing choices or a substituted/absent model cause BLOCKED; no model download or substitution. Unknown custom loaders are not proof of verified dependencies. Tests are synthetic; real installed model inventory has not been obtained.
+
+## Art Director structured-response candidate checkpoint
+OpenAI request builder now sends an explicit strict JSON schema for improvement proposals, geometry risk and human review. Server adapter parses response into `CANDIDATE_REVIEW_REQUIRED`; it never edits original projects or declares geometry PASS. A real API call is still gated by the existing billing consent and was NOT run in this checkpoint. Schema contract is validated with synthetic tests. Actual AI UI interaction, secure OS credential storage and approved live model execution remain BLOCKED.
