@@ -12,6 +12,29 @@ struct SidecarState {
 }
 
 #[tauri::command]
+fn comfyui_health() -> serde_json::Value {
+    use std::io::{Read, Write};
+    use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpStream};
+    use std::time::Duration;
+    let endpoint = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::LOCALHOST, 8188));
+    let status = (|| -> std::io::Result<bool> {
+        let mut socket = TcpStream::connect_timeout(&endpoint, Duration::from_secs(2))?;
+        socket.set_read_timeout(Some(Duration::from_secs(2)))?;
+        socket.set_write_timeout(Some(Duration::from_secs(2)))?;
+        socket.write_all(b"GET /system_stats HTTP/1.1\r\nHost: 127.0.0.1:8188\r\nConnection: close\r\n\r\n")?;
+        let mut buf = [0u8; 512];
+        let n = socket.read(&mut buf)?;
+        let response = String::from_utf8_lossy(&buf[..n]);
+        Ok(response.starts_with("HTTP/1.1 200 ") || response.starts_with("HTTP/1.0 200 "))
+    })();
+    serde_json::json!({
+        "status": if status.unwrap_or(false) { "CONNECTED_UNVERIFIED" } else { "DISCONNECTED" },
+        "origin": "http://127.0.0.1:8188",
+        "execution_allowed": false
+    })
+}
+
+#[tauri::command]
 fn desktop_status(state: tauri::State<'_, SidecarState>) -> serde_json::Value {
     serde_json::json!({
         "runtime": "TAURI_2_LAB",
@@ -26,7 +49,7 @@ fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .manage(SidecarState::default())
-        .invoke_handler(tauri::generate_handler![desktop_status])
+        .invoke_handler(tauri::generate_handler![desktop_status, comfyui_health])
         .setup(|app| {
             let (mut events, mut child) = app.shell().sidecar("ovizlab-mcp")?.spawn()?;
             // Private stdio only. No local HTTP listener, no shell permission to WebView.

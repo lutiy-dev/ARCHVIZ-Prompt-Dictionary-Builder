@@ -67,6 +67,8 @@ try{
 
  await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="mcp_comfyui").click();return true');
  await pass('MCP integrations are disconnected by default','return document.querySelector("#productionContent").textContent.includes("NOT CONNECTED")');
+ await pass('Local ComfyUI health probe exposed as an explicit read-only action','return document.querySelector("#productionContent").textContent.includes("Probe local ComfyUI")');
+
  await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="geometry_guardian").click();return true');
  await pass('Geometry QC displays two local image inputs and diff action','return document.querySelector("#productionOriginalFile")?.type==="file" && document.querySelector("#productionCandidateFile")?.type==="file" && document.querySelector("#productionContent").textContent.includes("Compare local image pixels")');
 

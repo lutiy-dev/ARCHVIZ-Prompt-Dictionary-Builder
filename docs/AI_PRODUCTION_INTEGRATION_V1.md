@@ -85,3 +85,6 @@ After the independent MCP crate resolved the resource cycle, the Windows compile
 
 ## Confirmed Windows installer build checkpoint
 Windows Actions run 43647183905 on commit 2b90dc6d594e4e5add126f345ddb9715ac63cbcc completed SUCCESS: Rust Tauri release build, NSIS candidate creation and artifact upload `archviz-desktop-windows-lab` (unsigned Windows x64 installer). This is **BUILD VERIFIED**, not fresh install or graphical runtime. The prior Cargo cycle and Rust E0597 errors were fixed and the fixes are reproducible in this run. Subsequent commits require their own CI. Pending next: native MCP stdio executable runtime smoke, physical installation, app startup/shutdown lifecycle, actual OpenAI/ComfyUI and full geometry QC benchmark.
+
+## Native ComfyUI health probe checkpoint
+Tauri backend adds `comfyui_health`, a restricted read-only TCP check against the fixed loopback 127.0.0.1:8188 `/system_stats`. The Desktop UI requires an explicit click and shows CONNECTED_UNVERIFIED/DISCONNECTED; the Web/PWA bridge always returns BLOCKED. This does not validate installed models, grant execution, change workflow, or establish a safe authentication boundary for remote ComfyUI. Real Windows runtime health and generation remain NOT TESTED. Browser cache v10 changes only offline shell assets.

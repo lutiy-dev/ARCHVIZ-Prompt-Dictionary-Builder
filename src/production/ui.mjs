@@ -1,7 +1,7 @@
 import {prepareTask,authorizeToolCall,integrationStatus,evaluateGeometryQC,appendHistory} from './core.mjs';
 import {readHistory,addHistoryRecord,exportHistory} from './history-store.mjs';
 import {compareImageFiles} from './image-qc.mjs';
-import {getDesktopStatus} from './desktop-bridge.mjs';
+import {getDesktopStatus,probeComfyUi} from './desktop-bridge.mjs';
 import {stageArtCandidate,decideArtCandidate} from './candidate-review.mjs';
 
 const $=id=>document.getElementById(id);
@@ -103,6 +103,12 @@ function redraw(){
   for(const name of ['OpenAI API','Local MCP','ComfyUI'])p.append(node('div',name+' · '+integrationStatus().status+' / NOT CONNECTED'));
   const native=node('div','Desktop Sidecar · CHECKING');p.append(native);
   void getDesktopStatus().then(s=>{native.textContent='Desktop Sidecar · '+s.runtime+(s.mcp_ready?' / STDIO READY':' / NOT CONNECTED');});
+  p.append(action('Probe local ComfyUI :8188 · read-only',async()=>{
+   feedback('Checking local Desktop connection only');
+   const state=await probeComfyUi();
+   result(state);
+   feedback('ComfyUI · '+state.status+(state.reason?' / '+state.reason:''));
+  }));
   p.append(action('Check execution policy (dry-run)',()=>{
    const decision=authorizeToolCall({server_id:'comfyui',tool_id:'queue',effect:'execute'},{allow:[]});
    result(decision);feedback('Tool call denied · '+decision.reason);

@@ -21,3 +21,6 @@ The MCP binary is built from a separate `src-mcp` Rust crate before Tauri packag
 
 ## Native MCP binary runtime smoke
 After successful Windows packaging, CI executes the exact bundled sidecar executable through stdio, checks initialize, tools/list, a read-only runtime_info call and explicit rejection of an unknown tool. This verifies the binary protocol, not Tauri app GUI launch or automatic Sidecar lifecycle on a user's Windows device.
+
+### Read-only ComfyUI health button
+In AI Production > MCP / ComfyUI, click `Probe local ComfyUI :8188 · read-only`. On the Desktop runtime this calls a fixed loopback TCP health check from Rust; in the Web/PWA it safely returns BLOCKED. A `CONNECTED_UNVERIFIED` response only establishes an HTTP 200 status, not available models or a successful render. No queue permission is granted.
