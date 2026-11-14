@@ -67,3 +67,6 @@ The server-side Skills Router can now verify the exact Git blob SHA-1 obtained i
 
 ## Protected-region edge QC checkpoint
 A separate LAB module `src/production/edge-qc.mjs` computes Sobel edge evidence within an explicit one-channel protected-area mask on strictly same-size prealigned RGBA frames. It reports missing and unexpected edge ratios with a configurable tolerance. Synthetic tests include a uniform lighting shift (no extra false mismatch) and moved rectangular geometry (detected advisory mismatch). Masks must come from trusted Corona ID/manual selection; there is no automatic landmark alignment and no calibrated real-render benchmark yet. Output always REVIEW_REQUIRED, geometry_verified=false and alignment_verified=false.
+
+## Windows CI first failure and correction
+On the first Windows Tauri CI, `cargo` failed because Tauri build.rs required `binaries/ovizlab-mcp-x86_64-pc-windows-msvc.exe` before it had been compiled. Root cause: sidecar was declared inside Tauri Cargo package itself. Correction candidate moves the same Rust source to an independently compiled `src-mcp` crate and stages its binary before invoking the Tauri bundler. This is a change to packaging only; Windows rebuild must pass before any INSTALLER PASS statement.

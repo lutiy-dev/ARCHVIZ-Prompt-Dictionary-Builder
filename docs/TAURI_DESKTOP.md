@@ -15,3 +15,6 @@ The Rust sidecar only exposes `runtime_info`, a read-only diagnostic MCP tool. T
 If the sidecar crashes, UI remains available but status is NOT READY; no auto-restart or external execution is attempted.
 
 STOP before shipping or enabling real execution if packaging fails, Sidecar does not terminate on window close, or any security/privacy regression is found.
+
+## Windows build root-cause fix
+The MCP binary is built from a separate `src-mcp` Rust crate before Tauri packaging. Building it from the Tauri Cargo package created a dependency cycle: the Tauri build script required `externalBin` before the sidecar existed. The dedicated crate breaks that cycle. Verify actual Windows CI before calling this fixed.

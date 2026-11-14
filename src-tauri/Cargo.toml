@@ -17,6 +17,3 @@ serde_json = "1"
 name = "ovizlab-prompt-studio"
 path = "src/main.rs"
 
-[[bin]]
-name = "ovizlab-mcp"
-path = "src/bin/ovizlab-mcp.rs"

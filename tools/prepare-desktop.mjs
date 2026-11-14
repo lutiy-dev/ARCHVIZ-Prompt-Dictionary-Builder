@@ -21,10 +21,10 @@ const listed=(await readdir(OUT)).sort();
 if(!listed.includes('index.html')||!listed.includes('src')||!listed.includes('data'))throw Error('Static desktop artifact incomplete');
 if(!assetsOnly){
  if(process.platform!=='win32')throw Error('Windows installer is Windows-only; run --assets-only on non-Windows');
- run('cargo',['build','--release','--bin','ovizlab-mcp','--manifest-path',join(ROOT,'src-tauri','Cargo.toml')],ROOT);
+ run('cargo',['build','--release','--manifest-path',join(ROOT,'src-mcp','Cargo.toml')],ROOT);
  const triple=process.env.TAURI_ENV_TARGET_TRIPLE||'x86_64-pc-windows-msvc';
  if(triple!=='x86_64-pc-windows-msvc')throw Error('Only verified Windows x64 target is supported in LAB');
  const binDir=join(ROOT,'src-tauri','binaries');await mkdir(binDir,{recursive:true});
- await copyFile(join(ROOT,'src-tauri','target','release','ovizlab-mcp.exe'),join(binDir,'ovizlab-mcp-'+triple+'.exe'));
+ await copyFile(join(ROOT,'src-mcp','target','release','ovizlab-mcp.exe'),join(binDir,'ovizlab-mcp-'+triple+'.exe'));
 }
 console.log('DESKTOP_ASSETS_OK',listed.join(','));
