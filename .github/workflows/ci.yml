@@ -36,6 +36,7 @@ jobs:
           node --check tools/desktop-lab.mjs
           node --check src/production/image-qc.mjs
           node --check src/production/desktop-bridge.mjs
+          node --check src/production/comfyui-execution.mjs
           node --check tools/prepare-desktop.mjs
       - name: Unit tests
         run: node --test src/*.test.mjs src/video-director/*.test.mjs src/production/*.test.mjs
