@@ -29,6 +29,7 @@ jobs:
           node --check src/production/core.mjs
           node --check src/production/ui.mjs
           node --check src/production/comfyui-adapter.mjs
+          node --check src/production/offline-comfyui-check.mjs
           node --check src/production/skills-router.mjs
           node --check src/production/openai-adapter.mjs
           node --check src/production/art-direction-format.mjs
