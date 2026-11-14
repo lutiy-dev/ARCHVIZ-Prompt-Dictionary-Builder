@@ -228,3 +228,8 @@ Layers now support editable reference-specific retention modes (fully preserved 
 
 
 Browser acceptance is separately run in CI using real headless Chromium via DevTools protocol, no added npm dependencies. It checks Standard tab preservation, demo, reference retention editing, reusable layer presets, persisted project, service-worker cache and offline reload. CI browser smoke is not a substitute for Android device installation or actual ComfyUI/H3 output quality tests.
+
+
+## Windows Desktop LAB (development only)
+
+With Node.js 22+ already installed, run `tools\\start-desktop-lab.cmd` on Windows. The launcher starts the local, private MCP stdio subprocess and browser-served UI, then stops its owned process when the launcher is closed. This is not a Tauri package or a verified Windows installer. See [Desktop LAB instructions](docs/DESKTOP_LAB.md). The published PWA is unchanged.
