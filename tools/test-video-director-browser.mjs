@@ -96,7 +96,7 @@ try{
   await send('Input.dispatchMouseEvent',{type:'mousePressed',x:point.x,y:point.y,button:'left',clickCount:1});
   await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:point.x,y:point.y,button:'left',clickCount:1});
  }
- for(const [width,height] of [[1920,1080],[1366,768],[1101,800],[1100,800],[800,900],[390,844]]){
+ for(const [width,height] of [[1920,1080],[1366,768],[1101,800],[1100,800],[960,768],[800,900],[390,844]]){
   await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
   await evaluate('window.scrollTo(0,0);return true');
   await pass('Mode tabs have space at '+width+'x'+height,'const nav=document.querySelector(".vd-mode-tabs"),r=nav.getBoundingClientRect(),b=document.querySelector("#vdTabVideo").getBoundingClientRect();return b.height>0 && b.top>=r.top && b.bottom<=r.bottom');
@@ -105,6 +105,11 @@ try{
    'const host=document.querySelector(".production-content"),panel=host.querySelector(".production-panel"),layout=document.querySelector(".production-layout");const a=host.getBoundingClientRect(),b=panel.getBoundingClientRect();return getComputedStyle(host).display==="block" && b.width>0 && b.width>=a.width*0.95 && layout.getBoundingClientRect().width<=innerWidth+1');
   await pass('Production QC output responsive at '+width+'x'+height,
    'const a=document.querySelector(".production-content").getBoundingClientRect(),b=document.querySelector(".production-output").getBoundingClientRect();return innerWidth>1200?b.left>=a.right-2:b.top>=a.bottom-2');
+  if([960,1366,1920].includes(width)){
+   const snapshot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+   const dir=join(root,'artifacts','ui');await fs.mkdir(dir,{recursive:true});
+   await fs.writeFile(join(dir,'production-'+width+'x'+height+'.png'),Buffer.from(snapshot.data,'base64'));
+  }
   await mouseClick('#vdTabVideo');
   await pass('Pointer opens video at '+width+'x'+height,'return !document.querySelector("#videoDirectorRoot").hidden && document.querySelector("#standardMode").hidden');
   await mouseClick('#vdTabStandard');
