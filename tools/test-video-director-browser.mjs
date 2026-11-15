@@ -57,6 +57,8 @@ try{
  await send('Runtime.enable');await send('Page.enable');await send('Network.enable');
  await poll('return document.querySelector("#videoDirectorRoot")?.dataset.ready==="true" && document.querySelector("#vdTabVideo")?.dataset.ready==="true"','app initialization');
  await pass('Standard visible on first load','return !document.querySelector("#standardMode").hidden && document.querySelector("#videoDirectorRoot").hidden');
+ await pass('Standard Dictionary has independent scroll within bounded panel','const lib=document.querySelector("#library");return getComputedStyle(lib).overflowY==="auto"&&lib.clientHeight>0&&lib.scrollHeight>lib.clientHeight');
+
  await pass('Shared UI design tokens loaded','return getComputedStyle(document.documentElement).getPropertyValue("--ds-content-max").trim()==="1680px" && getComputedStyle(document.documentElement).getPropertyValue("--panel").trim()===getComputedStyle(document.documentElement).getPropertyValue("--card").trim()');
  await pass('Unified stylesheet loaded without 404','return [...document.styleSheets].some(s=>s.href?.includes("design-system.css"))');
  await pass('Video and Production use open workspace shells','const roots=[".vd-root",".production-root"].map(s=>getComputedStyle(document.querySelector(s)));return roots.every(s=>s.borderTopWidth==="0px"&&s.backgroundImage==="none")');
@@ -68,6 +70,8 @@ try{
  await evaluate('document.querySelector("#productionProject").value="project_01";document.querySelector("#productionBrief").value="Preserve hotel geometry";document.querySelector(".production-panel button").click();return true');
  await pass('Art Director prepares a safe local draft','return document.querySelector("#productionTask").value.includes("archviz_production_task") && document.querySelector("#productionTask").value.includes("HARD")');
  await pass('Inspector defaults to summary with unchanged JSON contract','return document.querySelector("#productionSummary")?.hidden===false && document.querySelector("#productionTask").value.includes("archviz_production_task") && document.querySelector("[data-view=summary]")?.getAttribute("aria-selected")==="true"');
+ await pass('Result Inspector JSON scroll height constrained','const area=document.querySelector("#productionTask"),style=getComputedStyle(area);return style.overflowY==="auto"&&parseFloat(style.maxHeight)>0');
+
  await evaluate('document.querySelector("[data-view=json]").click();return true');
  await pass('Inspector JSON is accessible and complete','return !document.querySelector("#productionJson").hidden && document.querySelector("#productionTask").value.includes("architecture_lock") && document.querySelector("#productionSummary").hidden');
  await evaluate('document.querySelector("[data-view=json]").dispatchEvent(new KeyboardEvent("keydown",{key:"Home",bubbles:true}));return true');
@@ -130,7 +134,11 @@ try{
  const keys=await evaluate('return [localStorage.getItem("archviz-prompt-studio-v1"),localStorage.getItem("archviz-prompt-library-v1")]');
  await evaluate('document.querySelector("#vdTabVideo").click();document.querySelector("#vdDemo").click();return true');
  await poll('return document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:")','demo compilation');
+ await pass('Project-first empty state hides workspace when no project','return document.querySelector("#vdEmptyState")?.hidden===false && document.querySelector("#vdWorkspace")?.hidden===true && document.querySelector("#vdStartNew")?.type==="button"');
  await pass('Synthetic demo and actor references appear','return !document.querySelector("#videoDirectorRoot").hidden && document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:") && document.querySelector("#vdManifest").textContent.includes("male_ref")');
+ await pass('Project-first start screen closes after demo selection','return document.querySelector("#vdEmptyState").hidden && !document.querySelector("#vdWorkspace").hidden');
+ await pass('Video shot list is bounded and independently scrollable','const list=document.querySelector("#vdShotList"),style=getComputedStyle(list);return style.overflowY==="auto"&&parseFloat(style.maxHeight)>0');
+
  await pass('Shot list has a single visibly selected item','const buttons=[...document.querySelectorAll("#vdShotList button[aria-pressed]")];return buttons.length===12 && buttons.filter(b=>b.getAttribute("aria-pressed")==="true").length===1 && getComputedStyle(buttons.find(b=>b.getAttribute("aria-pressed")==="false")).backgroundColor!==getComputedStyle(buttons.find(b=>b.getAttribute("aria-pressed")==="true")).backgroundColor');
  await pass('Shot Composer has five visual section headings','return document.querySelectorAll("#vdShotFields > .vd-editor-subheading").length===5');
  for(const [width,height] of [[960,768],[1366,768],[1920,1080]]){
