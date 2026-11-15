@@ -51,3 +51,10 @@ jobs:
         run: node --test tools/desktop-lab.test.mjs
       - name: Real Chromium browser and PWA smoke
         run: node tools/test-video-director-browser.mjs
+      - name: Upload synthetic UI regression screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: prompt-studio-ui-regression
+          path: artifacts/ui/*.png
+          if-no-files-found: ignore
