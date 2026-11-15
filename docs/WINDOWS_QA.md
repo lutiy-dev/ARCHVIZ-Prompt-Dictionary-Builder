@@ -24,3 +24,11 @@ STOP if installer artifacts are missing, sidecar remains orphaned, OS security s
 
 ## Evidence boundary
 Windows CI installer creation and bundled native MCP smoke are **build/runtime process evidence**, but cannot substitute physical fresh-install, Windows lifecycle, WebView focus and ComfyUI/AI end-to-end checks. Only promote to READY FOR REVIEW when all mandatory gates pass.
+
+## 15 Nov 2026 — User Windows runtime BLOCKER: blank white WebView2
+
+Observed on a physical Windows PC: the unsigned NSIS installer launches the `ARCHVIZ Prompt Studio · LAB` window, but the entire content area is white. **PHYSICAL WINDOWS UI = FAIL.** This overrides prior CI build success for any release/merge claims. The screenshot is symptom evidence only: exact cause (frontend asset routing, WebView2 navigation/runtime, rendering/GPU, CSP, cached resources) is NOT CONFIRMED.
+
+A new CI step executes the built `ovizlab-prompt-studio.exe` under Windows WebView2 with localhost-only CDP diagnostic and asserts that real bundled Standard, Video Director and AI Production DOM roots load. The test never queues ComfyUI, uses paid APIs, changes models or writes project data. Failure or lack of a debugging connection is a **blocked gate**, not an implicit UI PASS. The CI test uses a process tree scoped to its spawned application for cleanup. `tools/test-windows-webview2.mjs` and `.github/workflows/desktop-windows.yml` own this gate.
+
+Do not alter WebView2 security settings, disable CSP, change dependencies, overwrite local project data or merge main as a speculative workaround. Inspect the failed Windows job and physical workstation evidence before applying a minimal corrective change. Retest exact NSIS artifact on the same physical Windows configuration. Existing known-good main/Pages is the rollback.
