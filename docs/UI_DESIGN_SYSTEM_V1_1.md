@@ -43,3 +43,7 @@ No modifications to dictionary/preset content, prompt compiler, Video Director J
 ## STOP conditions
 
 Any blank native WebView2, new PWA offline failure, keyboard regression, unreadable/clipped inputs, unexpected CSS changes in compiler output, data loss or external model execution requires STOP and rollback to the known-good `main`. CI build success is not a substitute for physical Windows acceptance.
+
+## Visual QA refinement: shared open mode shell
+
+Visual screenshot review found that Video Director and AI Production still inherited an outer `section` panel with gradient border and shadow, unlike Standard Prompt. Their mode-root wrappers now use a transparent borderless page shell. Internal cards and all event handlers are unchanged. Browser acceptance asserts both root wrappers have no decorative outer background image or border. New screenshots and physical Windows WebView2 inspection are mandatory before declaring UI v1.1 complete.
