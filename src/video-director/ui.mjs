@@ -142,7 +142,7 @@ function renderShots(){
  for(const s of project.shots){
   const b=button(s.name+' · '+s.duration_seconds+'s',()=>{shotId=s.id;renderShots();renderOutput()},shotId===s.id?'active':'');b.setAttribute('aria-pressed',String(shotId===s.id));list.append(b);
  }
- list.append(button('+ Шот',()=>{const s=shotTemplate(uniqueId('shot'),'New shot');project.shots.push(s);shotId=s.id;persist();renderAll()}));
+ list.append(button('+ Шот',()=>{const s=shotTemplate(uniqueId('shot'),'New shot');project.shots.push(s);shotId=s.id;persist();renderAll()},'vd-new-shot'));
  const s=currentShot(),host=$('vdShotFields');host.replaceChildren();if(!s)return;
  field(host,'Название шота',s.name,v=>s.name=v);
  field(host,'Длительность, сек.',s.duration_seconds,v=>s.duration_seconds=Number(v),{type:'number'});
@@ -186,6 +186,13 @@ function renderShots(){
  actions.append(button('↑',()=>moveShot(-1)),button('↓',()=>moveShot(1)));
  actions.append(button('Удалить шот',()=>{if(project.shots.length===1)throw Error('Keep at least one shot');if(!confirm('Удалить этот шот?'))return;project.shots=project.shots.filter(x=>x.id!==s.id);shotId=project.shots[0].id;persist();renderAll()},'quiet'));
  host.append(actions);
+ // Visual grouping only: do not wrap, clone or rebind existing inputs.
+ const fields=[...host.querySelectorAll(':scope > label.vd-field')];
+ for(const [index,title] of [[0,'01 / Shot & Timing'],[2,'02 / References'],[5,'03 / Camera'],[9,'04 / Lighting & Atmosphere'],[11,'05 / Blocking & Actions']]){
+  if(!fields[index])continue;
+  const heading=el('h3',title);heading.className='vd-editor-subheading';
+  host.insertBefore(heading,fields[index]);
+ }
 }
 function moveShot(step){const i=project.shots.findIndex(s=>s.id===shotId),j=i+step;if(j<0||j>=project.shots.length)return;[project.shots[i],project.shots[j]]=[project.shots[j],project.shots[i]];persist();renderAll()}
 function renderOutput(){
