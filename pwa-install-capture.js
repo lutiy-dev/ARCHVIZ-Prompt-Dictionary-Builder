@@ -29,8 +29,16 @@
       }
     });
     if ('serviceWorker' in navigator && window.isSecureContext) {
-      navigator.serviceWorker.register('./sw.js', {scope: './', updateViaCache: 'none'})
-        .catch(error => console.warn('Prompt Studio PWA registration failed', error));
+      if (desktop()) {
+        // Desktop bundles all assets locally; a PWA worker can only introduce
+        // stale shell responses on cold WebView2 navigation. Remove only this app's registration.
+        navigator.serviceWorker.getRegistration('./')
+          .then(registration => registration?.unregister())
+          .catch(error => console.warn('Prompt Studio native service worker cleanup failed', error));
+      } else {
+        navigator.serviceWorker.register('./sw.js', {scope: './', updateViaCache: 'none'})
+          .catch(error => console.warn('Prompt Studio PWA registration failed', error));
+      }
     }
   });
 })();
