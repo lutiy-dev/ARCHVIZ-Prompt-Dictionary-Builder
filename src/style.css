@@ -190,6 +190,11 @@ main .section-body>label,main .section-body>button,.save{flex:none}
 .production-heading h1{font-size:28px;margin:4px 0}.production-heading p{color:var(--text-soft)}
 .production-layout{display:grid;grid-template-columns:minmax(175px,230px) minmax(300px,1.4fr) minmax(270px,.95fr);gap:14px;align-items:start}
 .production-layout>*{min-width:0}
+/* Scope the nested <main> to Production; global Standard main grid must not leak into cabinets. */
+.production-layout > .production-content{display:block;grid-template-columns:none;gap:0;padding:0;align-self:stretch;min-width:0}
+.production-content > .production-panel{width:100%;max-width:none}
+.production-output{min-width:0}
+.production-output textarea{overflow-wrap:anywhere}
 .production-cabinets{display:flex;flex-direction:column;gap:8px}
 .production-cabinets button{padding:10px;text-align:left;border:1px solid var(--border);border-radius:7px;background:var(--panel);color:var(--foreground)}
 .production-cabinets button.active{border-color:var(--yellow);color:var(--yellow)}
