@@ -10,6 +10,8 @@ const names={art_director:'AI Art Director',geometry_guardian:'Geometry Guardian
 const initialHistory=readHistory(localStorage);
 let chosen='art_director',currentTask=null,stagedCandidate=null,history=initialHistory.records;
 let historyError=initialHistory.error;
+const previewUrls=new Set();
+function clearPreviewUrls(){for(const url of previewUrls)URL.revokeObjectURL(url);previewUrls.clear();}
 function node(tag,value){const e=document.createElement(tag);if(value!==undefined)e.textContent=value;return e;}
 function field(label,id,placeholder='',multiline=false){
  const wrap=node('label');wrap.className='production-field';
@@ -56,6 +58,7 @@ function exportJson(filename,content){
  const a=node('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
 }
 function redraw(){
+ clearPreviewUrls();
  for(const b of $('productionCabinets').querySelectorAll('button')){const active=b.dataset.cabinet===chosen;b.classList.toggle('active',active);b.setAttribute('aria-pressed',String(active));}
  const host=$('productionContent');host.replaceChildren();
  if(chosen==='art_director'){
@@ -103,6 +106,28 @@ function redraw(){
   const imageInput=(title,id)=>{const row=node('label');row.className='production-field';const input=node('input');input.type='file';input.accept='image/png,image/jpeg,image/webp';input.id=id;row.append(node('span',title),input);return row};
   files.append(imageInput('Original Corona render','productionOriginalFile'),imageInput('AI candidate','productionCandidateFile'));
   p.append(files);
+  const previews=node('div');previews.className='production-image-pair production-image-previews';
+  for(const [id,label] of [['productionOriginalFile','Source · Corona'],['productionCandidateFile','Candidate · AI']]){
+   const figure=node('figure');figure.className='production-image-preview';
+   const caption=node('figcaption',label);const placeholder=node('p','Файл не выбран');
+   figure.append(caption,placeholder);previews.append(figure);
+   let previousUrl=null;
+   queueMicrotask(()=>{
+    const input=$(id);if(!input)return;
+    input.addEventListener('change',()=>{
+     if(previousUrl){URL.revokeObjectURL(previousUrl);previewUrls.delete(previousUrl);previousUrl=null;}
+     figure.replaceChildren(caption);
+     const file=input.files?.[0];
+     if(!file){figure.append(node('p','Файл не выбран'));return;}
+     if(!['image/png','image/jpeg','image/webp'].includes(file.type)||file.size>30_000_000){figure.append(node('p','BLOCKED · неподдерживаемое изображение'));return;}
+     const img=node('img');img.alt=label+' · local preview, not QC evidence';img.loading='lazy';
+     previousUrl=URL.createObjectURL(file);previewUrls.add(previousUrl);img.src=previousUrl;
+     img.onerror=()=>{figure.replaceChildren(caption,node('p','BLOCKED · невозможно прочитать изображение'));};
+     figure.append(img);
+    });
+   });
+  }
+  p.append(previews);
   p.append(action('Compare local image pixels · LAB',async()=>{
    const a=$('productionOriginalFile')?.files?.[0],b=$('productionCandidateFile')?.files?.[0];
    if(!a||!b){feedback('BLOCKED · select two image files',true);return}
