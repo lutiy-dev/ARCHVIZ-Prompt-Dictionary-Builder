@@ -16,12 +16,41 @@ function field(label,id,placeholder='',multiline=false){
  const caption=node('span',label),input=node(multiline?'textarea':'input');
  input.id=id;input.placeholder=placeholder;wrap.append(caption,input);return wrap;
 }
-function action(label,callback){const b=node('button',label);b.type='button';b.onclick=callback;return b;}
+function action(label,callback){const b=node('button',label);b.type='button';b.onclick=callback;
+ if(/^(Export|Copy|Reject|Stage|Check|Validate source|Probe|Review metrics)/.test(label))b.classList.add('production-secondary');
+ if(/^Reject/.test(label))b.classList.add('production-danger');
+ return b;}
 function panel(title,description){
  const e=node('section');e.className='production-panel';e.append(node('h2',title),node('p',description));return e;
 }
 function feedback(message,failed=false){$('productionNotice').textContent=message;$('productionNotice').dataset.failed=String(failed);}
-function result(data){$('productionTask').value=JSON.stringify(data,null,2);}
+const resultTabs=[...document.querySelectorAll('.production-result-tabs [role="tab"]')];
+let currentResult=null;
+function setResultView(view){
+ const views={summary:'productionSummary',issues:'productionIssues',json:'productionJson',history:'productionHistory'};
+ if(!Object.hasOwn(views,view))return;
+ for(const [name,id] of Object.entries(views))$(id).hidden=name!==view;
+ for(const tab of resultTabs){const active=tab.dataset.view===view;tab.setAttribute('aria-selected',String(active));tab.tabIndex=active?0:-1;}
+ if(view==='history')$('productionHistoryPreview').textContent=historyError?'BLOCKED · '+historyError:JSON.stringify(history,null,2);
+}
+function result(data){
+ currentResult=data;
+ $('productionTask').value=JSON.stringify(data,null,2);
+ const status=typeof data?.status==='string'?data.status:'NOT_VERIFIED';
+ const summary=$('productionSummary');summary.replaceChildren();
+ const statusLine=node('strong',status);statusLine.className='production-result-status';
+ summary.append(statusLine,node('p',data?.notice||data?.reason||'Технический результат. Выполните ручную проверку перед принятием.'));
+ const safe=['status','task_id','prompt_id','node_count','model_count','geometry_verified','runtime_tested','network_used'];
+ for(const key of safe){if(data?.[key]===undefined)continue;const item=node('div');item.className='production-result-fact';item.append(node('span',key),node('strong',String(data[key])));summary.append(item);}
+ const issues=$('productionIssues');issues.replaceChildren();
+ const findings=[...(Array.isArray(data?.errors)?data.errors:[]),...(Array.isArray(data?.issues)?data.issues.map(x=>typeof x==='string'?x:JSON.stringify(x)):[])];
+ if(data?.geometry_verified!==true)findings.push('Geometry preservation NOT VERIFIED');
+ if(data?.runtime_tested!==true)findings.push('Real model/runtime test NOT VERIFIED');
+ if(data?.status==='BLOCKED'&&typeof data?.reason==='string')findings.push(data.reason);
+ if(!findings.length)findings.push('No reported issues; this is not an automatic QC PASS.');
+ for(const issue of findings)issues.append(node('p',issue));
+ setResultView('summary');
+}
 function exportJson(filename,content){
  const url=URL.createObjectURL(new Blob([JSON.stringify(content,null,2)],{type:'application/json'}));
  const a=node('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
@@ -132,6 +161,13 @@ function redraw(){
   p.append(action('Export history JSON',()=>{if(historyError){feedback('BLOCKED · history unreadable; original storage retained',true);return;}try{exportJson('archviz-production-history.json',JSON.parse(exportHistory(localStorage)))}catch(e){feedback('BLOCKED · '+e.message,true)}}));host.append(p);
  }
 }
+for(const tab of resultTabs)tab.addEventListener('click',()=>setResultView(tab.dataset.view));
+$('productionCopyTask').addEventListener('click',async()=>{
+ if(!$('productionTask').value){feedback('BLOCKED · no JSON result to copy',true);return;}
+ try{await navigator.clipboard.writeText($('productionTask').value);feedback('JSON copied · local only');}
+ catch{feedback('BLOCKED · clipboard unavailable',true);}
+});
+setResultView('summary');
 for(const [name,label] of Object.entries(names)){const b=action(label,()=>{chosen=name;redraw();feedback('LAB · внешние интеграции отключены')});b.dataset.cabinet=name;$('productionCabinets').append(b);}
 $('productionExportTask').addEventListener('click',()=>{if(!currentTask){feedback('BLOCKED · сначала сформируйте задание',true);return;}exportJson(currentTask.id+'.json',currentTask);feedback('GENERATED · exported metadata only')});
 redraw();$('productionRoot').dataset.ready='true';
