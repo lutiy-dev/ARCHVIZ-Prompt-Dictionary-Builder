@@ -95,3 +95,31 @@
  .vd-shot-list button{flex:1 1 140px}
 }
 @media(max-width:400px){.vd-mode-tabs button{padding:8px 9px;font-size:11px}.production-result-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Standard Prompt shares the same card, typography and action hierarchy. */
+.shell .hero h1{font-size:clamp(28px,3vw,36px);line-height:1.16;letter-spacing:-.035em}
+.shell .hero p{font-size:var(--ds-body-size)}
+.shell main{gap:var(--ds-space-4)}
+.shell main>section,.shell .prompt-library{border-radius:var(--ds-radius-card);background:linear-gradient(160deg,var(--raised),var(--card) 55%);border-color:var(--ds-border);box-shadow:0 12px 32px rgba(0,0,0,.12)}
+.shell .section-head{padding:var(--ds-space-4);border-top:1px solid var(--yellow-line)}
+.shell .section-head h2{font-size:20px;line-height:1.3}
+.shell .section-head p{font-size:13px}
+.shell .section-body{padding:var(--ds-space-4)}
+.shell label{font-size:var(--ds-label-size)}
+.shell .card{border-radius:var(--ds-radius-control)}
+.shell :is(button,input,select,textarea){border-radius:var(--ds-radius-control)}
+.shell :is(button,input,select,textarea,summary):focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+/* Give context actions and card actions a quiet neutral treatment, not a sea of yellow. */
+.shell :is(.card button,.saved-prompt-actions button,.prompt-transfer-actions button,.save button){background:var(--soft);color:var(--text-soft);border-color:var(--border);font-weight:600}
+.shell :is(.card button,.saved-prompt-actions button,.prompt-transfer-actions button,.save button):hover{background:var(--hover);border-color:var(--yellow-line);color:var(--foreground)}
+.shell :is(#addPreset,#savePrompt,#save){background:var(--yellow);color:#171500;border-color:var(--yellow);font-weight:700}
+.shell :is(#addPreset,#savePrompt,#save):hover{background:color-mix(in srgb,var(--yellow) 85%,white);color:#171500}
+.shell .preview-tabs button[aria-pressed="true"]{background:var(--yellow-soft);color:var(--yellow);border-color:var(--yellow-line)}
+.shell .preview textarea{border-color:var(--border);font-size:12px}
+.shell :is(#copy,#export,#load,#clear,#exportPrompts){background:var(--soft);color:var(--text-soft);border-color:var(--border)}
+.shell :is(#copy,#export,#load,#clear,#exportPrompts):hover{border-color:var(--yellow-line);background:var(--hover);color:var(--foreground)}
+@media(max-width:700px){
+ .shell main{display:block}
+ .shell .section-head{padding:var(--ds-space-4)}
+ .shell .section-body{padding:var(--ds-space-4)}
+}
