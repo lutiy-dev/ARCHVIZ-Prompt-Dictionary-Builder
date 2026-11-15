@@ -247,3 +247,13 @@ The unsigned Windows LAB installer is produced as a GitHub Actions artifact only
 In draft PR #24 only, Prompt Studio has a shared mode/project context, AI Production Result Inspector (Summary / Issues / JSON / History), reversible Video Director editor disclosures, and local Geometry Guardian Source/Candidate previews. The native Tauri host suppresses the browser-only PWA install action. The existing Standard compiler, saved-project schemas, API/model permissions and JSON contracts are unchanged.
 
 This work is **LAB / NOT RELEASED**. Chromium responsive/PWA checks and CI screenshot artifacts are part of the PR; physical Windows WebView2 visual QA and sidecar lifecycle remain mandatory before an acceptance/merge decision. See [AI Production integration specification](docs/AI_PRODUCTION_INTEGRATION_V1.md) and [Windows QC](docs/WINDOWS_QA.md).
+
+## Unified UI Design System v1.1 — LAB candidate
+
+The current Draft PR #24 uses a single **additive** presentation layer, `src/design-system.css`, for Standard Prompt, Video Director and AI Production. The shared graphite/yellow palette, 1680px workspace max-width, responsive gutters, headings and control hierarchy now apply across modes. Video Director shots use neutral navigation buttons with one explicitly selected shot; Shot Composer fields have five noninteractive category headings. AI Production preserves the original five cabinets and Result Inspector; Standard library, presets and prompt compilation remain unchanged.
+
+The Web/PWA offline shell explicitly caches the additional stylesheet. CI captures **nine** screenshot evidence files (Standard, Video, Production at 960/1366/1920px) in the `prompt-studio-ui-regression` artifact, plus Chromium/PWA and unit regression checks.
+
+Scope and acceptance: [UI Design System v1.1](docs/UI_DESIGN_SYSTEM_V1_1.md), [Windows Runtime QA](docs/WINDOWS_QA.md), [PR #24](https://github.com/lutiy-dev/ARCHVIZ-Prompt-Dictionary-Builder/pull/24).
+
+**LAB / NOT PRODUCTION.** Build/Chromium PASS does not establish physical Windows WebView2 PASS, and previous white-screen evidence remains a STOP condition for merge/release until resolved and repeated on a real workstation. No model or workflow execution is introduced by this UI stage.
