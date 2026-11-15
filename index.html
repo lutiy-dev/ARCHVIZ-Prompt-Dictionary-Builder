@@ -18,6 +18,7 @@
     <div class="top-actions"><button id="installApp" type="button">Установить приложение</button><span class="badge">LAB / v0.1</span></div>
   </header>
 
+  <div class="workspace-context" id="workspaceContext" role="status" aria-live="polite">WORKSPACE · Standard Prompt / LOCAL</div>
   <nav class="vd-mode-tabs" aria-label="Prompt Studio modes"><button id="vdTabStandard" class="active" type="button" aria-pressed="true">Standard Prompt</button><button id="vdTabVideo" type="button" aria-pressed="false">Video Director · BETA</button><button id="productionTab" type="button" aria-pressed="false">AI Production · LAB</button></nav>
   <section id="videoDirectorRoot" class="vd-root" hidden aria-labelledby="vdTitle">
     <div class="vd-heading"><div><p class="eyebrow">ARCHITECTURE FIRST · LAYERED VIDEO PROMPTS</p><h1 id="vdTitle">Video Director</h1><p>Промпты, референсы и шоты. Видео не генерируется.</p></div><span class="badge">LAB · NOT VIDEO-TESTED</span></div>
@@ -35,7 +36,7 @@
     <div class="production-layout">
       <nav id="productionCabinets" class="production-cabinets" aria-label="AI Production cabinets"></nav>
       <main id="productionContent" class="production-content"></main>
-      <aside class="production-output"><h2>Task / QC output</h2><textarea id="productionTask" readonly aria-label="Production task JSON" rows="18"></textarea><button type="button" id="productionExportTask">Export Task JSON</button><p id="productionNotice" role="status" aria-live="polite">LAB · integrations disconnected</p></aside>
+      <aside class="production-output" aria-label="Result Inspector"><h2>Result Inspector</h2><div class="production-result-tabs" role="tablist" aria-label="Result views"><button type="button" data-view="summary" role="tab" aria-selected="true">Summary</button><button type="button" data-view="issues" role="tab" aria-selected="false">Issues</button><button type="button" data-view="json" role="tab" aria-selected="false">JSON</button><button type="button" data-view="history" role="tab" aria-selected="false">History</button></div><div id="productionSummary" class="production-result-view" role="tabpanel"><p>Нет результата. Выберите кабинет и выполните локальную проверку.</p></div><div id="productionIssues" class="production-result-view" role="tabpanel" hidden><p>Проблемы и ограничения появятся после проверки.</p></div><div id="productionJson" class="production-result-view" role="tabpanel" hidden><textarea id="productionTask" readonly aria-label="Production task JSON" rows="18"></textarea><button type="button" id="productionCopyTask" class="production-secondary">Copy JSON</button></div><div id="productionHistory" class="production-result-view" role="tabpanel" hidden><pre id="productionHistoryPreview" class="production-history"></pre></div><button type="button" id="productionExportTask" class="production-secondary">Export Task JSON</button><p id="productionNotice" role="status" aria-live="polite">LAB · integrations disconnected</p></aside>
     </div>
   </section>
   <div class="shell" id="standardMode">
