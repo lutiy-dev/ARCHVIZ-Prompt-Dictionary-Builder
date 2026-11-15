@@ -241,3 +241,9 @@ An isolated Rust-native MCP sidecar and Windows installer source scaffold are av
 
 ### Windows Desktop QC
 The unsigned Windows LAB installer is produced as a GitHub Actions artifact only after a successful NSIS build. See [Windows Fresh Install QC](docs/WINDOWS_QA.md) before using it; it is not a production release.
+
+
+### UI/UX Consolidation v1.0 — Draft LAB
+In draft PR #24 only, Prompt Studio has a shared mode/project context, AI Production Result Inspector (Summary / Issues / JSON / History), reversible Video Director editor disclosures, and local Geometry Guardian Source/Candidate previews. The native Tauri host suppresses the browser-only PWA install action. The existing Standard compiler, saved-project schemas, API/model permissions and JSON contracts are unchanged.
+
+This work is **LAB / NOT RELEASED**. Chromium responsive/PWA checks and CI screenshot artifacts are part of the PR; physical Windows WebView2 visual QA and sidecar lifecycle remain mandatory before an acceptance/merge decision. See [AI Production integration specification](docs/AI_PRODUCTION_INTEGRATION_V1.md) and [Windows QC](docs/WINDOWS_QA.md).
