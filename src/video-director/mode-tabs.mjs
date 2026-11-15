@@ -17,5 +17,19 @@ function show(mode){
 for(const [name,b] of Object.entries(tabs))b.addEventListener('click',()=>show(name));
 const picker=document.getElementById('vdProjects');picker?.addEventListener('change',()=>updateWorkspaceContext('video'));
 const videoTitle=document.getElementById('vdTitle');if(videoTitle){new MutationObserver(()=>{if(!video.hidden)updateWorkspaceContext('video')}).observe(videoTitle,{childList:true,characterData:true,subtree:true});}
+// Presentation-only disclosure controls; editors, values and persistence stay untouched.
+for(const id of ['vdReferences','vdCharacters','vdGlobalLayers','vdCameraPresets','vdLayerPresets']){
+ const content=document.getElementById(id),section=content?.closest('section'),heading=section?.querySelector('h2');
+ if(!content||!heading)continue;
+ const toggle=document.createElement('button');toggle.type='button';toggle.className='vd-panel-disclosure';
+ toggle.textContent='Свернуть';toggle.setAttribute('aria-expanded','true');toggle.setAttribute('aria-controls',id);
+ heading.append(toggle);
+ toggle.addEventListener('click',()=>{
+  const collapsed=toggle.getAttribute('aria-expanded')==='true';
+  toggle.setAttribute('aria-expanded',String(!collapsed));
+  toggle.textContent=collapsed?'Развернуть':'Свернуть';
+  for(const child of section.children){if(child!==heading)child.hidden=collapsed;}
+ });
+}
 show('standard');
 tabs.video.dataset.ready='true';
