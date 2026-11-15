@@ -1,5 +1,5 @@
 const CACHE_PREFIX = 'archviz-prompt-studio-shell-';
-const CACHE = CACHE_PREFIX + 'v16-unified-design-system';
+const CACHE = CACHE_PREFIX + 'v17-unified-mode-shells';
 const ASSETS = ['./', './index.html', './src/style.css', './src/app.mjs',
   './src/design-system.css', './src/composer.mjs', './src/video-director/ui.mjs', './src/video-director/mode-tabs.mjs',
   './src/video-director/schema.mjs', './src/production/core.mjs', './src/production/ui.mjs', './src/production/history-store.mjs', './src/production/image-qc.mjs', './src/production/desktop-bridge.mjs', './src/production/offline-comfyui-check.mjs', './src/production/comfyui-adapter.mjs', './src/production/art-direction-format.mjs', './src/production/candidate-review.mjs', './src/video-director/layer-presets.mjs', './src/video-director/compiler.mjs', './src/video-director/store.mjs', './src/saved-prompts.mjs', './src/prompt-transfer.mjs', './src/translation-ru.mjs',
