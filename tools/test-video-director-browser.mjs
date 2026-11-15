@@ -57,7 +57,7 @@ try{
  await send('Runtime.enable');await send('Page.enable');await send('Network.enable');
  await poll('return document.querySelector("#videoDirectorRoot")?.dataset.ready==="true" && document.querySelector("#vdTabVideo")?.dataset.ready==="true"','app initialization');
  await pass('Standard visible on first load','return !document.querySelector("#standardMode").hidden && document.querySelector("#videoDirectorRoot").hidden');
- await pass('Shared UI design tokens loaded','return getComputedStyle(document.documentElement).getPropertyValue("--ds-content-max").trim()==="1680px" && getComputedStyle(document.documentElement).getPropertyValue("--panel").trim()==="var(--card)"');
+ await pass('Shared UI design tokens loaded','return getComputedStyle(document.documentElement).getPropertyValue("--ds-content-max").trim()==="1680px" && getComputedStyle(document.documentElement).getPropertyValue("--panel").trim()===getComputedStyle(document.documentElement).getPropertyValue("--card").trim()');
  await pass('Unified stylesheet loaded without 404','return [...document.styleSheets].some(s=>s.href?.includes("design-system.css"))');
 
  await poll('return document.querySelector("#productionRoot")?.dataset.ready==="true"','production initialization');
