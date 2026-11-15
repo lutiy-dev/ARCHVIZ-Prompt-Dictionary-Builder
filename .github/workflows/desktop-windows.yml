@@ -5,6 +5,7 @@ on:
       - 'src-tauri/**'
       - 'src-mcp/**'
       - 'tools/prepare-desktop.mjs'
+      - 'tools/test-windows-webview2.mjs'
       - 'src/production/desktop-bridge.mjs'
       - '.github/workflows/desktop-windows.yml'
   workflow_dispatch:
@@ -30,6 +31,8 @@ jobs:
         run: npx --yes @tauri-apps/cli@2.12.2 build
       - name: Native MCP stdio handshake and permission denial
         run: node tools/test-native-mcp.mjs src-tauri/binaries/ovizlab-mcp-x86_64-pc-windows-msvc.exe
+      - name: Real Windows release EXE WebView2 UI smoke
+        run: node tools/test-windows-webview2.mjs src-tauri/target/release/ovizlab-prompt-studio.exe
       - name: Inventory installer (no release publication)
         shell: pwsh
         run: |
