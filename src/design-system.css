@@ -126,3 +126,52 @@
 
 /* Mode roots are page shells, not giant cards. Standard already uses an open shell. */
 .vd-root,.production-root{background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
+
+/* Workspace UX Refinement v1.2 — scoped layout, no storage or compiler changes. */
+@media (min-width:1101px) and (min-height:650px){
+ .shell{grid-template-rows:auto auto minmax(0,1fr) auto;min-height:0}
+ .shell main{min-height:0;align-items:stretch}
+ .shell main>section{height:clamp(600px,calc(100dvh - 240px),1000px);min-height:0}
+ .shell main>section>.section-body{flex:1;min-height:0;display:flex;flex-direction:column}
+ .shell #library,.shell #selected{min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable}
+ .shell #library{flex:1 1 200px}
+ .shell #selected{flex:1 1 180px}
+ .shell .preview #output{flex:1 1 200px;min-height:180px;max-height:none;overflow:auto}
+}
+@media (min-width:721px) and (max-width:1100px){
+ .shell main>section{height:min(850px,max(560px,calc(100dvh - 230px)))}
+ .shell main>section>.section-body{display:flex;flex-direction:column;min-height:0}
+ .shell #library,.shell #selected{flex:1 1 200px;min-height:0;max-height:none;overflow:auto;overscroll-behavior:contain}
+ .shell .preview #output{min-height:230px;flex:1 1 230px;height:auto;overflow:auto}
+}
+@media(max-width:720px){
+ .shell main>section{height:auto;min-height:0}
+ .shell #library{max-height:min(58dvh,520px);min-height:180px;overflow:auto}
+ .shell #selected{max-height:min(48dvh,480px);min-height:140px;overflow:auto}
+ .shell .preview #output{min-height:260px;max-height:52dvh;overflow:auto;resize:vertical}
+}
+.shell main>section:first-child>.section-body>label{flex-shrink:0}
+/* Compact, accessible empty project state. Preserve project IDs and existing actions. */
+.vd-empty-state{max-width:760px;margin:16px auto 0;padding:24px;border:1px solid var(--border);border-radius:var(--ds-radius-card);background:var(--card)}
+.vd-empty-state[hidden]{display:none}
+.vd-empty-state h2{margin:0 0 8px;font-size:20px}
+.vd-empty-state p{font-size:14px;line-height:1.6;color:var(--text-soft);max-width:64ch}
+.vd-empty-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:18px 0}
+.vd-empty-state .vd-empty-actions>button,.vd-empty-state .vd-file{min-height:38px;padding:9px 13px;background:var(--soft);color:var(--foreground);border:1px solid var(--border);border-radius:var(--ds-radius-control)}
+.vd-empty-state #vdStartNew{background:var(--yellow);color:#171500;border-color:var(--yellow);font-weight:700}
+.vd-empty-project{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:13px}
+.vd-empty-project select{min-width:220px;max-width:100%}
+.vd-root:has(#vdWorkspace[hidden]) .vd-toolbar{display:none}
+.vd-root:has(#vdWorkspace[hidden]){min-height:0}
+.vd-shot-list{max-height:240px;overflow:auto;scrollbar-color:var(--border) transparent;align-content:flex-start;overscroll-behavior:contain}
+#vdPrompt{min-height:260px;max-height:65dvh;overflow:auto;resize:vertical}
+#vdIssues{max-height:160px;overflow:auto;overscroll-behavior:contain}
+/* Result inspector remains alongside editor only when viewport permits readable columns. */
+@media(min-width:1400px){.production-layout{grid-template-columns:minmax(175px,210px) minmax(450px,1.5fr) minmax(300px,.9fr)}.production-output{grid-column:auto}}
+@media(min-width:721px) and (max-width:1399px){.production-layout{grid-template-columns:minmax(160px,200px) minmax(0,1fr)}.production-output{grid-column:2}}
+@media(max-width:720px){.production-layout{display:flex;flex-direction:column}.production-output{grid-column:auto}}
+.production-output .production-result-view{min-height:72px}
+.production-output textarea{min-height:240px;max-height:55dvh;overflow:auto}
+.production-root .production-result-tabs button{font-size:12px}
+.vd-root .vd-note,.production-root .production-panel p{line-height:1.55}
+@media(max-width:450px){.vd-empty-state{padding:16px}.vd-empty-project select{min-width:0;width:100%}}
