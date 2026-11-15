@@ -60,8 +60,17 @@ try{
  await poll('return document.querySelector("#productionRoot")?.dataset.ready==="true"','production initialization');
  await evaluate('document.querySelector("#productionTab").click();return true');
  await pass('Production cabinet navigation','return !document.querySelector("#productionRoot").hidden && document.querySelector("#standardMode").hidden && document.querySelector("#productionCabinets").querySelectorAll("button").length===5');
+ await pass('Shared workspace context reflects selected mode','return document.querySelector("#workspaceContext")?.textContent.includes("AI Production")');
  await evaluate('document.querySelector("#productionProject").value="project_01";document.querySelector("#productionBrief").value="Preserve hotel geometry";document.querySelector(".production-panel button").click();return true');
  await pass('Art Director prepares a safe local draft','return document.querySelector("#productionTask").value.includes("archviz_production_task") && document.querySelector("#productionTask").value.includes("HARD")');
+ await pass('Inspector defaults to summary with unchanged JSON contract','return document.querySelector("#productionSummary")?.hidden===false && document.querySelector("#productionTask").value.includes("archviz_production_task") && document.querySelector("[data-view=summary]")?.getAttribute("aria-selected")==="true"');
+ await evaluate('document.querySelector("[data-view=json]").click();return true');
+ await pass('Inspector JSON is accessible and complete','return !document.querySelector("#productionJson").hidden && document.querySelector("#productionTask").value.includes("architecture_lock") && document.querySelector("#productionSummary").hidden');
+ await evaluate('document.querySelector("[data-view=issues]").click();return true');
+ await pass('Inspector issues does not claim geometry verified','return !document.querySelector("#productionIssues").hidden && document.querySelector("#productionIssues").textContent.includes("NOT VERIFIED")');
+ await evaluate('document.querySelector("[data-view=history]").click();return true');
+ await pass('Inspector history reflects isolated records','return !document.querySelector("#productionHistory").hidden && document.querySelector("#productionHistoryPreview").textContent.includes("GENERATED")');
+
  await pass('Art Director candidate review requires explicit input','return document.querySelector("#productionCandidateJson")?.tagName==="TEXTAREA" && document.querySelector("#productionContent").textContent.includes("Accept recommendations")');
 
  await pass('Independent Production History key written','return JSON.parse(localStorage.getItem("archviz-production-history-v1")).records.length===1');
