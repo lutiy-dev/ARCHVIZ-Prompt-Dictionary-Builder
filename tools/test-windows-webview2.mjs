@@ -4,7 +4,7 @@
  * Fails closed if WebView2 debugging is unavailable (not a successful UI test).
  */
 import assert from 'node:assert/strict';
-import {spawn} from 'node:child_process';
+import {spawn,spawnSync} from 'node:child_process';
 import {existsSync} from 'node:fs';
 import {resolve} from 'node:path';
 import {createServer} from 'node:net';
@@ -57,5 +57,5 @@ try{
 }finally{
  for(const x of pending.values())clearTimeout(x);
  try{ws?.close()}catch{}
- if(app){app.kill();await sleep(600);}
+ if(app?.pid){spawnSync('taskkill',['/PID',String(app.pid),'/T','/F'],{stdio:'ignore',windowsHide:true});await sleep(350);}
 }
