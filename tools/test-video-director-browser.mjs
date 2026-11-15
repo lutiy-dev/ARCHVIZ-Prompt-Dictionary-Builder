@@ -111,6 +111,12 @@ try{
  await evaluate('document.querySelector("#vdTabVideo").click();document.querySelector("#vdDemo").click();return true');
  await poll('return document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:")','demo compilation');
  await pass('Synthetic demo and actor references appear','return !document.querySelector("#videoDirectorRoot").hidden && document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:") && document.querySelector("#vdManifest").textContent.includes("male_ref")');
+ await pass('Video Director editor disclosures present','return document.querySelectorAll(".vd-panel-disclosure").length===5');
+ await evaluate('document.querySelector("#vdReferences").closest("section").querySelector(".vd-panel-disclosure").click();return true');
+ await pass('Video Director reference editor collapses without losing records','return document.querySelector("#vdReferences").hidden && document.querySelector("#vdReferences").children.length>0');
+ await evaluate('document.querySelector("#vdReferences").closest("section").querySelector(".vd-panel-disclosure").click();return true');
+ await pass('Video Director reference editor expands with original content','return !document.querySelector("#vdReferences").hidden && document.querySelector("#vdReferences").children.length>0');
+
  await evaluate('document.querySelector("#vdShotFields .vd-item .vd-retention button").click();return true');
  await pass('Retention editor creates a rule','return !!document.querySelector("#vdShotFields .vd-retention-row")');
  await evaluate('let n=document.querySelectorAll("#vdShotFields .vd-retention-row select")[1];n.value="attribute_transfer";n.dispatchEvent(new Event("change",{bubbles:true}));return true');
