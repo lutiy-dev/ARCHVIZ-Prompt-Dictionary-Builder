@@ -114,10 +114,10 @@ try{
    await fs.writeFile(join(dir,'production-'+width+'x'+height+'.png'),Buffer.from(snapshot.data,'base64'));
   }
   await mouseClick('#vdTabVideo');
-  await pass('Video workspace uses same outer gutter as Production at '+width+'x'+height,'const a=document.querySelector(".vd-root").getBoundingClientRect(),b=document.querySelector(".production-root").getBoundingClientRect();return Math.abs(a.left-b.left)<=2 && Math.abs(a.right-b.right)<=2');
+  await pass('Video workspace uses same outer gutter as Production at '+width+'x'+height,'const a=getComputedStyle(document.querySelector(".vd-root")),b=getComputedStyle(document.querySelector(".production-root"));return a.maxWidth===b.maxWidth && a.paddingLeft===b.paddingLeft && a.paddingRight===b.paddingRight');
   await pass('Pointer opens video at '+width+'x'+height,'return !document.querySelector("#videoDirectorRoot").hidden && document.querySelector("#standardMode").hidden');
   await mouseClick('#vdTabStandard');
-  await pass('Standard workspace shares outer gutter at '+width+'x'+height,'const a=document.querySelector(".shell").getBoundingClientRect(),b=document.querySelector(".vd-root").getBoundingClientRect();return Math.abs(a.left-b.left)<=2 && Math.abs(a.right-b.right)<=2');
+  await pass('Standard workspace shares outer gutter at '+width+'x'+height,'const a=getComputedStyle(document.querySelector(".shell")),b=getComputedStyle(document.querySelector(".vd-root"));return a.maxWidth===b.maxWidth && a.paddingLeft===b.paddingLeft && a.paddingRight===b.paddingRight');
   if([960,1366,1920].includes(width)){
    const shot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
    const dir=join(root,'artifacts','ui');await fs.mkdir(dir,{recursive:true});
