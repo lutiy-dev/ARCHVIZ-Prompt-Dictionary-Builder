@@ -123,3 +123,6 @@
  .shell .section-head{padding:var(--ds-space-4)}
  .shell .section-body{padding:var(--ds-space-4)}
 }
+
+/* Mode roots are page shells, not giant cards. Standard already uses an open shell. */
+.vd-root,.production-root{background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
