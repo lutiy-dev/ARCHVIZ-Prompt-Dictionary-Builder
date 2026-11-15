@@ -7,6 +7,13 @@ on:
       - 'tools/prepare-desktop.mjs'
       - 'tools/test-windows-webview2.mjs'
       - 'src/production/desktop-bridge.mjs'
+      - 'src/production/**'
+      - 'src/video-director/**'
+      - 'src/style.css'
+      - 'src/design-system.css'
+      - 'index.html'
+      - 'sw.js'
+      - 'pwa-install-capture.js'
       - '.github/workflows/desktop-windows.yml'
   workflow_dispatch:
 concurrency:
@@ -34,12 +41,14 @@ jobs:
       - name: Real Windows release EXE WebView2 UI smoke
         run: node tools/test-windows-webview2.mjs src-tauri/target/release/ovizlab-prompt-studio.exe
       - name: Inventory installer (no release publication)
+        if: ${{ !cancelled() }}
         shell: pwsh
         run: |
           $items = Get-ChildItem -Path src-tauri/target/release/bundle/nsis -Filter *.exe -Recurse
           if ($items.Count -lt 1) { throw 'Windows NSIS artifact missing' }
           $items | ForEach-Object { Write-Host $_.FullName; (Get-FileHash $_.FullName -Algorithm SHA256).Hash }
       - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
         with:
           name: archviz-desktop-windows-lab
           path: src-tauri/target/release/bundle/nsis/*.exe
