@@ -47,3 +47,13 @@ Any blank native WebView2, new PWA offline failure, keyboard regression, unreada
 ## Visual QA refinement: shared open mode shell
 
 Visual screenshot review found that Video Director and AI Production still inherited an outer `section` panel with gradient border and shadow, unlike Standard Prompt. Their mode-root wrappers now use a transparent borderless page shell. Internal cards and all event handlers are unchanged. Browser acceptance asserts both root wrappers have no decorative outer background image or border. New screenshots and physical Windows WebView2 inspection are mandatory before declaring UI v1.1 complete.
+
+## Workspace UX Refinement v1.2 — implementation checkpoint (15 Nov 2026)
+
+Scope: existing Draft PR #24, no change to main. Standard Prompt reuses the already-present independently scrolling Dictionary and Composer containers while constraining desktop panel heights to available viewport and avoiding the legacy forced 780px main row. Long Final Prompt text remains separately scrollable. At mobile widths the page stacks naturally and bounds each content list.
+
+Video Director now has a compact no-project entry containing Create, Demo, Import and existing saved-project picker. All controls delegate to the **existing project creation, demo and import handlers**; the stored project schema, reference retention and JSON export remain unchanged. The large blank empty area is not replaced by a second persistence model. Shot List is independently scrollable; Compiled Output text and issues get bounded scroll.
+
+AI Production uses 3-column Inspector only for >=1400px; at 721–1399px the inspector appears below the editor; on narrow viewports all panels stack. JSON remains scrollable; its payload, authorization and QC semantics are unchanged.
+
+Browser regression assertions cover independent library scrolling, compact Video empty state, Shot List and Result Inspector scrollability. Verify actual PR head CI and screenshots before claiming PASS. Windows NSIS build and real WebView2 rendering are separate gates; previous CI failed to expose WebView2 CDP and therefore does not prove runtime. No modifications to AI execution, model choices, project data or credentials. No merge/release without physical Windows acceptance.
