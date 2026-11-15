@@ -257,3 +257,9 @@ The Web/PWA offline shell explicitly caches the additional stylesheet. CI captur
 Scope and acceptance: [UI Design System v1.1](docs/UI_DESIGN_SYSTEM_V1_1.md), [Windows Runtime QA](docs/WINDOWS_QA.md), [PR #24](https://github.com/lutiy-dev/ARCHVIZ-Prompt-Dictionary-Builder/pull/24).
 
 **LAB / NOT PRODUCTION.** Build/Chromium PASS does not establish physical Windows WebView2 PASS, and previous white-screen evidence remains a STOP condition for merge/release until resolved and repeated on a real workstation. No model or workflow execution is introduced by this UI stage.
+
+### Workspace UX Refinement v1.2 — Draft LAB
+
+In Draft PR #24 only: Standard Prompt's existing independent Dictionary/Composer scrolling now uses viewport-aware heights instead of forcing the entire workspace to stretch; the Final Prompt text remains independently scrollable. Video Director shows a compact project-first empty state (create, existing projects, demo, JSON import) wired to the existing handlers, with scroll-limited Shot List and Compiled Output. AI Production moves Result Inspector below the editor at intermediate screen widths (721–1399px) and uses three columns only at 1400px and wider.
+
+No project storage migration, dictionary changes, prompt compiler changes, geometry verification, model selection or API/ComfyUI/MCP execution is part of this UX stage. See [UI Design System and UX checkpoints](docs/UI_DESIGN_SYSTEM_V1_1.md), [Windows QA](docs/WINDOWS_QA.md). This is **LAB / NOT RELEASED**. Windows NSIS compilation and physical WebView2 acceptance are separate requirements, with previous remote-debugging failure unresolved.
