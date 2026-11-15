@@ -1,9 +1,10 @@
 (() => {
   let pending;
   const installed = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  const desktop = () => Boolean(window.__TAURI__?.core?.invoke);
   const refresh = () => {
     const button = document.getElementById('installApp');
-    if (button) button.hidden = Boolean(installed());
+    if (button) button.hidden = Boolean(installed() || desktop());
   };
   window.addEventListener('beforeinstallprompt', event => {
     event.preventDefault(); pending = event; refresh();
@@ -16,6 +17,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     refresh();
     document.getElementById('installApp').addEventListener('click', async () => {
+      if (desktop()) return;
       const help = document.getElementById('installHelp');
       if (pending) {
         const event = pending; pending = undefined;
