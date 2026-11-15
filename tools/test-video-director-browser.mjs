@@ -66,6 +66,9 @@ try{
  await pass('Inspector defaults to summary with unchanged JSON contract','return document.querySelector("#productionSummary")?.hidden===false && document.querySelector("#productionTask").value.includes("archviz_production_task") && document.querySelector("[data-view=summary]")?.getAttribute("aria-selected")==="true"');
  await evaluate('document.querySelector("[data-view=json]").click();return true');
  await pass('Inspector JSON is accessible and complete','return !document.querySelector("#productionJson").hidden && document.querySelector("#productionTask").value.includes("architecture_lock") && document.querySelector("#productionSummary").hidden');
+ await evaluate('document.querySelector("[data-view=json]").dispatchEvent(new KeyboardEvent("keydown",{key:"Home",bubbles:true}));return true');
+ await pass('Result Inspector keyboard Home returns to Summary','return !document.querySelector("#productionSummary").hidden && document.querySelector("[data-view=summary]").getAttribute("aria-selected")==="true" && document.activeElement===document.querySelector("[data-view=summary]")');
+
  await evaluate('document.querySelector("[data-view=issues]").click();return true');
  await pass('Inspector issues does not claim geometry verified','return !document.querySelector("#productionIssues").hidden && document.querySelector("#productionIssues").textContent.includes("NOT VERIFIED")');
  await evaluate('document.querySelector("[data-view=history]").click();return true');
