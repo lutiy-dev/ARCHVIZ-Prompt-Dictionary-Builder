@@ -81,6 +81,7 @@ try{
 
  await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="geometry_guardian").click();return true');
  await pass('Geometry QC displays two local image inputs and diff action','return document.querySelector("#productionOriginalFile")?.type==="file" && document.querySelector("#productionCandidateFile")?.type==="file" && document.querySelector("#productionContent").textContent.includes("Compare local image pixels")');
+ await pass('Geometry Guardian shows side-by-side local preview placeholders','return document.querySelectorAll(".production-image-preview").length===2 && document.querySelectorAll(".production-image-preview figcaption").length===2');
 
  await evaluate('document.querySelector("#vdTabStandard").click();return true');
 
