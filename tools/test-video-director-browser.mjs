@@ -132,9 +132,10 @@ try{
  }
  await send('Emulation.clearDeviceMetricsOverride');
  const keys=await evaluate('return [localStorage.getItem("archviz-prompt-studio-v1"),localStorage.getItem("archviz-prompt-library-v1")]');
- await evaluate('document.querySelector("#vdTabVideo").click();document.querySelector("#vdDemo").click();return true');
- await poll('return document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:")','demo compilation');
+ await evaluate('document.querySelector("#vdTabVideo").click();return true');
  await pass('Project-first empty state hides workspace when no project','return document.querySelector("#vdEmptyState")?.hidden===false && document.querySelector("#vdWorkspace")?.hidden===true && document.querySelector("#vdStartNew")?.type==="button"');
+ await evaluate('document.querySelector("#vdDemo").click();return true');
+ await poll('return document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:")','demo compilation');
  await pass('Synthetic demo and actor references appear','return !document.querySelector("#videoDirectorRoot").hidden && document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:") && document.querySelector("#vdManifest").textContent.includes("male_ref")');
  await pass('Project-first start screen closes after demo selection','return document.querySelector("#vdEmptyState").hidden && !document.querySelector("#vdWorkspace").hidden');
  await pass('Video shot list is bounded and independently scrollable','const list=document.querySelector("#vdShotList"),style=getComputedStyle(list);return style.overflowY==="auto"&&parseFloat(style.maxHeight)>0');
