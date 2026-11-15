@@ -21,6 +21,8 @@ function field(label,id,placeholder='',multiline=false){
 function action(label,callback){const b=node('button',label);b.type='button';b.onclick=callback;
  if(/^(Export|Copy|Reject|Stage|Check|Validate source|Probe|Review metrics)/.test(label))b.classList.add('production-secondary');
  if(/^Reject/.test(label))b.classList.add('production-danger');
+ if(/^(Prepare task|Compare local image pixels|Validate API prompt offline)/.test(label))b.classList.add('production-primary');
+ if(/^Accept recommendations/.test(label))b.classList.add('production-review');
  return b;}
 function panel(title,description){
  const e=node('section');e.className='production-panel';e.append(node('h2',title),node('p',description));return e;
@@ -70,6 +72,7 @@ function redraw(){
    try{const id='task_'+(crypto.randomUUID?.()||String(Date.now())).replaceAll('-','').slice(0,20);
     stagedCandidate=null;
     currentTask=prepareTask({id,project_id:$('productionProject').value.trim(),shot_id:$('productionShot').value.trim()||null,cabinet:'art_director',description:$('productionBrief').value.trim(),architecture_lock:$('productionLock').value});
+    $('productionExportTask').disabled=false;
     const entry={id:'log_'+id,task_id:id,status:'GENERATED',note:'Prepared in Web/PWA with no AI call'};
     history=appendHistory(history,entry);
     try{if(historyError)throw Error(historyError);addHistoryRecord(localStorage,entry)}catch(error){historyError=error.message;feedback('GENERATED · task prepared; history not persisted: '+historyError,true);result(currentTask);return}
@@ -206,5 +209,6 @@ $('productionCopyTask').addEventListener('click',async()=>{
 });
 setResultView('summary');
 for(const [name,label] of Object.entries(names)){const b=action(label,()=>{chosen=name;redraw();feedback('LAB · внешние интеграции отключены')});b.dataset.cabinet=name;$('productionCabinets').append(b);}
+$('productionExportTask').disabled=true;
 $('productionExportTask').addEventListener('click',()=>{if(!currentTask){feedback('BLOCKED · сначала сформируйте задание',true);return;}exportJson(currentTask.id+'.json',currentTask);feedback('GENERATED · exported metadata only')});
 redraw();$('productionRoot').dataset.ready='true';
