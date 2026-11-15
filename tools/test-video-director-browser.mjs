@@ -87,6 +87,11 @@ try{
   await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
   await evaluate('window.scrollTo(0,0);return true');
   await pass('Mode tabs have space at '+width+'x'+height,'const nav=document.querySelector(".vd-mode-tabs"),r=nav.getBoundingClientRect(),b=document.querySelector("#vdTabVideo").getBoundingClientRect();return b.height>0 && b.top>=r.top && b.bottom<=r.bottom');
+  await mouseClick('#productionTab');
+  await pass('Production cabinet uses full content width at '+width+'x'+height,
+   'const host=document.querySelector(".production-content"),panel=host.querySelector(".production-panel"),layout=document.querySelector(".production-layout");const a=host.getBoundingClientRect(),b=panel.getBoundingClientRect();return getComputedStyle(host).display==="block" && b.width>0 && b.width>=a.width*0.95 && layout.getBoundingClientRect().width<=innerWidth+1');
+  await pass('Production QC output responsive at '+width+'x'+height,
+   'const a=document.querySelector(".production-content").getBoundingClientRect(),b=document.querySelector(".production-output").getBoundingClientRect();return innerWidth>1200?b.left>=a.right-2:b.top>=a.bottom-2');
   await mouseClick('#vdTabVideo');
   await pass('Pointer opens video at '+width+'x'+height,'return !document.querySelector("#videoDirectorRoot").hidden && document.querySelector("#standardMode").hidden');
   await mouseClick('#vdTabStandard');
