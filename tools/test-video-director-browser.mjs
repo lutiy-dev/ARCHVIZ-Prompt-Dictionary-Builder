@@ -112,7 +112,7 @@ try{
   await pass('Production cabinet uses full content width at '+width+'x'+height,
    'const host=document.querySelector(".production-content"),panel=host.querySelector(".production-panel"),layout=document.querySelector(".production-layout");const a=host.getBoundingClientRect(),b=panel.getBoundingClientRect();return getComputedStyle(host).display==="block" && b.width>0 && b.width>=a.width*0.95 && layout.getBoundingClientRect().width<=innerWidth+1');
   await pass('Production QC output responsive at '+width+'x'+height,
-   'const a=document.querySelector(".production-content").getBoundingClientRect(),b=document.querySelector(".production-output").getBoundingClientRect();return innerWidth>1200?b.left>=a.right-2:b.top>=a.bottom-2');
+   'const a=document.querySelector(".production-content").getBoundingClientRect(),b=document.querySelector(".production-output").getBoundingClientRect();return innerWidth>=1400?b.left>=a.right-2:b.top>=a.bottom-2');
   if([960,1366,1920].includes(width)){
    const snapshot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
    const dir=join(root,'artifacts','ui');await fs.mkdir(dir,{recursive:true});
