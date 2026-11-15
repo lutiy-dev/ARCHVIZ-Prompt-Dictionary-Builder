@@ -57,6 +57,9 @@ try{
  await send('Runtime.enable');await send('Page.enable');await send('Network.enable');
  await poll('return document.querySelector("#videoDirectorRoot")?.dataset.ready==="true" && document.querySelector("#vdTabVideo")?.dataset.ready==="true"','app initialization');
  await pass('Standard visible on first load','return !document.querySelector("#standardMode").hidden && document.querySelector("#videoDirectorRoot").hidden');
+ await pass('Shared UI design tokens loaded','return getComputedStyle(document.documentElement).getPropertyValue("--ds-content-max").trim()==="1680px" && getComputedStyle(document.documentElement).getPropertyValue("--panel").trim()==="var(--card)"');
+ await pass('Unified stylesheet loaded without 404','return [...document.styleSheets].some(s=>s.href?.includes("design-system.css"))');
+
  await poll('return document.querySelector("#productionRoot")?.dataset.ready==="true"','production initialization');
  await evaluate('document.querySelector("#productionTab").click();return true');
  await pass('Production cabinet navigation','return !document.querySelector("#productionRoot").hidden && document.querySelector("#standardMode").hidden && document.querySelector("#productionCabinets").querySelectorAll("button").length===5');
@@ -111,8 +114,15 @@ try{
    await fs.writeFile(join(dir,'production-'+width+'x'+height+'.png'),Buffer.from(snapshot.data,'base64'));
   }
   await mouseClick('#vdTabVideo');
+  await pass('Video workspace uses same outer gutter as Production at '+width+'x'+height,'const a=document.querySelector(".vd-root").getBoundingClientRect(),b=document.querySelector(".production-root").getBoundingClientRect();return Math.abs(a.left-b.left)<=2 && Math.abs(a.right-b.right)<=2');
   await pass('Pointer opens video at '+width+'x'+height,'return !document.querySelector("#videoDirectorRoot").hidden && document.querySelector("#standardMode").hidden');
   await mouseClick('#vdTabStandard');
+  await pass('Standard workspace shares outer gutter at '+width+'x'+height,'const a=document.querySelector(".shell").getBoundingClientRect(),b=document.querySelector(".vd-root").getBoundingClientRect();return Math.abs(a.left-b.left)<=2 && Math.abs(a.right-b.right)<=2');
+  if([960,1366,1920].includes(width)){
+   const shot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+   const dir=join(root,'artifacts','ui');await fs.mkdir(dir,{recursive:true});
+   await fs.writeFile(join(dir,'standard-'+width+'x'+height+'.png'),Buffer.from(shot.data,'base64'));
+  }
   await pass('Pointer returns to standard at '+width+'x'+height,'return document.querySelector("#videoDirectorRoot").hidden && !document.querySelector("#standardMode").hidden');
  }
  await send('Emulation.clearDeviceMetricsOverride');
@@ -120,6 +130,17 @@ try{
  await evaluate('document.querySelector("#vdTabVideo").click();document.querySelector("#vdDemo").click();return true');
  await poll('return document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:")','demo compilation');
  await pass('Synthetic demo and actor references appear','return !document.querySelector("#videoDirectorRoot").hidden && document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:") && document.querySelector("#vdManifest").textContent.includes("male_ref")');
+ await pass('Shot list has a single visibly selected item','const buttons=[...document.querySelectorAll("#vdShotList button[aria-pressed]")];return buttons.length===12 && buttons.filter(b=>b.getAttribute("aria-pressed")==="true").length===1 && getComputedStyle(buttons[0]).backgroundColor!==getComputedStyle(buttons.find(b=>b.getAttribute("aria-pressed")==="true")).backgroundColor');
+ await pass('Shot Composer has five visual section headings','return document.querySelectorAll("#vdShotFields > .vd-editor-subheading").length===5');
+ for(const [width,height] of [[960,768],[1366,768],[1920,1080]]){
+  await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+  await evaluate('window.scrollTo(0,0);return true');
+  const screenshot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+  const dir=join(root,'artifacts','ui');await fs.mkdir(dir,{recursive:true});
+  await fs.writeFile(join(dir,'video-'+width+'x'+height+'.png'),Buffer.from(screenshot.data,'base64'));
+ }
+ await send('Emulation.clearDeviceMetricsOverride');
+
  await pass('Video Director editor disclosures present','return document.querySelectorAll(".vd-panel-disclosure").length===5');
  await evaluate('document.querySelector("#vdReferences").closest("section").querySelector(".vd-panel-disclosure").click();return true');
  await pass('Video Director reference editor collapses without losing records','return document.querySelector("#vdReferences").hidden && document.querySelector("#vdReferences").children.length>0');
