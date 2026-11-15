@@ -246,3 +246,10 @@ main .section-body>label,main .section-body>button,.save{flex:none}
 .vd-panel .vd-panel-disclosure{flex:none;width:auto;min-width:88px;margin:0;padding:5px 9px;border:1px solid var(--border);background:var(--soft);color:var(--text-soft);font:500 11px var(--sans)}
 .vd-panel .vd-panel-disclosure:hover{background:var(--hover);border-color:var(--yellow-line)}
 .vd-panel > [hidden]{display:none!important}
+
+/* Source/Candidate visual evidence. Local previews are not automatic geometry QC. */
+.production-image-previews{margin:12px 0}
+.production-image-preview{min-width:0;margin:0;min-height:150px;padding:9px;border:1px solid var(--border);border-radius:9px;background:var(--soft)}
+.production-image-preview figcaption{font:600 11px/1.5 var(--mono);color:var(--text-soft);margin-bottom:8px}
+.production-image-preview img{display:block;width:100%;height:auto;max-height:270px;object-fit:contain;border-radius:5px}
+.production-image-preview p{font-size:11px;color:var(--text-faint);margin:20px 0}
