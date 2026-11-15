@@ -100,7 +100,7 @@ function redraw(){
   }));
   host.append(p);
  }else if(chosen==='geometry_guardian'){
-  const p=panel('Geometry Guardian · Advisory QC','Проверка только вручную введённых метрик. Изображения не анализируются; автоматический PASS запрещён.');
+  const p=panel('Geometry Guardian · Advisory QC','Локальное пиксельное сравнение и ручные метрики. Результат не доказывает сохранение архитектурной геометрии; автоматический PASS запрещён.');
   for(const [label,id,placeholder] of [['Original ID','productionSource','original'],['AI Result ID','productionResult','result'],['Alignment error px','productionAlignment','0'],['Contour mismatch ratio 0-1','productionContour','0'],['Reviewed regions','productionRegions','0'],['Protected regions','productionProtected','0']])p.append(field(label,id,placeholder));
   const files=node('div');files.className='production-image-pair';
   const imageInput=(title,id)=>{const row=node('label');row.className='production-field';const input=node('input');input.type='file';input.accept='image/png,image/jpeg,image/webp';input.id=id;row.append(node('span',title),input);return row};
