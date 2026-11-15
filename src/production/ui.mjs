@@ -186,7 +186,19 @@ function redraw(){
   p.append(action('Export history JSON',()=>{if(historyError){feedback('BLOCKED · history unreadable; original storage retained',true);return;}try{exportJson('archviz-production-history.json',JSON.parse(exportHistory(localStorage)))}catch(e){feedback('BLOCKED · '+e.message,true)}}));host.append(p);
  }
 }
-for(const tab of resultTabs)tab.addEventListener('click',()=>setResultView(tab.dataset.view));
+const resultViewIds={summary:'productionSummary',issues:'productionIssues',json:'productionJson',history:'productionHistory'};
+for(const [index,tab] of resultTabs.entries()){
+ tab.id='productionResultTab'+index;tab.setAttribute('aria-controls',resultViewIds[tab.dataset.view]);
+ $(resultViewIds[tab.dataset.view]).setAttribute('aria-labelledby',tab.id);
+ tab.addEventListener('click',()=>setResultView(tab.dataset.view));
+ tab.addEventListener('keydown',event=>{
+  const keys=['ArrowRight','ArrowLeft','Home','End'];if(!keys.includes(event.key))return;
+  event.preventDefault();
+  const next=event.key==='Home'?0:event.key==='End'?resultTabs.length-1:
+   (index+(event.key==='ArrowRight'?1:-1)+resultTabs.length)%resultTabs.length;
+  setResultView(resultTabs[next].dataset.view);resultTabs[next].focus();
+ });
+}
 $('productionCopyTask').addEventListener('click',async()=>{
  if(!$('productionTask').value){feedback('BLOCKED · no JSON result to copy',true);return;}
  try{await navigator.clipboard.writeText($('productionTask').value);feedback('JSON copied · local only');}
