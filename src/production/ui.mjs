@@ -72,10 +72,10 @@ function field(label,id,placeholder='',multiline=false){
  input.id=id;input.placeholder=placeholder;wrap.append(caption,input);return wrap;
 }
 function action(label,callback){const b=node('button',label);b.type='button';b.onclick=callback;
- if(/^(Export|Copy|Reject|Stage|Check|Validate source|Probe|Review metrics)/.test(label))b.classList.add('production-secondary');
- if(/^Reject/.test(label))b.classList.add('production-danger');
- if(/^(Prepare task|Compare local image pixels|Validate API prompt offline)/.test(label))b.classList.add('production-primary');
- if(/^Accept recommendations/.test(label))b.classList.add('production-review');
+ if(/^(Export|Copy|Reject|Stage|Check|Validate source|Probe|Review metrics|Экспорт|Копировать|Отклонить|Проверить|Повторно найти)/.test(label))b.classList.add('production-secondary');
+ if(/^(Reject|Отклонить)/.test(label))b.classList.add('production-danger');
+ if(/^(Prepare task|Compare local image pixels|Validate API prompt offline|Сравнить изображения локально|Проверить API prompt offline)/.test(label))b.classList.add('production-primary');
+ if(/^(Accept recommendations|Принять рекомендации)/.test(label))b.classList.add('production-review');
  return b;}
 function panel(title,description){
  const e=node('section');e.className='production-panel';e.append(node('h2',title),node('p',description));return e;
