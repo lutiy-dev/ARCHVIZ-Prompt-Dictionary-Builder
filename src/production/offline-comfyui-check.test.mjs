@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {validateOfflineComfyFiles} from './offline-comfyui-check.mjs';
+import {validateOfflineComfyFiles,validateOfflineComfyPrompt} from './offline-comfyui-check.mjs';
 const file=x=>({size:Buffer.byteLength(x),text:async()=>x});
 const definitions=file(JSON.stringify({Example:{input:{required:{text:['STRING',{}]}}}}));
 test('offline API prompt validation does not queue or imply runtime verification',async()=>{
@@ -19,4 +19,13 @@ test('reject GUI workflow and malformed or oversized inputs',async()=>{
  await assert.rejects(validateOfflineComfyFiles(file('{"nodes":[]}'),definitions),/UI workflow JSON/);
  await assert.rejects(validateOfflineComfyFiles(file('{'),definitions),/valid JSON/);
  await assert.rejects(validateOfflineComfyFiles({size:9*1024*1024,text:async()=>{throw Error('must never read')}},definitions),/8 MiB/);
+});
+
+test('API prompt validates against automatically retrieved object_info without a second file',async()=>{
+ const prompt=new File([JSON.stringify({"1":{class_type:"KSampler",inputs:{seed:1}}})],"prompt.json",{type:"application/json"});
+ const info={KSampler:{input:{required:{seed:["INT",{}]},optional:{}}}};
+ const report=await validateOfflineComfyPrompt(prompt,info);
+ assert.equal(report.status,'OFFLINE_VALIDATED_UNVERIFIED');
+ assert.equal(report.valid,true);
+ assert.equal(report.queue_allowed,false);
 });
