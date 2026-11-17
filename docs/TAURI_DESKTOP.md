@@ -30,3 +30,18 @@ In AI Production > MCP / ComfyUI, click `Probe local ComfyUI :8188 · read-only`
 Desktop no longer assumes a fixed ComfyUI port. `AI Production > MCP / ComfyUI` now asks the native backend to inspect **local Windows TCP listeners only**. The discovery order prioritizes `127.0.0.1:8000` (common Desktop) and `127.0.0.1:8188` (common standalone), then checks locally listening TCP ports reported by Windows. It never scans LAN/WAN addresses.
 
 A candidate is accepted only when the loopback endpoint returns HTTP 200 for both `/system_stats` and `/object_info`, with `/system_stats` containing expected ComfyUI fields. Discovery starts automatically when the **MCP / ComfyUI** cabinet opens; the **Re-detect** control only repeats the same read-only check. Result status is still `CONNECTED_UNVERIFIED`: this verifies the local API identity/readiness only, not models, custom nodes, queue execution or render success. Generation remains disabled. A manual **localhost port** fallback is available when auto-discovery fails. No ComfyUI settings or process are modified.
+
+
+## Controlled local ComfyUI execution candidate
+
+Desktop-only commands now separate execution into four native boundaries:
+- `comfyui_execution_stage`
+- `comfyui_execution_approve`
+- `comfyui_execution_queue`
+- `comfyui_execution_history`
+
+The native backend stores the exact staged graph in process memory. Approval is candidate/digest-specific and produces a single-use ticket. Queue consumes the ticket before the HTTP request, so a failed request cannot be retried without new user approval. The backend accepts only loopback ComfyUI and posts only to `/prompt`; monitoring reads only `/history/{safe_prompt_id}`.
+
+The shared Web/PWA frontend can render the workflow but cannot invoke these commands when the Tauri bridge is absent. No remote host, arbitrary URL, shell command, filesystem mutation, model download or node installation is enabled.
+
+This is a **candidate implementation** until Windows CI and a physical local ComfyUI execution pass on the current commit.

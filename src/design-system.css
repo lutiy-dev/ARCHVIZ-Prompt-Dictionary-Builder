@@ -204,3 +204,15 @@
 .production-history-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
 @media(max-width:900px){.production-history-toolbar{grid-template-columns:1fr 1fr}.production-history-toolbar>strong{grid-column:1/-1}.production-history-meta-grid{grid-template-columns:1fr}}
 @media(max-width:560px){.production-history-toolbar{grid-template-columns:1fr}.production-history-toolbar>strong{grid-column:auto}}
+
+
+/* Controlled ComfyUI Execution v1 */
+.production-execution-box{margin-top:16px;padding:14px;border:1px solid var(--border);border-radius:var(--ds-radius-card);background:var(--card)}
+.production-execution-box h3{margin:0 0 10px;font-size:14px;line-height:1.35}
+.production-execution-box>div{display:grid;gap:10px}
+.production-execution-box .production-history-meta-grid{margin:2px 0 4px}
+.production-execution-box details{border-top:1px solid var(--border);padding-top:8px}
+.production-execution-box summary{cursor:pointer;color:var(--text-soft);font-size:12px}
+.production-execution-box pre{max-height:180px;overflow:auto;font-size:11px}
+.production-execution-box button{width:100%}
+.production-execution-box .production-field{margin:2px 0}

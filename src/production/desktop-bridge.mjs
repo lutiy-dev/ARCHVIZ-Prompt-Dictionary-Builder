@@ -53,3 +53,46 @@ export async function fetchComfyUiObjectInfo(port,tauri=globalThis.__TAURI__){
   return {...response,execution_allowed:false};
  }catch{return {status:'BLOCKED',reason:'OBJECT_INFO_FETCH_FAILED',execution_allowed:false}}
 }
+
+
+function desktopOnly(tauri){return Boolean(tauri?.core?.invoke)}
+
+export async function stageComfyUiExecution({port,graph,digest,clientId,filename},tauri=globalThis.__TAURI__){
+ const value=Number(port);
+ if(!Number.isInteger(value)||value<1||value>65535)return {status:'BLOCKED',reason:'INVALID_PORT'};
+ if(!desktopOnly(tauri))return {status:'BLOCKED',reason:'DESKTOP_ONLY'};
+ try{
+  const response=await tauri.core.invoke('comfyui_execution_stage',{port:value,graph,digest,clientId,filename});
+  if(!['READY_FOR_HUMAN_APPROVAL','BLOCKED'].includes(response?.status))throw Error('Unexpected execution stage');
+  return response;
+ }catch{return {status:'BLOCKED',reason:'EXECUTION_STAGE_FAILED'}}
+}
+
+export async function approveComfyUiExecution({candidateId,digest,userConfirmed},tauri=globalThis.__TAURI__){
+ if(!desktopOnly(tauri))return {status:'BLOCKED',reason:'DESKTOP_ONLY'};
+ try{
+  const response=await tauri.core.invoke('comfyui_execution_approve',{candidateId,digest,userConfirmed:userConfirmed===true});
+  if(!['APPROVED_FOR_ONE_QUEUE','BLOCKED'].includes(response?.status))throw Error('Unexpected execution approval');
+  return response;
+ }catch{return {status:'BLOCKED',reason:'EXECUTION_APPROVAL_FAILED'}}
+}
+
+export async function queueComfyUiExecution({ticket},tauri=globalThis.__TAURI__){
+ if(!desktopOnly(tauri))return {status:'BLOCKED',reason:'DESKTOP_ONLY'};
+ try{
+  const response=await tauri.core.invoke('comfyui_execution_queue',{ticket});
+  if(!['QUEUED_UNVERIFIED','BLOCKED'].includes(response?.status))throw Error('Unexpected queue response');
+  return response;
+ }catch{return {status:'BLOCKED',reason:'QUEUE_FAILED'}}
+}
+
+export async function fetchComfyUiExecutionHistory({port,promptId},tauri=globalThis.__TAURI__){
+ const value=Number(port);
+ if(!Number.isInteger(value)||value<1||value>65535)return {status:'BLOCKED',reason:'INVALID_PORT'};
+ if(!desktopOnly(tauri))return {status:'BLOCKED',reason:'DESKTOP_ONLY'};
+ try{
+  const response=await tauri.core.invoke('comfyui_execution_history',{port:value,promptId});
+  if(!['HISTORY_RECEIVED_UNREVIEWED','BLOCKED'].includes(response?.status))throw Error('Unexpected execution history');
+  return response;
+ }catch{return {status:'BLOCKED',reason:'HISTORY_FETCH_FAILED'}}
+}

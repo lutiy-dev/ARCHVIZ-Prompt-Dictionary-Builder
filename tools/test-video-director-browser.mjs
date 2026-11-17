@@ -103,6 +103,7 @@ try{
  await pass('ComfyUI workflow validation requires only API prompt in primary path','return document.querySelector("#productionContent").textContent.includes("Для проверки workflow нужен только API-format JSON") && !!document.querySelector("#productionComfyApiFile") && !!document.querySelector("#productionComfyInfoFile")');
 
  await pass('Web/PWA auto-discovery remains Desktop-only','return typeof window.__TAURI__==="undefined" && document.querySelector("#productionContent").textContent.includes("Ручной fallback") && document.querySelector("#productionContent").textContent.includes("без запуска")');
+ await pass('Controlled execution UI is visible but Web/PWA cannot acquire native queue capability','return typeof window.__TAURI__==="undefined" && document.querySelector("#productionContent").textContent.includes("Controlled Execution") && document.querySelector("#productionContent").textContent.includes("Подготовить к запуску")');
 
  await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="geometry_guardian").click();return true');
  await pass('Geometry QC displays two local image inputs and diff action','return document.querySelector("#productionOriginalFile")?.type==="file" && document.querySelector("#productionCandidateFile")?.type==="file" && document.querySelector("#productionContent").textContent.includes("Сравнить изображения локально")');

@@ -40,6 +40,7 @@ jobs:
           node --check src/production/image-qc.mjs
           node --check src/production/desktop-bridge.mjs
           node --check src/production/comfyui-execution.mjs
+          node --check src/production/comfyui-controlled-execution.mjs
           node --check src/production/edge-qc.mjs
           node --check tools/prepare-desktop.mjs
           node --check tools/test-native-mcp.mjs
