@@ -85,7 +85,7 @@ try{
  await evaluate('document.querySelector("[data-view=history]").click();return true');
  await pass('Inspector history reflects isolated records','return !document.querySelector("#productionHistory").hidden && document.querySelector("#productionHistoryPreview").textContent.includes("GENERATED")');
 
- await pass('Art Director candidate review requires explicit input','return document.querySelector("#productionCandidateJson")?.tagName==="TEXTAREA" && document.querySelector("#productionContent").textContent.includes("Accept recommendations")');
+ await pass('Art Director candidate review requires explicit input','return document.querySelector("#productionCandidateJson")?.tagName==="TEXTAREA" && document.querySelector("#productionContent").textContent.includes("Принять рекомендации")');
 
  await pass('Independent Production History key written','return JSON.parse(localStorage.getItem("archviz-production-history-v1")).records.length===1');
  await evaluate('document.querySelector("[data-cabinet=history]").click();return true');
