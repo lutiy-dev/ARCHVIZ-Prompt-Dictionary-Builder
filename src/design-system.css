@@ -185,3 +185,22 @@
 .production-skill-description{margin:10px 0 12px;color:var(--text-soft);font-size:13px;line-height:1.55}
 .production-panel .production-result-fact strong{overflow-wrap:anywhere;word-break:break-word;text-align:right;max-width:72%}
 .production-panel #productionSkillSelect{width:100%}
+
+/* Production History · human-readable local audit trail */
+.production-history-toolbar{display:grid;grid-template-columns:auto repeat(3,minmax(140px,1fr));gap:10px;align-items:end;margin:10px 0 14px}
+.production-history-filter{margin:0}
+.production-history-list{display:grid;gap:10px;max-height:54dvh;overflow:auto;overscroll-behavior:contain;padding-right:4px}
+.production-history-card{border:1px solid var(--border);border-radius:var(--ds-radius-card);background:var(--card);padding:12px}
+.production-history-card-head{display:flex;gap:12px;justify-content:space-between;align-items:flex-start}
+.production-history-card-head>span{font-family:var(--mono);font-size:10px;color:var(--text-soft);overflow-wrap:anywhere;text-align:right}
+.production-history-card>p{margin:8px 0;color:var(--text-soft);line-height:1.5}
+.production-history-meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px}
+.production-history-meta{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--border);padding-top:6px;font-size:11px}
+.production-history-meta span,.production-history-time{color:var(--text-soft)}
+.production-history-meta strong{overflow-wrap:anywhere;text-align:right}
+.production-history-card details{margin-top:10px}
+.production-history-card summary{cursor:pointer;color:var(--yellow);font-size:12px}
+.production-history-json{max-height:220px;overflow:auto;margin:8px 0 0;padding:10px;border:1px solid var(--border);border-radius:var(--ds-radius-control);background:var(--soft);font-size:11px;white-space:pre-wrap}
+.production-history-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+@media(max-width:900px){.production-history-toolbar{grid-template-columns:1fr 1fr}.production-history-toolbar>strong{grid-column:1/-1}.production-history-meta-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.production-history-toolbar{grid-template-columns:1fr}.production-history-toolbar>strong{grid-column:auto}}
