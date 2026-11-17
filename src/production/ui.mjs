@@ -161,14 +161,21 @@ function redraw(){
   for(const name of ['OpenAI API','Local MCP','ComfyUI'])p.append(node('div',name+' · '+integrationStatus().status+' / NOT CONNECTED'));
   const native=node('div','Desktop Sidecar · CHECKING');p.append(native);
   void getDesktopStatus().then(s=>{native.textContent='Desktop Sidecar · '+s.runtime+(s.mcp_ready?' / STDIO READY':' / NOT CONNECTED');});
-  const endpoint=node('div','ComfyUI endpoint · AUTO / not detected');endpoint.className='production-result-fact';p.append(endpoint);
-  p.append(action('Auto-detect local ComfyUI · read-only',async()=>{
+  const endpoint=node('div','ComfyUI endpoint · AUTO / searching…');endpoint.className='production-result-fact';p.append(endpoint);
+  let discoveryRunning=false;
+  const runDiscovery=async()=>{
+   if(discoveryRunning)return;
+   discoveryRunning=true;
+   endpoint.textContent='ComfyUI endpoint · AUTO / searching…';
    feedback('Searching local loopback listeners and verifying ComfyUI API');
-   const state=await discoverComfyUi();
-   endpoint.textContent='ComfyUI endpoint · '+(state.origin||'NOT FOUND');
-   result(state);
-   feedback('ComfyUI · '+state.status+(state.origin?' / '+state.origin:'')+(state.reason?' / '+state.reason:''));
-  }));
+   try{
+    const state=await discoverComfyUi();
+    endpoint.textContent='ComfyUI endpoint · '+(state.origin||'NOT FOUND');
+    result(state);
+    feedback('ComfyUI · '+state.status+(state.origin?' / '+state.origin:'')+(state.reason?' / '+state.reason:''));
+   }finally{discoveryRunning=false}
+  };
+  p.append(action('Re-detect local ComfyUI · read-only',runDiscovery));
   const manual=node('div');manual.className='production-image-pair';
   const portField=field('Manual localhost port','productionComfyPort','8000');
   const portInput=portField.querySelector('input');portInput.type='number';portInput.min='1';portInput.max='65535';portInput.value='8000';
@@ -194,7 +201,7 @@ function redraw(){
   p.append(action('Check execution policy (dry-run)',()=>{
    const decision=authorizeToolCall({server_id:'comfyui',tool_id:'queue',effect:'execute'},{allow:[]});
    result(decision);feedback('Tool call denied · '+decision.reason);
-  }));host.append(p);
+  }));host.append(p);void runDiscovery();
  }else{
   const p=panel('Production History · Local','История хранится только в данном браузере под отдельным ключом. Экспортируйте JSON для резервной копии.');
   if(historyError)p.append(node('p','BLOCKED: existing history cannot be safely read or overwritten: '+historyError));
