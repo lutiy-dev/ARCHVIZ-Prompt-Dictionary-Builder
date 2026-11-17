@@ -1,5 +1,5 @@
 import test from 'node:test';import assert from 'node:assert/strict';
-import {getDesktopStatus,discoverComfyUi,probeComfyUiPort,fetchComfyUiObjectInfo} from './desktop-bridge.mjs';
+import {getDesktopStatus,discoverComfyUi,probeComfyUiPort,fetchComfyUiObjectInfo,stageComfyUiExecution,approveComfyUiExecution,queueComfyUiExecution,fetchComfyUiExecutionHistory} from './desktop-bridge.mjs';
 test('Web/PWA does not acquire native privileges',async()=>{const s=await getDesktopStatus(null);assert.equal(s.runtime,'WEB_PWA');assert.equal(s.external_execution_enabled,false)});
 test('Desktop readiness comes only from native command result',async()=>{const s=await getDesktopStatus({core:{invoke:async name=>{assert.equal(name,'desktop_status');return{runtime:'TAURI_2_LAB',mcp_ready:true}}}});assert.equal(s.mcp_ready,true);assert.equal(s.external_execution_enabled,false)});
 test('Failed or malformed native status fails closed',async()=>{assert.equal((await getDesktopStatus({core:{invoke:async()=>({runtime:'unknown',mcp_ready:true})}})).mcp_ready,false);assert.equal((await getDesktopStatus({core:{invoke:async()=>{throw Error('stop')}}})).runtime,'TAURI_UNVERIFIED')});
@@ -22,3 +22,24 @@ test('automatic object_info retrieval uses native read-only command',async()=>{
  assert.equal(state.status,'OBJECT_INFO_READY');assert.equal(state.node_count,321);assert.equal(state.execution_allowed,false);
 });
 test('automatic object_info fails closed without Desktop bridge',async()=>{assert.equal((await fetchComfyUiObjectInfo(8188,null)).reason,'DESKTOP_ONLY')});
+
+test('controlled execution bridge is Desktop-only and preserves command boundaries',async()=>{
+ assert.equal((await stageComfyUiExecution({port:8188,graph:{},digest:'a'.repeat(64),clientId:'c1',filename:'x.json'},null)).reason,'DESKTOP_ONLY');
+ const calls=[];
+ const tauri={core:{invoke:async(name,args)=>{
+  calls.push({name,args});
+  if(name==='comfyui_execution_stage')return{status:'READY_FOR_HUMAN_APPROVAL',candidate_id:'cand_1',digest:args.digest};
+  if(name==='comfyui_execution_approve')return{status:'APPROVED_FOR_ONE_QUEUE',ticket:'ticket_1',digest:args.digest};
+  if(name==='comfyui_execution_queue')return{status:'QUEUED_UNVERIFIED',prompt_id:'prompt_1'};
+  if(name==='comfyui_execution_history')return{status:'HISTORY_RECEIVED_UNREVIEWED',prompt_id:args.promptId,history:{}};
+ }}};
+ const stage=await stageComfyUiExecution({port:8188,graph:{'1':{class_type:'X',inputs:{}}},digest:'b'.repeat(64),clientId:'c1',filename:'x.json'},tauri);
+ assert.equal(stage.status,'READY_FOR_HUMAN_APPROVAL');
+ const approved=await approveComfyUiExecution({candidateId:'cand_1',digest:'b'.repeat(64),userConfirmed:true},tauri);
+ assert.equal(approved.status,'APPROVED_FOR_ONE_QUEUE');
+ const queued=await queueComfyUiExecution({ticket:'ticket_1'},tauri);
+ assert.equal(queued.prompt_id,'prompt_1');
+ const history=await fetchComfyUiExecutionHistory({port:8188,promptId:'prompt_1'},tauri);
+ assert.equal(history.status,'HISTORY_RECEIVED_UNREVIEWED');
+ assert.deepEqual(calls.map(x=>x.name),['comfyui_execution_stage','comfyui_execution_approve','comfyui_execution_queue','comfyui_execution_history']);
+});
