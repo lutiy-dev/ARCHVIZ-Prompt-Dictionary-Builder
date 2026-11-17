@@ -10,6 +10,35 @@ const names={art_director:'AI Art Director',geometry_guardian:'Geometry Guardian
 const initialHistory=readHistory(localStorage);
 let chosen='art_director',currentTask=null,stagedCandidate=null,history=initialHistory.records;
 let historyError=initialHistory.error;
+const statusLabels={
+ GENERATED:'Задание подготовлено',
+ CANDIDATE_REVIEW_REQUIRED:'Требуется проверка предложения',
+ ACCEPTED:'Рекомендации приняты',
+ REJECTED:'Рекомендации отклонены',
+ REVIEW_REQUIRED:'Требуется ручная проверка',
+ BLOCKED:'Действие заблокировано',
+ CONNECTED_UNVERIFIED:'Подключено · требуется проверка',
+ DISCONNECTED:'Не подключено',
+ NOT_VERIFIED:'Не проверено'
+};
+const factLabels={status:'Статус',task_id:'ID задачи',prompt_id:'ID промпта',node_count:'Количество нод',model_count:'Количество моделей',geometry_verified:'Геометрия проверена',runtime_tested:'Runtime протестирован',network_used:'Сеть использовалась'};
+const beginnerTips={
+ GENERATED:'Следующий шаг: проверьте содержимое задания. Если всё верно — подготовьте AI-кандидат для ручной проверки.',
+ CANDIDATE_REVIEW_REQUIRED:'Следующий шаг: просмотрите предложение и риски. Примите или отклоните рекомендации — проект сам не изменится.',
+ ACCEPTED:'Рекомендации приняты. Ничего не применено автоматически; следующий этап — отдельное выполнение через утверждённый workflow.',
+ REJECTED:'Рекомендации отклонены. Можно скорректировать задание и подготовить новый вариант.',
+ REVIEW_REQUIRED:'Нужна ручная проверка. Не считайте результат подтверждённым, пока не просмотрены исходник и кандидат.',
+ BLOCKED:'Действие остановлено. Откройте вкладку «Проблемы» и устраните указанную причину.',
+ CONNECTED_UNVERIFIED:'Связь найдена, но готовность моделей и workflow ещё не подтверждена. Проверьте JSON и object_info перед запуском.',
+ DISCONNECTED:'Сначала подключите локальный сервис или проверьте, что он запущен.',
+ NOT_VERIFIED:'Результат ещё не проверен. Выполните основной шаг в выбранном кабинете.'
+};
+function displayStatus(status){return statusLabels[status]||status.replaceAll('_',' ')}
+function displayFact(key,value){
+ if(typeof value==='boolean')return value?'Да':'Нет';
+ if(key==='status'&&typeof value==='string')return displayStatus(value);
+ return String(value);
+}
 const previewUrls=new Set();
 function clearPreviewUrls(){for(const url of previewUrls)URL.revokeObjectURL(url);previewUrls.clear();}
 function node(tag,value){const e=document.createElement(tag);if(value!==undefined)e.textContent=value;return e;}
@@ -42,16 +71,18 @@ function result(data){
  $('productionTask').value=JSON.stringify(data,null,2);
  const status=typeof data?.status==='string'?data.status:'NOT_VERIFIED';
  const summary=$('productionSummary');summary.replaceChildren();
- const statusLine=node('strong',status);statusLine.className='production-result-status';
- summary.append(statusLine,node('p',data?.notice||data?.reason||'Технический результат. Выполните ручную проверку перед принятием.'));
+ const statusLine=node('strong',displayStatus(status));statusLine.className='production-result-status';
+ const explanation=node('p',data?.notice||data?.reason||'Технический результат. Выполните ручную проверку перед принятием.');
+ const tip=node('p',beginnerTips[status]||beginnerTips.NOT_VERIFIED);tip.className='production-beginner-tip';
+ summary.append(statusLine,explanation,tip);
  const safe=['status','task_id','prompt_id','node_count','model_count','geometry_verified','runtime_tested','network_used'];
- for(const key of safe){if(data?.[key]===undefined)continue;const item=node('div');item.className='production-result-fact';item.append(node('span',key),node('strong',String(data[key])));summary.append(item);}
+ for(const key of safe){if(data?.[key]===undefined)continue;const item=node('div');item.className='production-result-fact';item.append(node('span',factLabels[key]||key),node('strong',displayFact(key,data[key])));summary.append(item);}
  const issues=$('productionIssues');issues.replaceChildren();
  const findings=[...(Array.isArray(data?.errors)?data.errors:[]),...(Array.isArray(data?.issues)?data.issues.map(x=>typeof x==='string'?x:JSON.stringify(x)):[])];
- if(data?.geometry_verified!==true)findings.push('Geometry preservation NOT VERIFIED');
- if(data?.runtime_tested!==true)findings.push('Real model/runtime test NOT VERIFIED');
+ if(data?.geometry_verified!==true)findings.push('Сохранение геометрии НЕ ПОДТВЕРЖДЕНО');
+ if(data?.runtime_tested!==true)findings.push('Реальный runtime / модель НЕ ПРОТЕСТИРОВАНЫ');
  if(data?.status==='BLOCKED'&&typeof data?.reason==='string')findings.push(data.reason);
- if(!findings.length)findings.push('No reported issues; this is not an automatic QC PASS.');
+ if(!findings.length)findings.push('Ошибок не заявлено, но это не автоматический QC PASS.');
  for(const issue of findings)issues.append(node('p',issue));
  setResultView('summary');
 }
