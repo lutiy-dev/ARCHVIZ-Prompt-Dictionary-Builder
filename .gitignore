@@ -1,0 +1,24 @@
+# Local secrets and development-only configuration
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+
+# Node / browser build artifacts
+node_modules/
+dist/
+coverage/
+
+# Windows Tauri and native Rust MCP compilation outputs
+src-tauri/target/
+src-mcp/target/
+src-tauri/binaries/
+src-tauri/gen/
+src-tauri/icons/icon.png
+src-tauri/icons/icon.ico
+
+# Local reports and scratch data
+*.log
+.DS_Store
+Thumbs.db

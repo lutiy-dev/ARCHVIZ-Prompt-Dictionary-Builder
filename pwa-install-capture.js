@@ -1,9 +1,10 @@
 (() => {
   let pending;
   const installed = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone;
+  const desktop = () => Boolean(window.__TAURI__?.core?.invoke);
   const refresh = () => {
     const button = document.getElementById('installApp');
-    if (button) button.hidden = Boolean(installed());
+    if (button) button.hidden = Boolean(installed() || desktop());
   };
   window.addEventListener('beforeinstallprompt', event => {
     event.preventDefault(); pending = event; refresh();
@@ -16,6 +17,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     refresh();
     document.getElementById('installApp').addEventListener('click', async () => {
+      if (desktop()) return;
       const help = document.getElementById('installHelp');
       if (pending) {
         const event = pending; pending = undefined;
@@ -27,8 +29,16 @@
       }
     });
     if ('serviceWorker' in navigator && window.isSecureContext) {
-      navigator.serviceWorker.register('./sw.js', {scope: './', updateViaCache: 'none'})
-        .catch(error => console.warn('Prompt Studio PWA registration failed', error));
+      if (desktop()) {
+        // Desktop bundles all assets locally; a PWA worker can only introduce
+        // stale shell responses on cold WebView2 navigation. Remove only this app's registration.
+        navigator.serviceWorker.getRegistration('./')
+          .then(registration => registration?.unregister())
+          .catch(error => console.warn('Prompt Studio native service worker cleanup failed', error));
+      } else {
+        navigator.serviceWorker.register('./sw.js', {scope: './', updateViaCache: 'none'})
+          .catch(error => console.warn('Prompt Studio PWA registration failed', error));
+      }
     }
   });
 })();

@@ -228,3 +228,42 @@ Layers now support editable reference-specific retention modes (fully preserved 
 
 
 Browser acceptance is separately run in CI using real headless Chromium via DevTools protocol, no added npm dependencies. It checks Standard tab preservation, demo, reference retention editing, reusable layer presets, persisted project, service-worker cache and offline reload. CI browser smoke is not a substitute for Android device installation or actual ComfyUI/H3 output quality tests.
+
+
+## Windows Desktop LAB (development only)
+
+With Node.js 22+ already installed, run `tools\\start-desktop-lab.cmd` on Windows. The launcher starts the local, private MCP stdio subprocess and browser-served UI, then stops its owned process when the launcher is closed. This is not a Tauri package or a verified Windows installer. See [Desktop LAB instructions](docs/DESKTOP_LAB.md). The published PWA is unchanged.
+
+
+### Tauri 2 Desktop Candidate
+An isolated Rust-native MCP sidecar and Windows installer source scaffold are available in `src-tauri/`. This is not a released or Windows-runtime-certified build; see [Desktop build and gate](docs/TAURI_DESKTOP.md). The existing browser PWA remains untouched until approved merge.
+
+
+### Windows Desktop QC
+The unsigned Windows LAB installer is produced as a GitHub Actions artifact only after a successful NSIS build. See [Windows Fresh Install QC](docs/WINDOWS_QA.md) before using it; it is not a production release.
+
+
+### UI/UX Consolidation v1.0 — Draft LAB
+In draft PR #24 only, Prompt Studio has a shared mode/project context, AI Production Result Inspector (Summary / Issues / JSON / History), reversible Video Director editor disclosures, and local Geometry Guardian Source/Candidate previews. The native Tauri host suppresses the browser-only PWA install action. The existing Standard compiler, saved-project schemas, API/model permissions and JSON contracts are unchanged.
+
+This work is **LAB / NOT RELEASED**. Chromium responsive/PWA checks and CI screenshot artifacts are part of the PR; physical Windows WebView2 visual QA and sidecar lifecycle remain mandatory before an acceptance/merge decision. See [AI Production integration specification](docs/AI_PRODUCTION_INTEGRATION_V1.md) and [Windows QC](docs/WINDOWS_QA.md).
+
+## Unified UI Design System v1.1 — LAB candidate
+
+The current Draft PR #24 uses a single **additive** presentation layer, `src/design-system.css`, for Standard Prompt, Video Director and AI Production. The shared graphite/yellow palette, 1680px workspace max-width, responsive gutters, headings and control hierarchy now apply across modes. Video Director shots use neutral navigation buttons with one explicitly selected shot; Shot Composer fields have five noninteractive category headings. AI Production preserves the original five cabinets and Result Inspector; Standard library, presets and prompt compilation remain unchanged.
+
+The Web/PWA offline shell explicitly caches the additional stylesheet. CI captures **nine** screenshot evidence files (Standard, Video, Production at 960/1366/1920px) in the `prompt-studio-ui-regression` artifact, plus Chromium/PWA and unit regression checks.
+
+Scope and acceptance: [UI Design System v1.1](docs/UI_DESIGN_SYSTEM_V1_1.md), [Windows Runtime QA](docs/WINDOWS_QA.md), [PR #24](https://github.com/lutiy-dev/ARCHVIZ-Prompt-Dictionary-Builder/pull/24).
+
+**LAB / NOT PRODUCTION.** Build/Chromium PASS does not establish physical Windows WebView2 PASS, and previous white-screen evidence remains a STOP condition for merge/release until resolved and repeated on a real workstation. No model or workflow execution is introduced by this UI stage.
+
+### Workspace UX Refinement v1.2 — Draft LAB
+
+In Draft PR #24 only: Standard Prompt's existing independent Dictionary/Composer scrolling now uses viewport-aware heights instead of forcing the entire workspace to stretch; the Final Prompt text remains independently scrollable. Video Director shows a compact project-first empty state (create, existing projects, demo, JSON import) wired to the existing handlers, with scroll-limited Shot List and Compiled Output. AI Production moves Result Inspector below the editor at intermediate screen widths (721–1399px) and uses three columns only at 1400px and wider.
+
+No project storage migration, dictionary changes, prompt compiler changes, geometry verification, model selection or API/ComfyUI/MCP execution is part of this UX stage. See [UI Design System and UX checkpoints](docs/UI_DESIGN_SYSTEM_V1_1.md), [Windows QA](docs/WINDOWS_QA.md). This is **LAB / NOT RELEASED**. Windows NSIS compilation and physical WebView2 acceptance are separate requirements, with previous remote-debugging failure unresolved.
+
+### ComfyUI Desktop auto-detection — LAB
+
+The Windows Desktop candidate can now discover a running local ComfyUI without requiring a hard-coded port. It verifies loopback listeners only, prioritizing common Desktop/standalone ports and then other local listening ports. Discovery is confirmed through read-only ComfyUI API endpoints and reports the actual `127.0.0.1:<port>` in AI Production. This does **not** enable queue execution or change models/workflows. Web/PWA remains blocked from native discovery. Manual localhost-port verification remains available as a fallback.

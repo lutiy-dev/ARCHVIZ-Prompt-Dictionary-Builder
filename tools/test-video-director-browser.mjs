@@ -35,10 +35,11 @@ async function pass(label,js){const got=await evaluate(js);
 try{
  await new Promise(ok=>server.listen(0,'127.0.0.1',ok));
  const url='http://127.0.0.1:'+server.address().port+'/';
- chrome=spawn(exe,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--remote-allow-origins=*','--remote-debugging-port=0','--user-data-dir='+profile,url],{stdio:'ignore'});
+ chrome=spawn(exe,['--headless=new','--no-sandbox','--disable-gpu','--disable-dev-shm-usage','--remote-allow-origins=*','--remote-debugging-port=0','--user-data-dir='+profile,url],{stdio:['ignore','ignore','pipe']});
+ let chromeStderr='';chrome.stderr.on('data',part=>{chromeStderr=(chromeStderr+part.toString()).slice(-2000)});
  const portFile=join(profile,'DevToolsActivePort');
- for(let i=0;i<100&&!existsSync(portFile);i++)await delay(100);
- assert.ok(existsSync(portFile),'Chrome debugging port not created');
+ for(let i=0;i<250&&!existsSync(portFile)&&chrome.exitCode===null;i++)await delay(100);
+ assert.ok(existsSync(portFile),'Chrome debugging port not created within 25s; exit='+chrome.exitCode+' stderr='+chromeStderr);
  const port=Number(readFileSync(portFile,'utf8').split('\n')[0]);
  let target;
  for(let i=0;i<100&&!target;i++){
@@ -56,6 +57,61 @@ try{
  await send('Runtime.enable');await send('Page.enable');await send('Network.enable');
  await poll('return document.querySelector("#videoDirectorRoot")?.dataset.ready==="true" && document.querySelector("#vdTabVideo")?.dataset.ready==="true"','app initialization');
  await pass('Standard visible on first load','return !document.querySelector("#standardMode").hidden && document.querySelector("#videoDirectorRoot").hidden');
+ await pass('Standard Dictionary has independent scroll within bounded panel','const lib=document.querySelector("#library");return getComputedStyle(lib).overflowY==="auto"&&lib.clientHeight>0&&lib.scrollHeight>lib.clientHeight');
+
+ await pass('Shared UI design tokens loaded','return getComputedStyle(document.documentElement).getPropertyValue("--ds-content-max").trim()==="1680px" && getComputedStyle(document.documentElement).getPropertyValue("--panel").trim()===getComputedStyle(document.documentElement).getPropertyValue("--card").trim()');
+ await pass('Unified stylesheet loaded without 404','return [...document.styleSheets].some(s=>s.href?.includes("design-system.css"))');
+ await pass('Video and Production use open workspace shells','const roots=[".vd-root",".production-root"].map(s=>getComputedStyle(document.querySelector(s)));return roots.every(s=>s.borderTopWidth==="0px"&&s.backgroundImage==="none")');
+
+ await poll('return document.querySelector("#productionRoot")?.dataset.ready==="true"','production initialization');
+ await evaluate('document.querySelector("#productionTab").click();return true');
+ await pass('Production cabinet navigation','return !document.querySelector("#productionRoot").hidden && document.querySelector("#standardMode").hidden && document.querySelector("#productionCabinets").querySelectorAll("button").length===5');
+ await pass('Shared workspace context reflects selected mode','return document.querySelector("#workspaceContext")?.textContent.includes("AI Production")');
+ await evaluate('document.querySelector("#productionProject").value="project_01";document.querySelector("#productionBrief").value="Preserve hotel geometry";document.querySelector(".production-panel button").click();return true');
+ await pass('Art Director prepares a safe local draft','return document.querySelector("#productionTask").value.includes("archviz_production_task") && document.querySelector("#productionTask").value.includes("HARD")');
+ await pass('Inspector defaults to summary with unchanged JSON contract','return document.querySelector("#productionSummary")?.hidden===false && document.querySelector("#productionTask").value.includes("archviz_production_task") && document.querySelector("[data-view=summary]")?.getAttribute("aria-selected")==="true"');
+ await pass('Result Inspector is localized while raw JSON stays technical','const raw=JSON.parse(document.querySelector("#productionTask").value);return document.querySelector(".production-output h2")?.textContent==="Инспектор результата" && document.querySelector("[data-view=summary]")?.textContent==="Сводка" && document.querySelector("#productionSummary")?.textContent.includes("Задание подготовлено") && raw.status==="GENERATED"');
+ await pass('Beginner recommendation is shown for current status','return document.querySelector("#productionSummary .production-beginner-tip")?.textContent.includes("Следующий шаг")');
+
+ await pass('Result Inspector JSON scroll height constrained','const area=document.querySelector("#productionTask"),style=getComputedStyle(area);return style.overflowY==="auto"&&parseFloat(style.maxHeight)>0');
+
+ await evaluate('document.querySelector("[data-view=json]").click();return true');
+ await pass('Inspector JSON is accessible and complete','return !document.querySelector("#productionJson").hidden && document.querySelector("#productionTask").value.includes("architecture_lock") && document.querySelector("#productionSummary").hidden');
+ await evaluate('document.querySelector("[data-view=json]").dispatchEvent(new KeyboardEvent("keydown",{key:"Home",bubbles:true}));return true');
+ await pass('Result Inspector keyboard Home returns to Summary','return !document.querySelector("#productionSummary").hidden && document.querySelector("[data-view=summary]").getAttribute("aria-selected")==="true" && document.activeElement===document.querySelector("[data-view=summary]")');
+
+ await evaluate('document.querySelector("[data-view=issues]").click();return true');
+ await pass('Inspector issues does not claim geometry verified','return !document.querySelector("#productionIssues").hidden && document.querySelector("#productionIssues").textContent.includes("НЕ ПОДТВЕРЖДЕНО")');
+ await evaluate('document.querySelector("[data-view=history]").click();return true');
+ await pass('Inspector history reflects isolated records','return !document.querySelector("#productionHistory").hidden && document.querySelector("#productionHistoryPreview").textContent.includes("GENERATED")');
+
+ await pass('Art Director candidate review requires explicit input','return document.querySelector("#productionCandidateJson")?.tagName==="TEXTAREA" && document.querySelector("#productionContent").textContent.includes("Принять рекомендации")');
+
+ await pass('Independent Production History key written','return JSON.parse(localStorage.getItem("archviz-production-history-v1")).records.length===1');
+ await evaluate('document.querySelector("[data-cabinet=history]").click();return true');
+ await pass('Production History renders readable cards instead of raw dump','return document.querySelector("#productionHistoryList .production-history-card") && document.querySelector("#productionHistoryCount").textContent.includes("1") && document.querySelector("#productionContent").textContent.includes("Технические данные")');
+ await pass('History filters fail honestly when v1 has no project/cabinet fields','return document.querySelector("#productionHistoryProject").disabled && document.querySelector("#productionHistoryCabinet").disabled && document.querySelector("#productionContent").textContent.includes("не подменяет их догадками")');
+ await pass('History exposes export and confirmed clear controls','return [...document.querySelectorAll("#productionContent button")].some(b=>b.textContent.includes("Экспорт истории JSON")) && [...document.querySelectorAll("#productionContent button")].some(b=>b.textContent.includes("Очистить локальную историю"))');
+
+
+ await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="mcp_comfyui").click();return true');
+ await pass('MCP integrations are disconnected by default','return document.querySelector("#productionContent").textContent.includes("NOT CONNECTED")');
+ await pass('OVizLAB Skill Registry exposes pinned canonical inventory','document.querySelector("[data-cabinet=skills]").click();const select=document.querySelector("#productionSkillSelect");return select && select.options.length===25 && select.value==="archviz-geometry-guardian" && document.querySelector("#productionContent").textContent.includes("Pinned SHA") && document.querySelector("#productionContent").textContent.includes("9b1715c3")');
+ await pass('OVizLAB Skill Registry remains metadata-only','return document.querySelector("#productionContent").textContent.includes("загрузка и исполнение Skill здесь не выполняются") && !document.querySelector("#productionContent").textContent.includes("Execute Skill")');
+ await evaluate('document.querySelector("[data-cabinet=mcp_comfyui]").click();return true');
+ await pass('Local ComfyUI uses Automatic First with manual fallback','return document.querySelector("#productionContent").textContent.includes("Повторно найти локальный ComfyUI") && document.querySelector("#productionContent").textContent.includes("object_info · AUTO") && document.querySelector("#productionContent").textContent.includes("Ручной fallback") && document.querySelector("#productionContent").textContent.includes("Порт localhost вручную")');
+ await pass('ComfyUI workflow validation requires only API prompt in primary path','return document.querySelector("#productionContent").textContent.includes("Для проверки workflow нужен только API-format JSON") && !!document.querySelector("#productionComfyApiFile") && !!document.querySelector("#productionComfyInfoFile")');
+
+ await pass('Web/PWA auto-discovery remains Desktop-only','return typeof window.__TAURI__==="undefined" && document.querySelector("#productionContent").textContent.includes("Ручной fallback") && document.querySelector("#productionContent").textContent.includes("без запуска")');
+
+ await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="geometry_guardian").click();return true');
+ await pass('Geometry QC displays two local image inputs and diff action','return document.querySelector("#productionOriginalFile")?.type==="file" && document.querySelector("#productionCandidateFile")?.type==="file" && document.querySelector("#productionContent").textContent.includes("Сравнить изображения локально")');
+ await pass('Geometry Guardian shows side-by-side local preview placeholders','return document.querySelectorAll(".production-image-preview").length===2 && document.querySelectorAll(".production-image-preview figcaption").length===2');
+ await pass('Geometry Guardian labels and findings are localized','return document.querySelector("#productionContent").textContent.includes("Контроль геометрии") && document.querySelector("#productionContent").textContent.includes("Ошибка выравнивания") && document.querySelector("#productionContent").textContent.includes("Защищённые области")');
+
+
+ await evaluate('document.querySelector("#vdTabStandard").click();return true');
+
 
  async function mouseClick(selector){
   const point=await evaluate('const el=document.querySelector('+JSON.stringify(selector)+');const r=el.getBoundingClientRect();const x=r.x+r.width/2,y=r.y+r.height/2;const hit=document.elementFromPoint(x,y);return {x,y,hit:hit?.id||hit?.className,reachable:hit===el||el.contains(hit)}');
@@ -64,20 +120,59 @@ try{
   await send('Input.dispatchMouseEvent',{type:'mousePressed',x:point.x,y:point.y,button:'left',clickCount:1});
   await send('Input.dispatchMouseEvent',{type:'mouseReleased',x:point.x,y:point.y,button:'left',clickCount:1});
  }
- for(const [width,height] of [[1920,1080],[1366,768],[1101,800],[1100,800],[800,900],[390,844]]){
+ for(const [width,height] of [[1920,1080],[1366,768],[1101,800],[1100,800],[960,768],[800,900],[390,844]]){
   await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
   await evaluate('window.scrollTo(0,0);return true');
   await pass('Mode tabs have space at '+width+'x'+height,'const nav=document.querySelector(".vd-mode-tabs"),r=nav.getBoundingClientRect(),b=document.querySelector("#vdTabVideo").getBoundingClientRect();return b.height>0 && b.top>=r.top && b.bottom<=r.bottom');
+  await mouseClick('#productionTab');
+  await pass('Production cabinet uses full content width at '+width+'x'+height,
+   'const host=document.querySelector(".production-content"),panel=host.querySelector(".production-panel"),layout=document.querySelector(".production-layout");const a=host.getBoundingClientRect(),b=panel.getBoundingClientRect();return getComputedStyle(host).display==="block" && b.width>0 && b.width>=a.width*0.95 && layout.getBoundingClientRect().width<=innerWidth+1');
+  await pass('Production QC output responsive at '+width+'x'+height,
+   'const a=document.querySelector(".production-content").getBoundingClientRect(),b=document.querySelector(".production-output").getBoundingClientRect();return innerWidth>=1400?b.left>=a.right-2:b.top>=a.bottom-2');
+  if([960,1366,1920].includes(width)){
+   const snapshot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+   const dir=join(root,'artifacts','ui');await fs.mkdir(dir,{recursive:true});
+   await fs.writeFile(join(dir,'production-'+width+'x'+height+'.png'),Buffer.from(snapshot.data,'base64'));
+  }
   await mouseClick('#vdTabVideo');
+  await pass('Video workspace uses same outer gutter as Production at '+width+'x'+height,'const a=getComputedStyle(document.querySelector(".vd-root")),b=getComputedStyle(document.querySelector(".production-root"));return a.maxWidth===b.maxWidth && a.paddingLeft===b.paddingLeft && a.paddingRight===b.paddingRight');
   await pass('Pointer opens video at '+width+'x'+height,'return !document.querySelector("#videoDirectorRoot").hidden && document.querySelector("#standardMode").hidden');
   await mouseClick('#vdTabStandard');
+  await pass('Standard workspace shares outer gutter at '+width+'x'+height,'const a=getComputedStyle(document.querySelector(".shell")),b=getComputedStyle(document.querySelector(".vd-root"));return a.maxWidth===b.maxWidth && a.paddingLeft===b.paddingLeft && a.paddingRight===b.paddingRight');
+  if([960,1366,1920].includes(width)){
+   const shot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+   const dir=join(root,'artifacts','ui');await fs.mkdir(dir,{recursive:true});
+   await fs.writeFile(join(dir,'standard-'+width+'x'+height+'.png'),Buffer.from(shot.data,'base64'));
+  }
   await pass('Pointer returns to standard at '+width+'x'+height,'return document.querySelector("#videoDirectorRoot").hidden && !document.querySelector("#standardMode").hidden');
  }
  await send('Emulation.clearDeviceMetricsOverride');
  const keys=await evaluate('return [localStorage.getItem("archviz-prompt-studio-v1"),localStorage.getItem("archviz-prompt-library-v1")]');
- await evaluate('document.querySelector("#vdTabVideo").click();document.querySelector("#vdDemo").click();return true');
+ await evaluate('document.querySelector("#vdTabVideo").click();return true');
+ await pass('Project-first empty state hides workspace when no project','return document.querySelector("#vdEmptyState")?.hidden===false && document.querySelector("#vdWorkspace")?.hidden===true && document.querySelector("#vdStartNew")?.type==="button"');
+ await evaluate('document.querySelector("#vdDemo").click();return true');
  await poll('return document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:")','demo compilation');
  await pass('Synthetic demo and actor references appear','return !document.querySelector("#videoDirectorRoot").hidden && document.querySelectorAll("#vdShotList button").length===13 && document.querySelector("#vdPrompt").value.includes("subject_definitions:") && document.querySelector("#vdManifest").textContent.includes("male_ref")');
+ await pass('Project-first start screen closes after demo selection','return document.querySelector("#vdEmptyState").hidden && !document.querySelector("#vdWorkspace").hidden');
+ await pass('Video shot list is bounded and independently scrollable','const list=document.querySelector("#vdShotList"),style=getComputedStyle(list);return style.overflowY==="auto"&&parseFloat(style.maxHeight)>0');
+
+ await pass('Shot list has a single visibly selected item','const buttons=[...document.querySelectorAll("#vdShotList button[aria-pressed]")];return buttons.length===12 && buttons.filter(b=>b.getAttribute("aria-pressed")==="true").length===1 && getComputedStyle(buttons.find(b=>b.getAttribute("aria-pressed")==="false")).backgroundColor!==getComputedStyle(buttons.find(b=>b.getAttribute("aria-pressed")==="true")).backgroundColor');
+ await pass('Shot Composer has five visual section headings','return document.querySelectorAll("#vdShotFields > .vd-editor-subheading").length===5');
+ for(const [width,height] of [[960,768],[1366,768],[1920,1080]]){
+  await send('Emulation.setDeviceMetricsOverride',{width,height,deviceScaleFactor:1,mobile:false});
+  await evaluate('window.scrollTo(0,0);return true');
+  const screenshot=await send('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
+  const dir=join(root,'artifacts','ui');await fs.mkdir(dir,{recursive:true});
+  await fs.writeFile(join(dir,'video-'+width+'x'+height+'.png'),Buffer.from(screenshot.data,'base64'));
+ }
+ await send('Emulation.clearDeviceMetricsOverride');
+
+ await pass('Video Director editor disclosures present','return document.querySelectorAll(".vd-panel-disclosure").length===5');
+ await evaluate('document.querySelector("#vdReferences").closest("section").querySelector(".vd-panel-disclosure").click();return true');
+ await pass('Video Director reference editor collapses without losing records','return document.querySelector("#vdReferences").hidden && document.querySelector("#vdReferences").children.length>0');
+ await evaluate('document.querySelector("#vdReferences").closest("section").querySelector(".vd-panel-disclosure").click();return true');
+ await pass('Video Director reference editor expands with original content','return !document.querySelector("#vdReferences").hidden && document.querySelector("#vdReferences").children.length>0');
+
  await evaluate('document.querySelector("#vdShotFields .vd-item .vd-retention button").click();return true');
  await pass('Retention editor creates a rule','return !!document.querySelector("#vdShotFields .vd-retention-row")');
  await evaluate('let n=document.querySelectorAll("#vdShotFields .vd-retention-row select")[1];n.value="attribute_transfer";n.dispatchEvent(new Event("change",{bubbles:true}));return true');
@@ -93,6 +188,7 @@ try{
  await evaluate('window.__vdBeforeReload=1;return true');
  await send('Page.reload',{ignoreCache:false});
  await poll('return window.__vdBeforeReload===undefined && document.readyState==="complete" && !!document.querySelector("#vdProjects") && document.querySelector("#vdProjects").options.length>1','project persists after reload');
+ await pass('Production History persists after browser reload','return JSON.parse(localStorage.getItem("archviz-production-history-v1")).records.length===1');
  await pass('Video Director project persists','return localStorage.getItem("archviz-video-director-v1").includes("Browser Smoke Preset")');
  const swDiag=await evaluate('return {secure:isSecureContext,supported:!!navigator.serviceWorker,controlled:!!navigator.serviceWorker?.controller,registrations:await navigator.serviceWorker.getRegistrations().then(rs=>rs.map(r=>({scope:r.scope,active:r.active?.state,installing:r.installing?.state,waiting:r.waiting?.state}))),caches:await caches.keys()}');console.log('PWA DIAGNOSTICS:',JSON.stringify(swDiag));
  await send('Page.navigate',{url});

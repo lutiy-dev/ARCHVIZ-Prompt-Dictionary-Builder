@@ -1,0 +1,206 @@
+/* ARCHVIZ Prompt Studio — Unified Design System v1.1 (LAB).
+ * Presentation-only overrides. Do not change the established graphite/yellow palette.
+ * Loaded after legacy CSS; scopes are restricted to the three workspaces.
+ */
+:root{
+ --panel:var(--card); /* Required compatibility alias for existing Video/Production panels */
+ --ds-surface:var(--card);--ds-surface-raised:var(--raised);--ds-surface-control:var(--soft);
+ --ds-text:var(--foreground);--ds-muted:var(--text-soft);--ds-border:var(--border);
+ --ds-accent:var(--yellow);--ds-active:var(--yellow-soft);
+ --ds-space-1:4px;--ds-space-2:8px;--ds-space-3:12px;--ds-space-4:16px;
+ --ds-space-6:24px;--ds-space-8:32px;--ds-radius-control:6px;--ds-radius-card:12px;
+ --ds-content-max:1680px;--ds-gutter:clamp(12px,2.2vw,32px);
+ --ds-label-size:13px;--ds-body-size:14px;
+}
+/* A common shell and readable headings — layout width does not depend on selected mode. */
+.shell,.vd-root,.production-root{width:100%;max-width:var(--ds-content-max);margin-left:auto;margin-right:auto;padding-left:var(--ds-gutter);padding-right:var(--ds-gutter)}
+.vd-root,.production-root{padding-top:var(--ds-space-6);padding-bottom:56px}
+.workspace-context{width:100%;max-width:var(--ds-content-max);padding:var(--ds-space-2) var(--ds-gutter);margin-inline:auto;border-bottom:0;text-align:center;min-height:28px;font-size:11px}
+.vd-mode-tabs{gap:var(--ds-space-2);padding:var(--ds-space-3) var(--ds-gutter) var(--ds-space-4)}
+.vd-mode-tabs button{min-height:38px;padding:8px 16px;border-radius:var(--ds-radius-control);font-size:12px;font-weight:600}
+.vd-mode-tabs button.active{background:var(--ds-active);border-color:var(--ds-accent);color:var(--ds-accent)}
+.vd-heading,.production-heading{margin-bottom:var(--ds-space-6)}
+.vd-heading h1,.production-heading h1{font-size:clamp(25px,2.3vw,32px);line-height:1.15;letter-spacing:-.035em;margin:6px 0 10px}
+.vd-heading p,.production-heading p{font-size:var(--ds-body-size);line-height:1.55;max-width:68ch}
+.vd-root .badge,.production-root .badge{align-self:center}
+.vd-panel,.production-panel,.production-output{background:linear-gradient(160deg,var(--raised),var(--card) 55%);border:1px solid var(--ds-border);border-radius:var(--ds-radius-card);box-shadow:0 12px 32px rgba(0,0,0,.12);padding:var(--ds-space-4);margin-bottom:var(--ds-space-4)}
+.vd-panel h2,.production-panel h2,.production-output h2{font-size:16px;line-height:1.35;letter-spacing:-.015em;margin-bottom:var(--ds-space-3)}
+.vd-root :is(input,select,textarea),.production-root :is(input,select,textarea){border-radius:var(--ds-radius-control);font-size:13px;line-height:1.45;min-width:0}
+.vd-field,.production-field{font-size:var(--ds-label-size);line-height:1.35}
+.vd-root :is(button,input,select,textarea,summary):focus-visible,.production-root :is(button,input,select,textarea,summary):focus-visible{outline:2px solid var(--ds-accent);outline-offset:2px}
+.vd-root button,.production-root button{min-height:32px;max-width:100%;overflow-wrap:anywhere}
+.vd-toolbar,.vd-shot-list,.vd-actions{gap:var(--ds-space-2)}
+.vd-toolbar{margin-bottom:var(--ds-space-4)}
+.vd-toolbar>label{margin-bottom:0;min-width:0}
+.vd-toolbar>label select{min-width:170px}
+/* The shot list is navigation, not a grid of call-to-action buttons. */
+.vd-shot-list{display:flex;flex-wrap:wrap;align-items:center;gap:var(--ds-space-2);padding-bottom:var(--ds-space-2)}
+.vd-shot-list button,.vd-shot-list button.vd-action{background:var(--ds-surface-control);border-color:var(--ds-border);color:var(--ds-muted);font-size:12px;font-weight:500;text-align:left;min-height:36px;padding:8px 12px;box-shadow:none}
+.vd-shot-list button:hover{background:var(--hover);border-color:var(--yellow-line);color:var(--foreground)}
+.vd-shot-list button.active,.vd-shot-list button[aria-pressed="true"]{background:var(--yellow-soft);border-color:var(--yellow);color:var(--yellow);font-weight:700;box-shadow:inset 3px 0 var(--yellow)}
+.vd-shot-list button.vd-new-shot{border-style:dashed;color:var(--text-soft);background:transparent}
+.vd-shot-list button.vd-new-shot:hover{color:var(--yellow);border-color:var(--yellow-line)}
+/* Secondary controls don't compete with the active shot or save action. */
+.vd-toolbar button,.vd-actions button,.vd-item button,.vd-column button,.vd-file,.vd-panel .vd-panel-disclosure{background:var(--soft);color:var(--text-soft);border-color:var(--border);font-weight:500}
+.vd-toolbar button:hover,.vd-actions button:hover,.vd-item button:hover,.vd-column button:hover{background:var(--hover);color:var(--foreground);border-color:var(--yellow-line)}
+.vd-toolbar #vdSave{background:var(--yellow);color:#171500;border-color:var(--yellow);font-weight:700}
+.vd-toolbar #vdSave:hover{background:color-mix(in srgb,var(--yellow) 85%,white)}
+.vd-root :is(#vdExportShot,#vdCopy,#vdCopyMap){background:var(--soft);color:var(--text-soft);border-color:var(--border);font-weight:500}
+.vd-root :is(#vdExportShot,#vdCopy,#vdCopyMap):hover{background:var(--hover);color:var(--foreground);border-color:var(--yellow-line)}
+.vd-root button:disabled,.production-root button:disabled{opacity:.46;cursor:not-allowed}
+.vd-editor-subheading{grid-column:1/-1;font:700 11px/1.5 var(--mono);color:var(--yellow);letter-spacing:.05em;text-transform:uppercase;margin:8px 0 -2px;padding-top:var(--ds-space-3);border-top:1px solid var(--border)}
+.vd-editor-subheading:first-child{border-top:0;padding-top:0}
+.vd-column #vdShotFields{gap:12px}
+.vd-grid .vd-field{margin:0}
+.vd-item{border-radius:var(--ds-radius-control)}
+.vd-root .vd-column:last-child .vd-panel{position:static}
+.vd-root pre,.production-root pre{overflow-wrap:anywhere}
+/* One shared Production cabinet layout regardless of selected tool. */
+.production-layout{display:grid;grid-template-columns:minmax(168px,210px) minmax(0,1.5fr) minmax(270px,0.95fr);gap:var(--ds-space-4);align-items:start}
+.production-layout>.production-content{min-width:0;display:block;padding:0;grid-template-columns:none}
+.production-layout>.production-content>.production-panel{width:100%;max-width:none}
+.production-cabinets{display:flex;flex-direction:column;gap:var(--ds-space-2)}
+.production-cabinets button{min-height:40px;background:var(--soft);color:var(--text-soft);border:1px solid var(--border);text-align:left;font-weight:500;padding:10px 12px;border-radius:var(--ds-radius-control)}
+.production-cabinets button:hover{background:var(--hover);color:var(--foreground);border-color:var(--yellow-line)}
+.production-cabinets button.active{background:var(--yellow-soft);color:var(--yellow);border:1px solid var(--yellow);box-shadow:inset 3px 0 var(--yellow)}
+.production-panel button{background:var(--soft);color:var(--text-soft);border-color:var(--border);font-weight:500}
+.production-panel button:hover{background:var(--hover);border-color:var(--yellow-line);color:var(--foreground)}
+.production-panel button.production-primary{background:var(--yellow);color:#171500;border-color:var(--yellow);font-weight:700}
+.production-panel button.production-review{background:var(--yellow-soft);color:var(--yellow);border-color:var(--yellow-line);font-weight:600}
+.production-panel button.production-danger{background:var(--soft);color:var(--red);border-color:var(--red)}
+.production-panel button.production-danger:hover{background:var(--red-soft)}
+.production-root .production-secondary{background:var(--soft);color:var(--text-soft);border-color:var(--border)}
+.production-result-tabs button{min-height:34px;font-size:12px}
+.production-result-view{min-height:80px}
+.production-result-view:has(>p:only-child){min-height:80px}
+.production-output #productionExportTask{margin-top:12px}
+.production-output #productionExportTask:disabled{opacity:.45}
+.production-image-preview{min-height:160px}
+@media(max-width:1200px){
+ .production-layout{grid-template-columns:minmax(160px,200px) minmax(0,1fr)}
+ .production-output{grid-column:2}
+ .vd-columns{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
+ .vd-column:last-child{grid-column:1/-1}
+}
+@media(max-width:720px){
+ .vd-root,.production-root{padding-top:var(--ds-space-4);padding-bottom:32px}
+ .vd-heading h1,.production-heading h1{font-size:25px}
+ .production-layout{display:flex;flex-direction:column;gap:var(--ds-space-3)}
+ .production-layout>*{width:100%}
+ .production-output{grid-column:auto}
+ .production-cabinets{flex-direction:row;flex-wrap:wrap}
+ .production-cabinets button{flex:1 1 135px}
+ .vd-columns{display:block}
+ .vd-toolbar>label{width:100%}
+ .vd-shot-list button{flex:1 1 140px}
+}
+@media(max-width:400px){.vd-mode-tabs button{padding:8px 9px;font-size:11px}.production-result-tabs{grid-template-columns:repeat(2,minmax(0,1fr))}}
+
+/* Standard Prompt shares the same card, typography and action hierarchy. */
+.shell .hero h1{font-size:clamp(28px,3vw,36px);line-height:1.16;letter-spacing:-.035em}
+.shell .hero p{font-size:var(--ds-body-size)}
+.shell main{gap:var(--ds-space-4)}
+.shell main>section,.shell .prompt-library{border-radius:var(--ds-radius-card);background:linear-gradient(160deg,var(--raised),var(--card) 55%);border-color:var(--ds-border);box-shadow:0 12px 32px rgba(0,0,0,.12)}
+.shell .section-head{padding:var(--ds-space-4);border-top:1px solid var(--yellow-line)}
+.shell .section-head h2{font-size:20px;line-height:1.3}
+.shell .section-head p{font-size:13px}
+.shell .section-body{padding:var(--ds-space-4)}
+.shell label{font-size:var(--ds-label-size)}
+.shell .card{border-radius:var(--ds-radius-control)}
+.shell :is(button,input,select,textarea){border-radius:var(--ds-radius-control)}
+.shell :is(button,input,select,textarea,summary):focus-visible{outline:2px solid var(--yellow);outline-offset:2px}
+/* Give context actions and card actions a quiet neutral treatment, not a sea of yellow. */
+.shell :is(.card button,.saved-prompt-actions button,.prompt-transfer-actions button,.save button){background:var(--soft);color:var(--text-soft);border-color:var(--border);font-weight:600}
+.shell :is(.card button,.saved-prompt-actions button,.prompt-transfer-actions button,.save button):hover{background:var(--hover);border-color:var(--yellow-line);color:var(--foreground)}
+.shell :is(#addPreset,#savePrompt,#save){background:var(--yellow);color:#171500;border-color:var(--yellow);font-weight:700}
+.shell :is(#addPreset,#savePrompt,#save):hover{background:color-mix(in srgb,var(--yellow) 85%,white);color:#171500}
+.shell .preview-tabs button[aria-pressed="true"]{background:var(--yellow-soft);color:var(--yellow);border-color:var(--yellow-line)}
+.shell .preview textarea{border-color:var(--border);font-size:12px}
+.shell :is(#copy,#export,#load,#clear,#exportPrompts){background:var(--soft);color:var(--text-soft);border-color:var(--border)}
+.shell :is(#copy,#export,#load,#clear,#exportPrompts):hover{border-color:var(--yellow-line);background:var(--hover);color:var(--foreground)}
+@media(max-width:700px){
+ .shell main{display:block}
+ .shell .section-head{padding:var(--ds-space-4)}
+ .shell .section-body{padding:var(--ds-space-4)}
+}
+
+/* Mode roots are page shells, not giant cards. Standard already uses an open shell. */
+.vd-root,.production-root{background:transparent;border:0;border-radius:0;box-shadow:none;overflow:visible}
+
+/* Workspace UX Refinement v1.2 — scoped layout, no storage or compiler changes. */
+@media (min-width:1101px) and (min-height:650px){
+ .shell{grid-template-rows:auto auto minmax(0,1fr) auto;min-height:0}
+ .shell main{min-height:0;align-items:stretch}
+ .shell main>section{height:clamp(600px,calc(100dvh - 240px),1000px);min-height:0}
+ .shell main>section>.section-body{flex:1;min-height:0;display:flex;flex-direction:column}
+ .shell #library,.shell #selected{min-height:0;overflow-y:auto;overflow-x:hidden;overscroll-behavior:contain;scrollbar-gutter:stable}
+ .shell #library{flex:1 1 200px}
+ .shell #selected{flex:1 1 180px}
+ .shell .preview #output{flex:1 1 200px;min-height:180px;max-height:none;overflow:auto}
+}
+@media (min-width:721px) and (max-width:1100px){
+ .shell main>section{height:min(850px,max(560px,calc(100dvh - 230px)))}
+ .shell main>section>.section-body{display:flex;flex-direction:column;min-height:0}
+ .shell #library,.shell #selected{flex:1 1 200px;min-height:0;max-height:none;overflow:auto;overscroll-behavior:contain}
+ .shell .preview #output{min-height:230px;flex:1 1 230px;height:auto;overflow:auto}
+}
+@media(max-width:720px){
+ .shell main>section{height:auto;min-height:0}
+ .shell #library{max-height:min(58dvh,520px);min-height:180px;overflow:auto}
+ .shell #selected{max-height:min(48dvh,480px);min-height:140px;overflow:auto}
+ .shell .preview #output{min-height:260px;max-height:52dvh;overflow:auto;resize:vertical}
+}
+.shell main>section:first-child>.section-body>label{flex-shrink:0}
+/* Compact, accessible empty project state. Preserve project IDs and existing actions. */
+.vd-empty-state{max-width:760px;margin:16px auto 0;padding:24px;border:1px solid var(--border);border-radius:var(--ds-radius-card);background:var(--card)}
+.vd-empty-state[hidden]{display:none}
+.vd-empty-state h2{margin:0 0 8px;font-size:20px}
+.vd-empty-state p{font-size:14px;line-height:1.6;color:var(--text-soft);max-width:64ch}
+.vd-empty-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px;margin:18px 0}
+.vd-empty-state .vd-empty-actions>button,.vd-empty-state .vd-file{min-height:38px;padding:9px 13px;background:var(--soft);color:var(--foreground);border:1px solid var(--border);border-radius:var(--ds-radius-control)}
+.vd-empty-state #vdStartNew{background:var(--yellow);color:#171500;border-color:var(--yellow);font-weight:700}
+.vd-empty-project{display:flex;gap:12px;align-items:center;flex-wrap:wrap;font-size:13px}
+.vd-empty-project select{min-width:220px;max-width:100%}
+.vd-root:has(#vdWorkspace[hidden]) .vd-toolbar{display:none}
+.vd-root:has(#vdWorkspace[hidden]){min-height:0}
+.vd-shot-list{max-height:240px;overflow:auto;scrollbar-color:var(--border) transparent;align-content:flex-start;overscroll-behavior:contain}
+#vdPrompt{min-height:260px;max-height:65dvh;overflow:auto;resize:vertical}
+#vdIssues{max-height:160px;overflow:auto;overscroll-behavior:contain}
+/* Result inspector remains alongside editor only when viewport permits readable columns. */
+@media(min-width:1400px){.production-layout{grid-template-columns:minmax(175px,210px) minmax(450px,1.5fr) minmax(300px,.9fr)}.production-output{grid-column:auto}}
+@media(min-width:721px) and (max-width:1399px){.production-layout{grid-template-columns:minmax(160px,200px) minmax(0,1fr)}.production-output{grid-column:2}}
+@media(max-width:720px){.production-layout{display:flex;flex-direction:column}.production-output{grid-column:auto}}
+.production-output .production-result-view{min-height:72px}
+.production-output textarea{min-height:240px;max-height:55dvh;overflow:auto}
+.production-root .production-result-tabs button{font-size:12px}
+.vd-root .vd-note,.production-root .production-panel p{line-height:1.55}
+@media(max-width:450px){.vd-empty-state{padding:16px}.vd-empty-project select{min-width:0;width:100%}}
+
+/* Result Inspector guidance: readable for non-technical users, raw JSON stays unchanged. */
+.production-inspector-help{margin:-4px 0 14px;color:var(--text-soft);font-size:12px;line-height:1.55}
+.production-beginner-tip{margin:10px 0 12px;padding:10px 12px;border-left:3px solid var(--yellow);background:var(--yellow-soft);color:var(--foreground);font-size:12px;line-height:1.5;border-radius:4px}
+.production-result-status{display:block;margin-bottom:6px}
+
+/* OVizLAB Skill Registry */
+.production-skill-description{margin:10px 0 12px;color:var(--text-soft);font-size:13px;line-height:1.55}
+.production-panel .production-result-fact strong{overflow-wrap:anywhere;word-break:break-word;text-align:right;max-width:72%}
+.production-panel #productionSkillSelect{width:100%}
+
+/* Production History · human-readable local audit trail */
+.production-history-toolbar{display:grid;grid-template-columns:auto repeat(3,minmax(140px,1fr));gap:10px;align-items:end;margin:10px 0 14px}
+.production-history-filter{margin:0}
+.production-history-list{display:grid;gap:10px;max-height:54dvh;overflow:auto;overscroll-behavior:contain;padding-right:4px}
+.production-history-card{border:1px solid var(--border);border-radius:var(--ds-radius-card);background:var(--card);padding:12px}
+.production-history-card-head{display:flex;gap:12px;justify-content:space-between;align-items:flex-start}
+.production-history-card-head>span{font-family:var(--mono);font-size:10px;color:var(--text-soft);overflow-wrap:anywhere;text-align:right}
+.production-history-card>p{margin:8px 0;color:var(--text-soft);line-height:1.5}
+.production-history-meta-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px 12px}
+.production-history-meta{display:flex;justify-content:space-between;gap:12px;border-top:1px solid var(--border);padding-top:6px;font-size:11px}
+.production-history-meta span,.production-history-time{color:var(--text-soft)}
+.production-history-meta strong{overflow-wrap:anywhere;text-align:right}
+.production-history-card details{margin-top:10px}
+.production-history-card summary{cursor:pointer;color:var(--yellow);font-size:12px}
+.production-history-json{max-height:220px;overflow:auto;margin:8px 0 0;padding:10px;border:1px solid var(--border);border-radius:var(--ds-radius-control);background:var(--soft);font-size:11px;white-space:pre-wrap}
+.production-history-actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+@media(max-width:900px){.production-history-toolbar{grid-template-columns:1fr 1fr}.production-history-toolbar>strong{grid-column:1/-1}.production-history-meta-grid{grid-template-columns:1fr}}
+@media(max-width:560px){.production-history-toolbar{grid-template-columns:1fr}.production-history-toolbar>strong{grid-column:auto}}

@@ -38,10 +38,12 @@ function refreshProjectPicker(){
  const select=$('vdProjects');select.replaceChildren(option('','— Выберите проект —'));
  for(const p of projects)select.append(option(p.id,p.name));
  select.value=project?.id||'';
+ const start=$('vdStartProjects');
+ if(start){start.replaceChildren(...[...select.options].map(o=>option(o.value,o.textContent)));start.value=select.value;}
 }
 function chooseProject(p){project=structuredClone(p);shotId=project.shots[0]?.id||null;renderAll();}
-function renderAll(){refreshProjectPicker();if(!project){$('vdWorkspace').hidden=true;$('vdTitle').textContent='Создайте проект или загрузите сохранённый';return}
- $('vdWorkspace').hidden=false;$('vdTitle').textContent=project.name;
+function renderAll(){refreshProjectPicker();if(!project){$('vdWorkspace').hidden=true;$('vdEmptyState').hidden=false;$('vdTitle').textContent='Video Director';return}
+ $('vdEmptyState').hidden=true;$('vdWorkspace').hidden=false;$('vdTitle').textContent=project.name;
  const head=$('vdHeaderFields');head.replaceChildren();
  field(head,'Название проекта',project.name,v=>project.name=v);
  selectField(head,'Режим экспорта',project.target_profile,PROFILE_IDS.map(x=>({value:x,label:PROFILE_LABELS[x]})),v=>project.target_profile=v);
@@ -142,7 +144,7 @@ function renderShots(){
  for(const s of project.shots){
   const b=button(s.name+' · '+s.duration_seconds+'s',()=>{shotId=s.id;renderShots();renderOutput()},shotId===s.id?'active':'');b.setAttribute('aria-pressed',String(shotId===s.id));list.append(b);
  }
- list.append(button('+ Шот',()=>{const s=shotTemplate(uniqueId('shot'),'New shot');project.shots.push(s);shotId=s.id;persist();renderAll()}));
+ list.append(button('+ Шот',()=>{const s=shotTemplate(uniqueId('shot'),'New shot');project.shots.push(s);shotId=s.id;persist();renderAll()},'vd-new-shot'));
  const s=currentShot(),host=$('vdShotFields');host.replaceChildren();if(!s)return;
  field(host,'Название шота',s.name,v=>s.name=v);
  field(host,'Длительность, сек.',s.duration_seconds,v=>s.duration_seconds=Number(v),{type:'number'});
@@ -186,6 +188,13 @@ function renderShots(){
  actions.append(button('↑',()=>moveShot(-1)),button('↓',()=>moveShot(1)));
  actions.append(button('Удалить шот',()=>{if(project.shots.length===1)throw Error('Keep at least one shot');if(!confirm('Удалить этот шот?'))return;project.shots=project.shots.filter(x=>x.id!==s.id);shotId=project.shots[0].id;persist();renderAll()},'quiet'));
  host.append(actions);
+ // Visual grouping only: do not wrap, clone or rebind existing inputs.
+ const fields=[...host.querySelectorAll(':scope > label.vd-field')];
+ for(const [index,title] of [[0,'01 / Shot & Timing'],[2,'02 / References'],[5,'03 / Camera'],[9,'04 / Lighting & Atmosphere'],[11,'05 / Blocking & Actions']]){
+  if(!fields[index])continue;
+  const heading=el('h3',title);heading.className='vd-editor-subheading';
+  host.insertBefore(heading,fields[index]);
+ }
 }
 function moveShot(step){const i=project.shots.findIndex(s=>s.id===shotId),j=i+step;if(j<0||j>=project.shots.length)return;[project.shots[i],project.shots[j]]=[project.shots[j],project.shots[i]];persist();renderAll()}
 function renderOutput(){
@@ -205,6 +214,10 @@ function renderOutput(){
 function download(name,content){const blob=new Blob([content],{type:'application/json'}),url=URL.createObjectURL(blob);const a=el('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000)}
 function copy(text){if(!navigator.clipboard?.writeText)throw Error('Clipboard not available');navigator.clipboard.writeText(text).then(()=>message('Скопировано')).catch(()=>message('Копирование недоступно'))}
 function init(){
+ $('vdStartNew').onclick=()=>$('vdNew').click();
+ $('vdStartDemo').onclick=()=>$('vdDemo').click();
+ $('vdStartProjects').onchange=e=>{const selected=projects.find(p=>p.id===e.target.value);if(selected)chooseProject(selected);};
+ $('vdStartImport').onchange=e=>{const input=$('vdImport');const f=e.target.files?.[0];if(!f)return;try{const transfer=new DataTransfer();transfer.items.add(f);input.files=transfer.files;input.dispatchEvent(new Event('change',{bubbles:true}));}catch(err){message('Import STOP: '+err.message)}finally{e.target.value='';}};
  refreshProjectPicker();
  $('vdProjects').onchange=e=>{const p=projects.find(p=>p.id===e.target.value);if(p)chooseProject(p)};
  $('vdNew').onclick=()=>safeRun(()=>{const p=emptyProject(uniqueId('project'));projects=writeProjects(storage,[...projects,p]);chooseProject(p);message('Создан новый проект')});

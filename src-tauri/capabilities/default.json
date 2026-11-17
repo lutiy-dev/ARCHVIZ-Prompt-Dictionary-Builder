@@ -1,0 +1,10 @@
+{
+  "identifier": "main-local-only",
+  "description": "Core window API only; no JavaScript shell execution permissions.",
+  "windows": [
+    "main"
+  ],
+  "permissions": [
+    "core:default"
+  ]
+}
