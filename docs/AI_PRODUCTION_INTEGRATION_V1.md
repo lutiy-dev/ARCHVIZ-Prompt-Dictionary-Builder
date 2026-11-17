@@ -132,3 +132,30 @@ Current ComfyUI application:
 - node inventory is used automatically for API-prompt validation;
 - manual port and `object_info` file remain fallback paths only;
 - queue execution remains disabled until a separate reviewed approval gate.
+
+
+## Controlled ComfyUI Execution v1 candidate — 17 November 2026
+
+Status: **IMPLEMENTED CANDIDATE / NOT FIELD TESTED**
+
+The Desktop MCP / ComfyUI cabinet now has an explicit local execution sequence:
+`VALIDATE → STAGE → REVIEW → USER APPROVE → QUEUE ONCE → MONITOR → RESULT → ACCEPT/REJECT → HISTORY`.
+
+Safety boundary:
+- Web/PWA has no native queue capability.
+- Stage uses the already validated API prompt and live local `object_info`; no workflow mutation, model substitution, download or install occurs.
+- Browser-side staging computes a stable SHA-256 graph digest and audits supported model-choice inputs against current `object_info`.
+- Tauri stores the exact staged graph in native process memory, re-reads local `object_info`, verifies node classes and known model choices, binds approval to the candidate ID + digest and issues a single-use ticket.
+- The ticket is consumed before the local `POST /prompt` network await. Any failure requires a new Stage → Approve cycle; automatic retry is forbidden.
+- Only loopback ComfyUI is used. Remote/LAN execution, shell, arbitrary filesystem access, node installation and ComfyUI configuration changes are not introduced.
+- History polling uses `/history/{prompt_id}` and bounded monitoring. Returned output metadata is shown without guessing filesystem paths.
+- Completion status is `GENERATION_COMPLETED_UNREVIEWED`; geometry remains unverified until a separate human/Geometry Guardian review.
+- Production History keeps the existing v1 status contract and stores execution lifecycle names as an additive `event` field.
+
+Required evidence before merge:
+1. Node/unit/browser regression PASS on current head.
+2. Windows Tauri/NSIS compile PASS.
+3. Physical Windows test with a real API-format workflow: one approval → one queue only, prompt_id received, history monitored, output metadata discovered, Accept/Reject recorded.
+4. Standard Prompt and Video Director regression remain PASS.
+
+No OpenAI API invocation or Geometry Guardian auto-accept is part of this milestone.
