@@ -1,8 +1,8 @@
 import {prepareTask,authorizeToolCall,integrationStatus,evaluateGeometryQC,appendHistory} from './core.mjs';
 import {readHistory,addHistoryRecord,exportHistory,PRODUCTION_HISTORY_KEY} from './history-store.mjs';
 import {compareImageFiles} from './image-qc.mjs';
-import {getDesktopStatus,discoverComfyUi,probeComfyUiPort} from './desktop-bridge.mjs';
-import {validateOfflineComfyFiles} from './offline-comfyui-check.mjs';
+import {getDesktopStatus,discoverComfyUi,probeComfyUiPort,fetchComfyUiObjectInfo} from './desktop-bridge.mjs';
+import {validateOfflineComfyFiles,validateOfflineComfyPrompt} from './offline-comfyui-check.mjs';
 import {stageArtCandidate,decideArtCandidate} from './candidate-review.mjs';
 import {SKILL_REGISTRY,getSkill,validateSkillPin,OVIZLAB_SKILLS_SHA} from './skill-registry.mjs';
 
@@ -10,6 +10,7 @@ const $=id=>document.getElementById(id);
 const names={art_director:'AI Арт-директор',geometry_guardian:'Контроль геометрии',skills:'OVizLAB Skills',mcp_comfyui:'MCP / ComfyUI',history:'История Production'};
 const initialHistory=readHistory(localStorage);
 let chosen='art_director',currentTask=null,stagedCandidate=null,history=initialHistory.records;
+let comfyObjectInfo=null,comfyEndpoint=null;
 let historyError=initialHistory.error;
 const statusLabels={
  GENERATED:'Задание подготовлено',
@@ -288,47 +289,82 @@ function redraw(){
   }));
   host.append(p);
  }else if(chosen==='mcp_comfyui'){
-  const p=panel('MCP / ComfyUI · Готовность подключения','Web/PWA не запускает локальные процессы. Desktop имеет ограниченный read-only bridge; очередь генерации пока не подключена.');
-  for(const name of ['OpenAI API','Local MCP','ComfyUI'])p.append(node('div',name+' · '+integrationStatus().status+' / НЕ ПОДКЛЮЧЕНО'));
+  const p=panel('MCP / ComfyUI · Готовность подключения','Automatic First: Prompt Studio сам получает доступные read-only данные из локального ComfyUI. Ручной ввод используется только как fallback; очередь генерации пока не подключена.');
+  for(const name of ['OpenAI API','Local MCP'])p.append(node('div',name+' · '+integrationStatus().status+' / НЕ ПОДКЛЮЧЕНО'));
   const native=node('div','Desktop Sidecar · ПРОВЕРКА');p.append(native);
   void getDesktopStatus().then(s=>{native.textContent='Desktop Sidecar · '+s.runtime+(s.mcp_ready?' / STDIO READY':' / NOT CONNECTED');});
   const endpoint=node('div','ComfyUI endpoint · AUTO / поиск…');endpoint.className='production-result-fact';p.append(endpoint);
+  const inventory=node('div','object_info · AUTO / ожидание подключения');inventory.className='production-result-fact';p.append(inventory);
+
+  const loadInventory=async state=>{
+   comfyObjectInfo=null;comfyEndpoint=null;
+   if(state?.status!=='CONNECTED_UNVERIFIED'||!state.port){inventory.textContent='object_info · AUTO / недоступен';return state}
+   const info=await fetchComfyUiObjectInfo(state.port);
+   if(info.status==='OBJECT_INFO_READY'){
+    comfyObjectInfo=info.object_info;comfyEndpoint=state.origin;
+    inventory.textContent='object_info · AUTO / '+info.node_count+' типов нод получено';
+    return {...state,object_info_ready:true,node_count:info.node_count};
+   }
+   inventory.textContent='object_info · AUTO / не получен';
+   return {...state,object_info_ready:false,inventory_reason:info.reason};
+  };
+
   let discoveryRunning=false;
   const runDiscovery=async()=>{
    if(discoveryRunning)return;
    discoveryRunning=true;
-   endpoint.textContent='ComfyUI endpoint · AUTO / searching…';
-   feedback('Поиск локального ComfyUI и проверка read-only API');
+   endpoint.textContent='ComfyUI endpoint · AUTO / поиск…';inventory.textContent='object_info · AUTO / поиск…';
+   feedback('Автоматический поиск ComfyUI и получение read-only inventory');
    try{
-    const state=await discoverComfyUi();
+    const discovered=await discoverComfyUi();
+    const state=await loadInventory(discovered);
     endpoint.textContent='ComfyUI endpoint · '+(state.origin||'NOT FOUND');
     result(state);
-    feedback('ComfyUI · '+state.status+(state.origin?' / '+state.origin:'')+(state.reason?' / '+state.reason:''));
+    feedback(state.status==='CONNECTED_UNVERIFIED'
+      ?'ComfyUI найден'+(state.object_info_ready?' · object_info получен автоматически':' · object_info требует fallback')
+      :'ComfyUI · '+state.status+(state.reason?' / '+state.reason:''));
    }finally{discoveryRunning=false}
   };
   p.append(action('Повторно найти локальный ComfyUI · read-only',runDiscovery));
+
+  const fallback=node('details');fallback.className='production-manual-fallback';
+  fallback.append(node('summary','Ручной fallback'));
   const manual=node('div');manual.className='production-image-pair';
   const portField=field('Порт localhost вручную','productionComfyPort','8000');
   const portInput=portField.querySelector('input');portInput.type='number';portInput.min='1';portInput.max='65535';portInput.value='8000';
   manual.append(portField);
   const manualButton=action('Проверить порт вручную · read-only',async()=>{
-   const state=await probeComfyUiPort($('productionComfyPort').value);
+   const probed=await probeComfyUiPort($('productionComfyPort').value);
+   const state=await loadInventory(probed);
    endpoint.textContent='ComfyUI endpoint · '+(state.origin||'NOT FOUND');
-   result(state);
-   feedback('ComfyUI · '+state.status+(state.origin?' / '+state.origin:'')+(state.reason?' / '+state.reason:''));
+   result(state);feedback('ComfyUI · '+state.status+(state.origin?' / '+state.origin:'')+(state.reason?' / '+state.reason:''));
   });
-  manual.append(manualButton);p.append(manual);
-  const offline=node('div');offline.className='production-image-pair';
-  for(const [label,id] of [['ComfyUI API prompt (.json)','productionComfyApiFile'],['ComfyUI object_info (.json)','productionComfyInfoFile']]){
-   const l=node('label');l.className='production-field';const input=node('input');input.type='file';input.accept='.json,application/json';input.id=id;l.append(node('span',label),input);offline.append(l);
-  }
-  p.append(offline);
-  p.append(action('Проверить API prompt offline · без запуска',async()=>{
+  manual.append(manualButton);fallback.append(manual);
+
+  const infoLabel=node('label');infoLabel.className='production-field';
+  const infoInput=node('input');infoInput.type='file';infoInput.accept='.json,application/json';infoInput.id='productionComfyInfoFile';
+  infoLabel.append(node('span','object_info JSON вручную · только если AUTO не сработал'),infoInput);fallback.append(infoLabel);p.append(fallback);
+
+  const apiLabel=node('label');apiLabel.className='production-field';
+  const apiInput=node('input');apiInput.type='file';apiInput.accept='.json,application/json';apiInput.id='productionComfyApiFile';
+  apiLabel.append(node('span','ComfyUI API prompt (.json)'),apiInput);p.append(apiLabel);
+  const apiHelp=node('p','Для проверки workflow нужен только API-format JSON. object_info и inventory Prompt Studio получает автоматически из подключённого ComfyUI. Ничего не запускается.');apiHelp.className='production-beginner-tip';p.append(apiHelp);
+
+  const validateButton=action('Проверить API prompt · без запуска',async()=>{
+   const prompt=$('productionComfyApiFile')?.files?.[0];
+   if(!prompt){feedback('BLOCKED · сначала выберите API prompt JSON',true);return;}
    try{
-    const report=await validateOfflineComfyFiles($('productionComfyApiFile')?.files?.[0],$('productionComfyInfoFile')?.files?.[0]);
-    result(report);feedback(report.status+' · '+(report.valid?'structural check only; runtime NOT TESTED':report.errors.join('; ')),!report.valid);
+    let report;
+    if(comfyObjectInfo)report=await validateOfflineComfyPrompt(prompt,comfyObjectInfo);
+    else{
+     const manualInfo=$('productionComfyInfoFile')?.files?.[0];
+     if(!manualInfo)throw Error('object_info не получен автоматически; переподключите ComfyUI или используйте ручной fallback');
+     report=await validateOfflineComfyFiles(prompt,manualInfo);
+    }
+    result(report);feedback(report.status+' · '+(report.valid?'структура проверена; запуск НЕ выполнялся':report.errors.join('; ')),!report.valid);
    }catch(e){feedback('BLOCKED · '+e.message,true)}
-  }));
+  });
+  p.append(validateButton);
   p.append(action('Проверить политику запуска · dry-run',()=>{
    const decision=authorizeToolCall({server_id:'comfyui',tool_id:'queue',effect:'execute'},{allow:[]});
    result(decision);feedback('Вызов инструмента запрещён · '+displayIssue(decision.reason));
