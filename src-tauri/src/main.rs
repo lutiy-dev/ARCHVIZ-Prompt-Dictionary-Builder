@@ -173,8 +173,8 @@ fn verify_execution_graph(graph: &serde_json::Value, object_info: &serde_json::V
             if !model_keys.iter().any(|known| known.eq_ignore_ascii_case(key)) || !value.is_string() { continue; }
             let selected = value.as_str().unwrap_or("");
             let input_defs = definition.get("input").and_then(|v| v.as_object()).ok_or_else(|| format!("MISSING_INPUT_CONTRACT:{class_type}"))?;
-            let descriptor = input_defs.get("required").and_then(|v| v.get(key))
-                .or_else(|| input_defs.get("optional").and_then(|v| v.get(key)))
+            let descriptor = input_defs.get("required").and_then(|v| v.get(key.as_str()))
+                .or_else(|| input_defs.get("optional").and_then(|v| v.get(key.as_str())))
                 .ok_or_else(|| format!("MODEL_INPUT_NOT_DECLARED:{class_type}.{key}"))?;
             let parts = descriptor.as_array().ok_or_else(|| format!("MODEL_CHOICES_UNAVAILABLE:{class_type}.{key}"))?;
             let choices = if let Some(list) = parts.first().and_then(|v| v.as_array()) {
