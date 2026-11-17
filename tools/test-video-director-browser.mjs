@@ -100,7 +100,7 @@ try{
  await pass('OVizLAB Skill Registry remains metadata-only','return document.querySelector("#productionContent").textContent.includes("загрузка и исполнение Skill здесь не выполняются") && !document.querySelector("#productionContent").textContent.includes("Execute Skill")');
  await evaluate('document.querySelector("[data-cabinet=mcp_comfyui]").click();return true');
  await pass('Local ComfyUI uses Automatic First with manual fallback','return document.querySelector("#productionContent").textContent.includes("Повторно найти локальный ComfyUI") && document.querySelector("#productionContent").textContent.includes("object_info · AUTO") && document.querySelector("#productionContent").textContent.includes("Ручной fallback") && document.querySelector("#productionContent").textContent.includes("Порт localhost вручную")');
- await pass('ComfyUI workflow validation requires only API prompt in primary path','return document.querySelector("#productionContent").textContent.includes("Для проверки workflow нужен только API-format JSON") && document.querySelector("#productionComfyApiFile") && document.querySelector("#productionComfyInfoFile")');
+ await pass('ComfyUI workflow validation requires only API prompt in primary path','return document.querySelector("#productionContent").textContent.includes("Для проверки workflow нужен только API-format JSON") && !!document.querySelector("#productionComfyApiFile") && !!document.querySelector("#productionComfyInfoFile")');
 
  await pass('Web/PWA auto-discovery remains Desktop-only','return document.querySelector("#productionContent").textContent.includes("Web/PWA") && document.querySelector("#productionContent").textContent.includes("read-only")');
 
