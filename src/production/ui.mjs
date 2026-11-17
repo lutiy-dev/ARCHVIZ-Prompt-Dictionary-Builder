@@ -1,5 +1,5 @@
 import {prepareTask,authorizeToolCall,integrationStatus,evaluateGeometryQC,appendHistory} from './core.mjs';
-import {readHistory,addHistoryRecord,exportHistory} from './history-store.mjs';
+import {readHistory,addHistoryRecord,exportHistory,PRODUCTION_HISTORY_KEY} from './history-store.mjs';
 import {compareImageFiles} from './image-qc.mjs';
 import {getDesktopStatus,discoverComfyUi,probeComfyUiPort} from './desktop-bridge.mjs';
 import {validateOfflineComfyFiles} from './offline-comfyui-check.mjs';
@@ -66,6 +66,33 @@ const issueLabels={
  RUNTIME_NOT_TESTED:'Реальный runtime не протестирован.'
 };
 function displayIssue(value){return issueLabels[value]||String(value).replaceAll('_',' ')}
+const historyNoteLabels={
+ 'Prepared in Web/PWA with no AI call':'Задание подготовлено локально, без вызова AI.',
+ 'Recommendation decision only, project NOT modified':'Зафиксировано только решение по рекомендациям; исходный проект не изменён.'
+};
+function displayHistoryNote(note){return historyNoteLabels[note]||String(note||'Без комментария')}
+function historyMeta(record,key,label){
+ const row=node('div');row.className='production-history-meta';
+ row.append(node('span',label),node('strong',record?.[key]??'Не записано'));
+ return row;
+}
+function renderHistoryCard(record){
+ const card=node('article');card.className='production-history-card';
+ const head=node('div');head.className='production-history-card-head';
+ head.append(node('strong',displayStatus(record.status)),node('span',record.id));
+ card.append(head,node('p',displayHistoryNote(record.note)));
+ const meta=node('div');meta.className='production-history-meta-grid';
+ meta.append(
+  historyMeta(record,'task_id','ID задачи'),
+  historyMeta(record,'project_id','Проект'),
+  historyMeta(record,'shot_id','Шот'),
+  historyMeta(record,'cabinet','Кабинет')
+ );
+ card.append(meta);
+ const time=node('p','Время: '+(record.created_at||'не записано в history v1'));time.className='production-history-time';card.append(time);
+ const details=node('details');const summary=node('summary','Технические данные');const pre=node('pre',JSON.stringify(record,null,2));pre.className='production-history-json';details.append(summary,pre);card.append(details);
+ return card;
+}
 const previewUrls=new Set();
 function clearPreviewUrls(){for(const url of previewUrls)URL.revokeObjectURL(url);previewUrls.clear();}
 function node(tag,value){const e=document.createElement(tag);if(value!==undefined)e.textContent=value;return e;}
@@ -76,7 +103,7 @@ function field(label,id,placeholder='',multiline=false){
 }
 function action(label,callback){const b=node('button',label);b.type='button';b.onclick=callback;
  if(/^(Export|Copy|Reject|Stage|Check|Validate source|Probe|Review metrics|Экспорт|Копировать|Отклонить|Проверить|Повторно найти)/.test(label))b.classList.add('production-secondary');
- if(/^(Reject|Отклонить)/.test(label))b.classList.add('production-danger');
+ if(/^(Reject|Отклонить|Очистить)/.test(label))b.classList.add('production-danger');
  if(/^(Prepare task|Compare local image pixels|Validate API prompt offline|Сравнить изображения локально|Проверить API prompt offline)/.test(label))b.classList.add('production-primary');
  if(/^(Accept recommendations|Принять рекомендации)/.test(label))b.classList.add('production-review');
  return b;}
@@ -307,10 +334,54 @@ function redraw(){
    result(decision);feedback('Вызов инструмента запрещён · '+displayIssue(decision.reason));
   }));host.append(p);void runDiscovery();
  }else{
-  const p=panel('История Production · Локально','История хранится только в данном браузере под отдельным ключом. Экспортируйте JSON для резервной копии.');
-  if(historyError)p.append(node('p','BLOCKED: existing history cannot be safely read or overwritten: '+historyError));
-  const pre=node('pre',JSON.stringify(history,null,2));pre.className='production-history';p.append(pre);
-  p.append(action('Экспорт истории JSON',()=>{if(historyError){feedback('BLOCKED · history unreadable; original storage retained',true);return;}try{exportJson('archviz-production-history.json',JSON.parse(exportHistory(localStorage)))}catch(e){feedback('BLOCKED · '+e.message,true)}}));host.append(p);
+  const p=panel('История Production · Локально','Локальный журнал решений AI Production. Он помогает понять, что было подготовлено, принято или отклонено. История не является резервной копией проекта.');
+  if(historyError){
+   const warning=node('p','BLOCKED · существующая история не может быть безопасно прочитана: '+historyError);warning.className='production-beginner-tip';p.append(warning);
+  }
+  const toolbar=node('div');toolbar.className='production-history-toolbar';
+  const counter=node('strong',history.length+' записей');counter.id='productionHistoryCount';toolbar.append(counter);
+
+  const statusLabel=node('label');statusLabel.className='production-field production-history-filter';statusLabel.append(node('span','Статус'));
+  const statusSelect=node('select');statusSelect.id='productionHistoryStatus';statusSelect.append(new Option('Все статусы',''));
+  for(const status of [...new Set(history.map(x=>x.status))])statusSelect.append(new Option(displayStatus(status),status));
+  statusLabel.append(statusSelect);toolbar.append(statusLabel);
+
+  const projectLabel=node('label');projectLabel.className='production-field production-history-filter';projectLabel.append(node('span','Проект'));
+  const projectSelect=node('select');projectSelect.id='productionHistoryProject';projectSelect.append(new Option('Все проекты',''));
+  const projects=[...new Set(history.map(x=>x.project_id).filter(Boolean))];
+  for(const project of projects)projectSelect.append(new Option(project,project));
+  if(!projects.length){projectSelect.disabled=true;projectSelect.title='Project ID не записывается в текущем history v1';}
+  projectLabel.append(projectSelect);toolbar.append(projectLabel);
+
+  const cabinetLabel=node('label');cabinetLabel.className='production-field production-history-filter';cabinetLabel.append(node('span','Кабинет'));
+  const cabinetSelect=node('select');cabinetSelect.id='productionHistoryCabinet';cabinetSelect.append(new Option('Все кабинеты',''));
+  const cabinets=[...new Set(history.map(x=>x.cabinet).filter(Boolean))];
+  for(const cabinet of cabinets)cabinetSelect.append(new Option(cabinet,cabinet));
+  if(!cabinets.length){cabinetSelect.disabled=true;cabinetSelect.title='Cabinet не записывается в текущем history v1';}
+  cabinetLabel.append(cabinetSelect);toolbar.append(cabinetLabel);
+  p.append(toolbar);
+
+  const list=node('div');list.id='productionHistoryList';list.className='production-history-list';p.append(list);
+  const renderFilteredHistory=()=>{
+   const status=statusSelect.value,project=projectSelect.value,cabinet=cabinetSelect.value;
+   const filtered=history.filter(record=>(!status||record.status===status)&&(!project||record.project_id===project)&&(!cabinet||record.cabinet===cabinet));
+   counter.textContent=filtered.length+' из '+history.length+' записей';
+   list.replaceChildren();
+   if(!filtered.length){list.append(node('p','Записей по выбранным фильтрам нет.'));return;}
+   for(const record of [...filtered].reverse())list.append(renderHistoryCard(record));
+  };
+  for(const control of [statusSelect,projectSelect,cabinetSelect])control.addEventListener('change',renderFilteredHistory);
+  renderFilteredHistory();
+
+  const actions=node('div');actions.className='production-history-actions';
+  actions.append(action('Экспорт истории JSON',()=>{if(historyError){feedback('BLOCKED · история недоступна; исходное хранилище сохранено',true);return;}try{exportJson('archviz-production-history.json',JSON.parse(exportHistory(localStorage)));feedback('История экспортирована в JSON')}catch(e){feedback('BLOCKED · '+e.message,true)}}));
+  const clear=action('Очистить локальную историю',()=>{
+   if(historyError){feedback('BLOCKED · история недоступна; очистка запрещена',true);return;}
+   if(!confirm('Удалить локальную историю AI Production на этом устройстве? Экспортируйте JSON заранее, если нужна резервная копия.'))return;
+   localStorage.removeItem(PRODUCTION_HISTORY_KEY);history=[];historyError=null;feedback('Локальная история очищена');redraw();
+  });clear.classList.add('production-danger');actions.append(clear);p.append(actions);
+  const note=node('p','Project ID, Shot ID, кабинет и время отсутствуют в старых записях history v1 — интерфейс не подменяет их догадками.');note.className='production-beginner-tip';p.append(note);
+  host.append(p);
  }
 }
 const resultViewIds={summary:'productionSummary',issues:'productionIssues',json:'productionJson',history:'productionHistory'};
