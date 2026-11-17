@@ -98,6 +98,7 @@ try{
  await pass('MCP integrations are disconnected by default','return document.querySelector("#productionContent").textContent.includes("NOT CONNECTED")');
  await pass('OVizLAB Skill Registry exposes pinned canonical inventory','document.querySelector("[data-cabinet=skills]").click();const select=document.querySelector("#productionSkillSelect");return select && select.options.length===25 && select.value==="archviz-geometry-guardian" && document.querySelector("#productionContent").textContent.includes("Pinned SHA") && document.querySelector("#productionContent").textContent.includes("9b1715c3")');
  await pass('OVizLAB Skill Registry remains metadata-only','return document.querySelector("#productionContent").textContent.includes("загрузка и исполнение Skill здесь не выполняются") && !document.querySelector("#productionContent").textContent.includes("Execute Skill")');
+ await evaluate('document.querySelector("[data-cabinet=mcp_comfyui]").click();return true');
  await pass('Local ComfyUI auto-discovery exposed as an explicit read-only action','return document.querySelector("#productionContent").textContent.includes("Повторно найти локальный ComfyUI") && document.querySelector("#productionContent").textContent.includes("Порт localhost вручную")');
  await pass('Web/PWA auto-discovery remains Desktop-only','return document.querySelector("#productionContent").textContent.includes("Web/PWA") && document.querySelector("#productionContent").textContent.includes("read-only")');
 
