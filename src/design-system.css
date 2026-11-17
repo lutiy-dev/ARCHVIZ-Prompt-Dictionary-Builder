@@ -180,3 +180,8 @@
 .production-inspector-help{margin:-4px 0 14px;color:var(--text-soft);font-size:12px;line-height:1.55}
 .production-beginner-tip{margin:10px 0 12px;padding:10px 12px;border-left:3px solid var(--yellow);background:var(--yellow-soft);color:var(--foreground);font-size:12px;line-height:1.5;border-radius:4px}
 .production-result-status{display:block;margin-bottom:6px}
+
+/* OVizLAB Skill Registry */
+.production-skill-description{margin:10px 0 12px;color:var(--text-soft);font-size:13px;line-height:1.55}
+.production-panel .production-result-fact strong{overflow-wrap:anywhere;word-break:break-word;text-align:right;max-width:72%}
+.production-panel #productionSkillSelect{width:100%}
