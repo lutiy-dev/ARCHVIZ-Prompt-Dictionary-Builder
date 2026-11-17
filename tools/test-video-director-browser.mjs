@@ -91,12 +91,14 @@ try{
 
  await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="mcp_comfyui").click();return true');
  await pass('MCP integrations are disconnected by default','return document.querySelector("#productionContent").textContent.includes("NOT CONNECTED")');
- await pass('Local ComfyUI auto-discovery exposed as an explicit read-only action','return document.querySelector("#productionContent").textContent.includes("Re-detect local ComfyUI") && document.querySelector("#productionContent").textContent.includes("Manual localhost port")');
+ await pass('Local ComfyUI auto-discovery exposed as an explicit read-only action','return document.querySelector("#productionContent").textContent.includes("Повторно найти локальный ComfyUI") && document.querySelector("#productionContent").textContent.includes("Порт localhost вручную")');
  await pass('Web/PWA auto-discovery remains Desktop-only','return document.querySelector("#productionContent").textContent.includes("Web/PWA") && document.querySelector("#productionContent").textContent.includes("read-only")');
 
  await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="geometry_guardian").click();return true');
- await pass('Geometry QC displays two local image inputs and diff action','return document.querySelector("#productionOriginalFile")?.type==="file" && document.querySelector("#productionCandidateFile")?.type==="file" && document.querySelector("#productionContent").textContent.includes("Compare local image pixels")');
+ await pass('Geometry QC displays two local image inputs and diff action','return document.querySelector("#productionOriginalFile")?.type==="file" && document.querySelector("#productionCandidateFile")?.type==="file" && document.querySelector("#productionContent").textContent.includes("Сравнить изображения локально")');
  await pass('Geometry Guardian shows side-by-side local preview placeholders','return document.querySelectorAll(".production-image-preview").length===2 && document.querySelectorAll(".production-image-preview figcaption").length===2');
+ await pass('Geometry Guardian labels and findings are localized','return document.querySelector("#productionContent").textContent.includes("Контроль геометрии") && document.querySelector("#productionContent").textContent.includes("Ошибка выравнивания") && document.querySelector("#productionContent").textContent.includes("Защищённые области")');
+
 
  await evaluate('document.querySelector("#vdTabStandard").click();return true');
 
