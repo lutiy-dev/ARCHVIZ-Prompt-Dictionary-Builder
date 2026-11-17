@@ -7,6 +7,19 @@ const defs={KSampler:{input:{required:{seed:['INT'],model:['MODEL']},optional:{}
 const graph={'1':{class_type:'KSampler',inputs:{seed:42,model:['2',0]}},'2':{class_type:'Output',inputs:{image:['1',0]}}};
 test('Comfy graph validates known inputs and links',()=>{const r=validateComfyPrompt(graph,defs);assert.equal(r.valid,true);assert.equal(r.runtime_tested,false)});
 test('Comfy graph rejects unknown nodes, missing fields and links',()=>{assert.equal(validateComfyPrompt({'1':{class_type:'Missing',inputs:{}}},defs).valid,false);assert.equal(validateComfyPrompt({'1':{class_type:'KSampler',inputs:{seed:4,model:['9',0]}}},defs).valid,false)});
+test('Comfy validator accepts dynamic dotted inputs only under a declared root',()=>{
+ const info={Dynamic:{input:{required:{ref_images:['DYNAMIC',{}]},optional:{},hidden:{unique_id:['UNIQUE_ID']}}}};
+ const ok=validateComfyPrompt({'1':{class_type:'Dynamic',inputs:{'ref_images.ref_image_0':'a.png',unique_id:'1'}}},info);
+ assert.equal(ok.valid,true);
+ const bad=validateComfyPrompt({'1':{class_type:'Dynamic',inputs:{'other.ref_image_0':'a.png'}}},info);
+ assert.equal(bad.valid,false);
+ assert.ok(bad.errors.some(x=>x.includes('unknown input other.ref_image_0')));
+});
+test('Comfy validator accepts declared hidden inputs but still blocks unknown static inputs',()=>{
+ const info={HiddenNode:{input:{required:{value:['STRING']},optional:{},hidden:{prompt:['PROMPT']}}}};
+ assert.equal(validateComfyPrompt({'1':{class_type:'HiddenNode',inputs:{value:'x',prompt:{}}}},info).valid,true);
+ assert.equal(validateComfyPrompt({'1':{class_type:'HiddenNode',inputs:{value:'x',mystery:1}}},info).valid,false);
+});
 test('Comfy endpoint restricts to loopback and no userinfo',()=>{for(const u of ['https://127.0.0.1:8188','http://192.168.1.4:8188','http://127.0.0.1:8188/path','http://user:pass@127.0.0.1:8188'])assert.throws(()=>createComfyAdapter({origin:u}));assert.equal(createComfyAdapter().origin,'http://127.0.0.1:8188')});
 test('Comfy health contacts only configured loopback, not queue',async()=>{let calls=[];const a=createComfyAdapter({fetchImpl:async(u,opts)=>{calls.push([u,opts.method]);return{ok:true,json:async()=>({devices:[]})}}});assert.equal((await a.health()).reachable,true);assert.deepEqual(calls,[['http://127.0.0.1:8188/system_stats','GET']]);await assert.rejects(()=>a.queue(),/disabled/)});
 test('Skills reject mutable or untrusted source',()=>{assert.throws(()=>skillSource({name:'archviz-geometry-guardian',sha:'main'}));assert.throws(()=>skillSource({name:'ab',repository:'other/repo',sha:'a'.repeat(40)}))});
