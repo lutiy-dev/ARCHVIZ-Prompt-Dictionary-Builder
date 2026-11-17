@@ -11,46 +11,80 @@ struct SidecarState {
     ready: AtomicBool,
 }
 
-fn http_probe_comfyui(port: u16) -> bool {
+fn local_http_get(port: u16, path: &str, max_read: usize) -> Result<Vec<u8>, String> {
     use std::io::{Read, Write};
     use std::net::{Ipv4Addr, SocketAddr, SocketAddrV4, TcpStream};
     use std::time::Duration;
 
-    fn request(port: u16, path: &str, max_read: usize) -> std::io::Result<String> {
-        let endpoint = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::LOCALHOST, port));
-        let mut socket = TcpStream::connect_timeout(&endpoint, Duration::from_millis(450))?;
-        socket.set_read_timeout(Some(Duration::from_millis(700)))?;
-        socket.set_write_timeout(Some(Duration::from_millis(450)))?;
-        let request = format!(
-            "GET {path} HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\nConnection: close\r\nAccept: application/json\r\n\r\n"
-        );
-        socket.write_all(request.as_bytes())?;
-        let mut bytes = Vec::new();
-        let mut chunk = [0u8; 4096];
-        while bytes.len() < max_read {
-            match socket.read(&mut chunk) {
-                Ok(0) => break,
-                Ok(n) => bytes.extend_from_slice(&chunk[..n]),
-                Err(error) if matches!(error.kind(), std::io::ErrorKind::WouldBlock | std::io::ErrorKind::TimedOut) => break,
-                Err(error) => return Err(error),
+    let endpoint = SocketAddr::V4(SocketAddrV4::new(Ipv4Addr::LOCALHOST, port));
+    let mut socket = TcpStream::connect_timeout(&endpoint, Duration::from_millis(450))
+        .map_err(|error| error.to_string())?;
+    socket.set_read_timeout(Some(Duration::from_millis(1200))).map_err(|error| error.to_string())?;
+    socket.set_write_timeout(Some(Duration::from_millis(450))).map_err(|error| error.to_string())?;
+    let request = format!(
+        "GET {path} HTTP/1.1\r\nHost: 127.0.0.1:{port}\r\nConnection: close\r\nAccept: application/json\r\nAccept-Encoding: identity\r\n\r\n"
+    );
+    socket.write_all(request.as_bytes()).map_err(|error| error.to_string())?;
+    let mut bytes = Vec::new();
+    let mut chunk = [0u8; 8192];
+    while bytes.len() < max_read {
+        match socket.read(&mut chunk) {
+            Ok(0) => break,
+            Ok(n) => {
+                if bytes.len() + n > max_read { return Err("RESPONSE_TOO_LARGE".into()); }
+                bytes.extend_from_slice(&chunk[..n]);
             }
+            Err(error) if matches!(error.kind(), std::io::ErrorKind::WouldBlock | std::io::ErrorKind::TimedOut) => break,
+            Err(error) => return Err(error.to_string()),
         }
-        Ok(String::from_utf8_lossy(&bytes).into_owned())
     }
+    Ok(bytes)
+}
 
-    let stats = match request(port, "/system_stats", 32768) {
+fn decode_chunked_body(mut body: &[u8]) -> Result<Vec<u8>, String> {
+    let mut decoded = Vec::new();
+    loop {
+        let line_end = body.windows(2).position(|w| w == b"\r\n").ok_or("INVALID_CHUNK_HEADER")?;
+        let size_line = std::str::from_utf8(&body[..line_end]).map_err(|_| "INVALID_CHUNK_SIZE")?;
+        let size_hex = size_line.split(';').next().unwrap_or("").trim();
+        let size = usize::from_str_radix(size_hex, 16).map_err(|_| "INVALID_CHUNK_SIZE")?;
+        body = &body[line_end + 2..];
+        if size == 0 { break; }
+        if body.len() < size + 2 || &body[size..size + 2] != b"\r\n" { return Err("INVALID_CHUNK_BODY".into()); }
+        decoded.extend_from_slice(&body[..size]);
+        body = &body[size + 2..];
+    }
+    Ok(decoded)
+}
+
+fn local_http_json(port: u16, path: &str, max_read: usize) -> Result<serde_json::Value, String> {
+    let raw = local_http_get(port, path, max_read)?;
+    let split = raw.windows(4).position(|w| w == b"\r\n\r\n").ok_or("INVALID_HTTP_RESPONSE")?;
+    let header_bytes = &raw[..split];
+    let mut body = &raw[split + 4..];
+    let headers = String::from_utf8_lossy(header_bytes);
+    let mut lines = headers.lines();
+    let status = lines.next().unwrap_or("");
+    if !(status.starts_with("HTTP/1.1 200 ") || status.starts_with("HTTP/1.0 200 ")) {
+        return Err("HTTP_NOT_200".into());
+    }
+    let header_lower = headers.to_ascii_lowercase();
+    let owned;
+    if header_lower.contains("transfer-encoding: chunked") {
+        owned = decode_chunked_body(body)?;
+        body = &owned;
+    }
+    serde_json::from_slice(body).map_err(|_| "INVALID_JSON_RESPONSE".into())
+}
+
+fn http_probe_comfyui(port: u16) -> bool {
+    let stats = match local_http_json(port, "/system_stats", 256 * 1024) {
         Ok(value) => value,
         Err(_) => return false,
     };
-    let stats_ok = (stats.starts_with("HTTP/1.1 200 ") || stats.starts_with("HTTP/1.0 200 "))
-        && stats.contains("\"system\"")
-        && stats.contains("\"devices\"");
+    let stats_ok = stats.get("system").is_some() && stats.get("devices").is_some();
     if !stats_ok { return false; }
-
-    match request(port, "/object_info", 8192) {
-        Ok(value) => value.starts_with("HTTP/1.1 200 ") || value.starts_with("HTTP/1.0 200 "),
-        Err(_) => false,
-    }
+    matches!(local_http_json(port, "/object_info", 16 * 1024 * 1024), Ok(serde_json::Value::Object(_)))
 }
 
 #[cfg(target_os = "windows")]
@@ -109,6 +143,28 @@ fn comfyui_probe_port(port: u16) -> serde_json::Value {
 }
 
 #[tauri::command]
+fn comfyui_object_info(port: u16) -> serde_json::Value {
+    if port == 0 {
+        return serde_json::json!({"status":"BLOCKED","reason":"INVALID_PORT","execution_allowed":false});
+    }
+    match local_http_json(port, "/object_info", 16 * 1024 * 1024) {
+        Ok(serde_json::Value::Object(map)) => {
+            let node_count = map.len();
+            serde_json::json!({
+                "status":"OBJECT_INFO_READY",
+                "port":port,
+                "node_count":node_count,
+                "object_info":serde_json::Value::Object(map),
+                "network_used":false,
+                "execution_allowed":false
+            })
+        }
+        Ok(_) => serde_json::json!({"status":"BLOCKED","reason":"INVALID_OBJECT_INFO","execution_allowed":false}),
+        Err(reason) => serde_json::json!({"status":"BLOCKED","reason":reason,"execution_allowed":false})
+    }
+}
+
+#[tauri::command]
 fn comfyui_discover() -> serde_json::Value {
     let mut candidates = vec![8000u16, 8188u16];
     for port in local_listening_ports() {
@@ -152,7 +208,7 @@ fn main() {
     tauri::Builder::default()
         .plugin(tauri_plugin_shell::init())
         .manage(SidecarState::default())
-        .invoke_handler(tauri::generate_handler![desktop_status, comfyui_health, comfyui_probe_port, comfyui_discover])
+        .invoke_handler(tauri::generate_handler![desktop_status, comfyui_health, comfyui_probe_port, comfyui_discover, comfyui_object_info])
         .setup(|app| {
             let (mut events, mut child) = app.shell().sidecar("ovizlab-mcp")?.spawn()?;
             // Private stdio only. No local HTTP listener, no shell permission to WebView.
