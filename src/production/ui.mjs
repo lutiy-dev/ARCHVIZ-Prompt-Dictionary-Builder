@@ -6,7 +6,7 @@ import {validateOfflineComfyFiles} from './offline-comfyui-check.mjs';
 import {stageArtCandidate,decideArtCandidate} from './candidate-review.mjs';
 
 const $=id=>document.getElementById(id);
-const names={art_director:'AI Art Director',geometry_guardian:'Geometry Guardian',skills:'OVizLAB Skills',mcp_comfyui:'MCP / ComfyUI',history:'Production History'};
+const names={art_director:'AI Арт-директор',geometry_guardian:'Контроль геометрии',skills:'OVizLAB Skills',mcp_comfyui:'MCP / ComfyUI',history:'История Production'};
 const initialHistory=readHistory(localStorage);
 let chosen='art_director',currentTask=null,stagedCandidate=null,history=initialHistory.records;
 let historyError=initialHistory.error;
@@ -19,9 +19,13 @@ const statusLabels={
  BLOCKED:'Действие заблокировано',
  CONNECTED_UNVERIFIED:'Подключено · требуется проверка',
  DISCONNECTED:'Не подключено',
- NOT_VERIFIED:'Не проверено'
+ NOT_VERIFIED:'Не проверено',
+ NOT_TESTED:'Не протестировано',
+ TESTED:'Протестировано',
+ OFFLINE_VALIDATED_UNVERIFIED:'Структура проверена · runtime не подтверждён',
+ SOURCE_DECLARED_NOT_FETCHED:'Источник указан · не загружен'
 };
-const factLabels={status:'Статус',task_id:'ID задачи',prompt_id:'ID промпта',node_count:'Количество нод',model_count:'Количество моделей',geometry_verified:'Геометрия проверена',runtime_tested:'Runtime протестирован',network_used:'Сеть использовалась'};
+const factLabels={status:'Статус',task_id:'ID задачи',prompt_id:'ID промпта',node_count:'Количество нод',model_count:'Количество моделей',geometry_verified:'Геометрия проверена',runtime_tested:'Runtime протестирован',network_used:'Сеть использовалась',model_selection_verified:'Выбор моделей проверен',queue_allowed:'Запуск очереди разрешён',api_verified:'ComfyUI API подтверждён',port:'Порт'};
 const beginnerTips={
  GENERATED:'Следующий шаг: проверьте содержимое задания. Если всё верно — подготовьте AI-кандидат для ручной проверки.',
  CANDIDATE_REVIEW_REQUIRED:'Следующий шаг: просмотрите предложение и риски. Примите или отклоните рекомендации — проект сам не изменится.',
@@ -31,7 +35,11 @@ const beginnerTips={
  BLOCKED:'Действие остановлено. Откройте вкладку «Проблемы» и устраните указанную причину.',
  CONNECTED_UNVERIFIED:'Связь найдена, но готовность моделей и workflow ещё не подтверждена. Проверьте JSON и object_info перед запуском.',
  DISCONNECTED:'Сначала подключите локальный сервис или проверьте, что он запущен.',
- NOT_VERIFIED:'Результат ещё не проверен. Выполните основной шаг в выбранном кабинете.'
+ NOT_VERIFIED:'Результат ещё не проверен. Выполните основной шаг в выбранном кабинете.',
+ NOT_TESTED:'Подключение или структура найдены, но реальный запуск не проверен. Не считайте систему готовой к Production.',
+ TESTED:'Runtime-проверка пройдена. Всё равно проверьте конкретный результат перед принятием.',
+ OFFLINE_VALIDATED_UNVERIFIED:'JSON структурно совместим. Следующий шаг — проверить реальные ноды, модели и только затем разрешать запуск.',
+ SOURCE_DECLARED_NOT_FETCHED:'Ссылка оформлена корректно, но содержимое Skill ещё не загружено и не проверено.'
 };
 function displayStatus(status){return statusLabels[status]||status.replaceAll('_',' ')}
 function displayFact(key,value){
@@ -39,6 +47,22 @@ function displayFact(key,value){
  if(key==='status'&&typeof value==='string')return displayStatus(value);
  return String(value);
 }
+const issueLabels={
+ UNRELIABLE_METRICS:'Метрики введены некорректно или недостаточно надёжны.',
+ NO_PROTECTED_REGION_EVIDENCE:'Не указаны проверенные и защищённые области изображения.',
+ ALIGNMENT_UNCERTAIN:'Выравнивание исходника и AI-кандидата недостаточно точное.',
+ CONTOUR_DIFFERENCE:'Обнаружено заметное различие контуров. Проверьте окна, кромки, проёмы и фасад вручную.',
+ METRICS_WITHIN_PRELIMINARY_BOUNDS:'Предварительные метрики находятся в допустимых границах, но это не подтверждает геометрию.',
+ MANUAL_ACCEPTANCE_REQUIRED:'Требуется ручное принятие результата.',
+ INVALID_REQUEST:'Некорректный запрос.',
+ NOT_ALLOWLISTED:'Действие не разрешено текущей политикой.',
+ USER_APPROVAL_REQUIRED:'Требуется явное подтверждение пользователя.',
+ EXECUTION_DISABLED:'Исполнение отключено.',
+ NOT_CONNECTED:'Сервис не подключён.',
+ ADAPTER_NOT_VERIFIED:'Адаптер не проверен.',
+ RUNTIME_NOT_TESTED:'Реальный runtime не протестирован.'
+};
+function displayIssue(value){return issueLabels[value]||String(value).replaceAll('_',' ')}
 const previewUrls=new Set();
 function clearPreviewUrls(){for(const url of previewUrls)URL.revokeObjectURL(url);previewUrls.clear();}
 function node(tag,value){const e=document.createElement(tag);if(value!==undefined)e.textContent=value;return e;}
@@ -78,7 +102,7 @@ function result(data){
  const safe=['status','task_id','prompt_id','node_count','model_count','geometry_verified','runtime_tested','network_used'];
  for(const key of safe){if(data?.[key]===undefined)continue;const item=node('div');item.className='production-result-fact';item.append(node('span',factLabels[key]||key),node('strong',displayFact(key,data[key])));summary.append(item);}
  const issues=$('productionIssues');issues.replaceChildren();
- const findings=[...(Array.isArray(data?.errors)?data.errors:[]),...(Array.isArray(data?.issues)?data.issues.map(x=>typeof x==='string'?x:JSON.stringify(x)):[])];
+ const findings=[...(Array.isArray(data?.errors)?data.errors:[]),...(Array.isArray(data?.issues)?data.issues.map(x=>typeof x==='string'?x:JSON.stringify(x)):[]),...(Array.isArray(data?.reasons)?data.reasons:[])].map(displayIssue);
  if(data?.geometry_verified!==true)findings.push('Сохранение геометрии НЕ ПОДТВЕРЖДЕНО');
  if(data?.runtime_tested!==true)findings.push('Реальный runtime / модель НЕ ПРОТЕСТИРОВАНЫ');
  if(data?.status==='BLOCKED'&&typeof data?.reason==='string')findings.push(data.reason);
@@ -134,14 +158,14 @@ function redraw(){
   }));
   host.append(p);
  }else if(chosen==='geometry_guardian'){
-  const p=panel('Geometry Guardian · Advisory QC','Локальное пиксельное сравнение и ручные метрики. Результат не доказывает сохранение архитектурной геометрии; автоматический PASS запрещён.');
-  for(const [label,id,placeholder] of [['Original ID','productionSource','original'],['AI Result ID','productionResult','result'],['Alignment error px','productionAlignment','0'],['Contour mismatch ratio 0-1','productionContour','0'],['Reviewed regions','productionRegions','0'],['Protected regions','productionProtected','0']])p.append(field(label,id,placeholder));
+  const p=panel('Контроль геометрии · Advisory QC','Локальное пиксельное сравнение и ручные метрики. Результат не доказывает сохранение архитектурной геометрии; автоматический PASS запрещён.');
+  for(const [label,id,placeholder] of [['ID исходника','productionSource','original'],['ID AI-результата','productionResult','result'],['Ошибка выравнивания, px','productionAlignment','0'],['Расхождение контуров 0–1','productionContour','0'],['Проверенные области','productionRegions','0'],['Защищённые области','productionProtected','0']])p.append(field(label,id,placeholder));
   const files=node('div');files.className='production-image-pair';
   const imageInput=(title,id)=>{const row=node('label');row.className='production-field';const input=node('input');input.type='file';input.accept='image/png,image/jpeg,image/webp';input.id=id;row.append(node('span',title),input);return row};
-  files.append(imageInput('Original Corona render','productionOriginalFile'),imageInput('AI candidate','productionCandidateFile'));
+  files.append(imageInput('Исходный Corona render','productionOriginalFile'),imageInput('AI-кандидат','productionCandidateFile'));
   p.append(files);
   const previews=node('div');previews.className='production-image-pair production-image-previews';
-  for(const [id,label] of [['productionOriginalFile','Source · Corona'],['productionCandidateFile','Candidate · AI']]){
+  for(const [id,label] of [['productionOriginalFile','Исходник · Corona'],['productionCandidateFile','Кандидат · AI']]){
    const figure=node('figure');figure.className='production-image-preview';
    const caption=node('figcaption',label);const placeholder=node('p','Файл не выбран');
    figure.append(caption,placeholder);previews.append(figure);
@@ -162,43 +186,43 @@ function redraw(){
    });
   }
   p.append(previews);
-  p.append(action('Compare local image pixels · LAB',async()=>{
+  p.append(action('Сравнить изображения локально · LAB',async()=>{
    const a=$('productionOriginalFile')?.files?.[0],b=$('productionCandidateFile')?.files?.[0];
-   if(!a||!b){feedback('BLOCKED · select two image files',true);return}
+   if(!a||!b){feedback('BLOCKED · выберите два изображения',true);return}
    try{
-    feedback('Comparing images locally · no cloud upload');
+    feedback('Локальное сравнение изображений · без загрузки в облако');
     const comparison=await compareImageFiles(a,b);
     result(comparison.report);
     const previous=document.getElementById('productionDifferenceCanvas');previous?.remove();
     const overlay=comparison.canvas;overlay.id='productionDifferenceCanvas';overlay.setAttribute('aria-label','Red regions indicate changed pixels, not confirmed geometry defects');overlay.className='production-difference-canvas';
-    p.append(node('p','Difference overlay · red = pixel change; verify windows/facade manually'),overlay);
-    feedback('REVIEW REQUIRED · pixel difference is not geometry validation');
+    p.append(node('p','Карта различий · красный показывает изменение пикселей. Окна, контуры и фасад проверьте вручную.'),overlay);
+    feedback('REVIEW REQUIRED · различие пикселей не является доказательством изменения геометрии');
    }catch(e){feedback('BLOCKED · '+e.message,true)}
   }));
-  p.append(action('Review metrics',()=>{try{
+  p.append(action('Проверить метрики',()=>{try{
    const v=evaluateGeometryQC({source_id:$('productionSource').value.trim(),result_id:$('productionResult').value.trim(),alignment_error_px:Number($('productionAlignment').value),contour_mismatch_ratio:Number($('productionContour').value),reviewed_regions:Number($('productionRegions').value),protected_regions:Number($('productionProtected').value)});
    result(v);feedback('REVIEW REQUIRED · оценка не подтверждает сохранение геометрии');
   }catch(e){feedback('BLOCKED · '+e.message,true)}}));host.append(p);
  }else if(chosen==='skills'){
-  const p=panel('OVizLAB Skills · Pinned Source','Только проверка формы ссылки; фактическая загрузка и исполнение Skill не реализованы.');
-  p.append(field('Skill ID','productionSkillId','archviz-geometry-guardian'),field('Repository','productionRepo','lutiy-dev/GitHab-Skills'),field('Canonical path','productionSkillPath','skills/archviz-geometry-guardian/SKILL.md'),field('Exact commit SHA','productionSkillSha','40 lowercase hex'));
-  p.append(action('Validate source metadata',()=>{const sha=$('productionSkillSha').value.trim();
-   if(!/^[0-9a-f]{40}$/.test(sha)){feedback('BLOCKED · exact commit SHA required',true);return;}
+  const p=panel('OVizLAB Skills · Зафиксированный источник','Только проверка формы ссылки; фактическая загрузка и исполнение Skill не реализованы.');
+  p.append(field('ID Skill','productionSkillId','archviz-geometry-guardian'),field('Репозиторий','productionRepo','lutiy-dev/GitHab-Skills'),field('Канонический путь','productionSkillPath','skills/archviz-geometry-guardian/SKILL.md'),field('Точный commit SHA','productionSkillSha','40 lowercase hex'));
+  p.append(action('Проверить метаданные источника',()=>{const sha=$('productionSkillSha').value.trim();
+   if(!/^[0-9a-f]{40}$/.test(sha)){feedback('BLOCKED · требуется точный commit SHA из 40 символов',true);return;}
    result({status:'SOURCE_DECLARED_NOT_FETCHED',skill_id:$('productionSkillId').value.trim(),repository:$('productionRepo').value.trim(),path:$('productionSkillPath').value.trim(),sha});
    feedback('NOT VERIFIED · метаданные проверены, источник не загружен');
   }));host.append(p);
  }else if(chosen==='mcp_comfyui'){
-  const p=panel('MCP / ComfyUI · Connection Readiness','Web/PWA не запускает локальные процессы. Desktop имеет ограниченный read-only bridge; очередь генерации пока не подключена.');
-  for(const name of ['OpenAI API','Local MCP','ComfyUI'])p.append(node('div',name+' · '+integrationStatus().status+' / NOT CONNECTED'));
-  const native=node('div','Desktop Sidecar · CHECKING');p.append(native);
+  const p=panel('MCP / ComfyUI · Готовность подключения','Web/PWA не запускает локальные процессы. Desktop имеет ограниченный read-only bridge; очередь генерации пока не подключена.');
+  for(const name of ['OpenAI API','Local MCP','ComfyUI'])p.append(node('div',name+' · '+integrationStatus().status+' / НЕ ПОДКЛЮЧЕНО'));
+  const native=node('div','Desktop Sidecar · ПРОВЕРКА');p.append(native);
   void getDesktopStatus().then(s=>{native.textContent='Desktop Sidecar · '+s.runtime+(s.mcp_ready?' / STDIO READY':' / NOT CONNECTED');});
-  const endpoint=node('div','ComfyUI endpoint · AUTO / searching…');endpoint.className='production-result-fact';p.append(endpoint);
+  const endpoint=node('div','ComfyUI endpoint · AUTO / поиск…');endpoint.className='production-result-fact';p.append(endpoint);
   let discoveryRunning=false;
   const runDiscovery=async()=>{
    if(discoveryRunning)return;
    discoveryRunning=true;
    endpoint.textContent='ComfyUI endpoint · AUTO / searching…';
-   feedback('Searching local loopback listeners and verifying ComfyUI API');
+   feedback('Поиск локального ComfyUI и проверка read-only API');
    try{
     const state=await discoverComfyUi();
     endpoint.textContent='ComfyUI endpoint · '+(state.origin||'NOT FOUND');
@@ -206,12 +230,12 @@ function redraw(){
     feedback('ComfyUI · '+state.status+(state.origin?' / '+state.origin:'')+(state.reason?' / '+state.reason:''));
    }finally{discoveryRunning=false}
   };
-  p.append(action('Re-detect local ComfyUI · read-only',runDiscovery));
+  p.append(action('Повторно найти локальный ComfyUI · read-only',runDiscovery));
   const manual=node('div');manual.className='production-image-pair';
-  const portField=field('Manual localhost port','productionComfyPort','8000');
+  const portField=field('Порт localhost вручную','productionComfyPort','8000');
   const portInput=portField.querySelector('input');portInput.type='number';portInput.min='1';portInput.max='65535';portInput.value='8000';
   manual.append(portField);
-  const manualButton=action('Probe manual port · read-only',async()=>{
+  const manualButton=action('Проверить порт вручную · read-only',async()=>{
    const state=await probeComfyUiPort($('productionComfyPort').value);
    endpoint.textContent='ComfyUI endpoint · '+(state.origin||'NOT FOUND');
    result(state);
@@ -223,21 +247,21 @@ function redraw(){
    const l=node('label');l.className='production-field';const input=node('input');input.type='file';input.accept='.json,application/json';input.id=id;l.append(node('span',label),input);offline.append(l);
   }
   p.append(offline);
-  p.append(action('Validate API prompt offline · no execution',async()=>{
+  p.append(action('Проверить API prompt offline · без запуска',async()=>{
    try{
     const report=await validateOfflineComfyFiles($('productionComfyApiFile')?.files?.[0],$('productionComfyInfoFile')?.files?.[0]);
     result(report);feedback(report.status+' · '+(report.valid?'structural check only; runtime NOT TESTED':report.errors.join('; ')),!report.valid);
    }catch(e){feedback('BLOCKED · '+e.message,true)}
   }));
-  p.append(action('Check execution policy (dry-run)',()=>{
+  p.append(action('Проверить политику запуска · dry-run',()=>{
    const decision=authorizeToolCall({server_id:'comfyui',tool_id:'queue',effect:'execute'},{allow:[]});
-   result(decision);feedback('Tool call denied · '+decision.reason);
+   result(decision);feedback('Вызов инструмента запрещён · '+displayIssue(decision.reason));
   }));host.append(p);void runDiscovery();
  }else{
-  const p=panel('Production History · Local','История хранится только в данном браузере под отдельным ключом. Экспортируйте JSON для резервной копии.');
+  const p=panel('История Production · Локально','История хранится только в данном браузере под отдельным ключом. Экспортируйте JSON для резервной копии.');
   if(historyError)p.append(node('p','BLOCKED: existing history cannot be safely read or overwritten: '+historyError));
   const pre=node('pre',JSON.stringify(history,null,2));pre.className='production-history';p.append(pre);
-  p.append(action('Export history JSON',()=>{if(historyError){feedback('BLOCKED · history unreadable; original storage retained',true);return;}try{exportJson('archviz-production-history.json',JSON.parse(exportHistory(localStorage)))}catch(e){feedback('BLOCKED · '+e.message,true)}}));host.append(p);
+  p.append(action('Экспорт истории JSON',()=>{if(historyError){feedback('BLOCKED · history unreadable; original storage retained',true);return;}try{exportJson('archviz-production-history.json',JSON.parse(exportHistory(localStorage)))}catch(e){feedback('BLOCKED · '+e.message,true)}}));host.append(p);
  }
 }
 const resultViewIds={summary:'productionSummary',issues:'productionIssues',json:'productionJson',history:'productionHistory'};
@@ -255,11 +279,11 @@ for(const [index,tab] of resultTabs.entries()){
 }
 $('productionCopyTask').addEventListener('click',async()=>{
  if(!$('productionTask').value){feedback('BLOCKED · no JSON result to copy',true);return;}
- try{await navigator.clipboard.writeText($('productionTask').value);feedback('JSON copied · local only');}
- catch{feedback('BLOCKED · clipboard unavailable',true);}
+ try{await navigator.clipboard.writeText($('productionTask').value);feedback('JSON скопирован · только локально');}
+ catch{feedback('BLOCKED · буфер обмена недоступен',true);}
 });
 setResultView('summary');
 for(const [name,label] of Object.entries(names)){const b=action(label,()=>{chosen=name;redraw();feedback('LAB · внешние интеграции отключены')});b.dataset.cabinet=name;$('productionCabinets').append(b);}
 $('productionExportTask').disabled=true;
-$('productionExportTask').addEventListener('click',()=>{if(!currentTask){feedback('BLOCKED · сначала сформируйте задание',true);return;}exportJson(currentTask.id+'.json',currentTask);feedback('GENERATED · exported metadata only')});
+$('productionExportTask').addEventListener('click',()=>{if(!currentTask){feedback('BLOCKED · сначала сформируйте задание',true);return;}exportJson(currentTask.id+'.json',currentTask);feedback('GENERATED · экспортированы только метаданные')});
 redraw();$('productionRoot').dataset.ready='true';
