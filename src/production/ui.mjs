@@ -320,7 +320,7 @@ function redraw(){
   }));
   host.append(p);
  }else if(chosen==='mcp_comfyui'){
-  const p=panel('MCP / ComfyUI · Готовность подключения','Automatic First: Prompt Studio сам получает доступные read-only данные из локального ComfyUI. Ручной ввод используется только как fallback; очередь генерации пока не подключена.');
+  const p=panel('MCP / ComfyUI · Готовность подключения','Automatic First: Prompt Studio сам получает read-only данные из локального ComfyUI. Реальный Queue доступен только в Desktop после Validate → Stage → отдельного подтверждения одного запуска.');
   for(const name of ['OpenAI API','Local MCP'])p.append(node('div',name+' · '+integrationStatus().status+' / НЕ ПОДКЛЮЧЕНО'));
   const native=node('div','Desktop Sidecar · ПРОВЕРКА');p.append(native);
   void getDesktopStatus().then(s=>{native.textContent='Desktop Sidecar · '+s.runtime+(s.mcp_ready?' / STDIO READY':' / NOT CONNECTED');});
