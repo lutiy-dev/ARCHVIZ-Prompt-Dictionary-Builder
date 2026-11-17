@@ -40,3 +40,16 @@ export async function probeComfyUiPort(port,tauri=globalThis.__TAURI__){
   return {...response,execution_allowed:false};
  }catch{return {status:'BLOCKED',reason:'MANUAL_PROBE_FAILED',execution_allowed:false}}
 }
+
+
+/** Fetch ComfyUI object_info from the already discovered localhost endpoint. Read-only; no queue. */
+export async function fetchComfyUiObjectInfo(port,tauri=globalThis.__TAURI__){
+ const value=Number(port);
+ if(!Number.isInteger(value)||value<1||value>65535)return {status:'BLOCKED',reason:'INVALID_PORT',execution_allowed:false};
+ if(!tauri?.core?.invoke)return {status:'BLOCKED',reason:'DESKTOP_ONLY',execution_allowed:false};
+ try{
+  const response=await tauri.core.invoke('comfyui_object_info',{port:value});
+  if(!['OBJECT_INFO_READY','BLOCKED'].includes(response?.status))throw Error('Unexpected object_info report');
+  return {...response,execution_allowed:false};
+ }catch{return {status:'BLOCKED',reason:'OBJECT_INFO_FETCH_FAILED',execution_allowed:false}}
+}
