@@ -70,6 +70,9 @@ try{
  await evaluate('document.querySelector("#productionProject").value="project_01";document.querySelector("#productionBrief").value="Preserve hotel geometry";document.querySelector(".production-panel button").click();return true');
  await pass('Art Director prepares a safe local draft','return document.querySelector("#productionTask").value.includes("archviz_production_task") && document.querySelector("#productionTask").value.includes("HARD")');
  await pass('Inspector defaults to summary with unchanged JSON contract','return document.querySelector("#productionSummary")?.hidden===false && document.querySelector("#productionTask").value.includes("archviz_production_task") && document.querySelector("[data-view=summary]")?.getAttribute("aria-selected")==="true"');
+ await pass('Result Inspector is localized while raw JSON stays technical','return document.querySelector(".production-output h2")?.textContent==="Инспектор результата" && document.querySelector("[data-view=summary]")?.textContent==="Сводка" && document.querySelector("#productionSummary")?.textContent.includes("Задание подготовлено") && document.querySelector("#productionTask").value.includes("\"status\": \"GENERATED\"")');
+ await pass('Beginner recommendation is shown for current status','return document.querySelector("#productionSummary .production-beginner-tip")?.textContent.includes("Следующий шаг")');
+
  await pass('Result Inspector JSON scroll height constrained','const area=document.querySelector("#productionTask"),style=getComputedStyle(area);return style.overflowY==="auto"&&parseFloat(style.maxHeight)>0');
 
  await evaluate('document.querySelector("[data-view=json]").click();return true');
@@ -78,7 +81,7 @@ try{
  await pass('Result Inspector keyboard Home returns to Summary','return !document.querySelector("#productionSummary").hidden && document.querySelector("[data-view=summary]").getAttribute("aria-selected")==="true" && document.activeElement===document.querySelector("[data-view=summary]")');
 
  await evaluate('document.querySelector("[data-view=issues]").click();return true');
- await pass('Inspector issues does not claim geometry verified','return !document.querySelector("#productionIssues").hidden && document.querySelector("#productionIssues").textContent.includes("NOT VERIFIED")');
+ await pass('Inspector issues does not claim geometry verified','return !document.querySelector("#productionIssues").hidden && document.querySelector("#productionIssues").textContent.includes("НЕ ПОДТВЕРЖДЕНО")');
  await evaluate('document.querySelector("[data-view=history]").click();return true');
  await pass('Inspector history reflects isolated records','return !document.querySelector("#productionHistory").hidden && document.querySelector("#productionHistoryPreview").textContent.includes("GENERATED")');
 
