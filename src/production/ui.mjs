@@ -4,6 +4,7 @@ import {compareImageFiles} from './image-qc.mjs';
 import {getDesktopStatus,discoverComfyUi,probeComfyUiPort} from './desktop-bridge.mjs';
 import {validateOfflineComfyFiles} from './offline-comfyui-check.mjs';
 import {stageArtCandidate,decideArtCandidate} from './candidate-review.mjs';
+import {SKILL_REGISTRY,getSkill,validateSkillPin,OVIZLAB_SKILLS_SHA} from './skill-registry.mjs';
 
 const $=id=>document.getElementById(id);
 const names={art_director:'AI Арт-директор',geometry_guardian:'Контроль геометрии',skills:'OVizLAB Skills',mcp_comfyui:'MCP / ComfyUI',history:'История Production'};
@@ -23,7 +24,8 @@ const statusLabels={
  NOT_TESTED:'Не протестировано',
  TESTED:'Протестировано',
  OFFLINE_VALIDATED_UNVERIFIED:'Структура проверена · runtime не подтверждён',
- SOURCE_DECLARED_NOT_FETCHED:'Источник указан · не загружен'
+ SOURCE_DECLARED_NOT_FETCHED:'Источник указан · не загружен',
+ SOURCE_PINNED_METADATA_VALIDATED:'Pinned metadata проверены'
 };
 const factLabels={status:'Статус',task_id:'ID задачи',prompt_id:'ID промпта',node_count:'Количество нод',model_count:'Количество моделей',geometry_verified:'Геометрия проверена',runtime_tested:'Runtime протестирован',network_used:'Сеть использовалась',model_selection_verified:'Выбор моделей проверен',queue_allowed:'Запуск очереди разрешён',api_verified:'ComfyUI API подтверждён',port:'Порт'};
 const beginnerTips={
@@ -39,7 +41,8 @@ const beginnerTips={
  NOT_TESTED:'Подключение или структура найдены, но реальный запуск не проверен. Не считайте систему готовой к Production.',
  TESTED:'Runtime-проверка пройдена. Всё равно проверьте конкретный результат перед принятием.',
  OFFLINE_VALIDATED_UNVERIFIED:'JSON структурно совместим. Следующий шаг — проверить реальные ноды, модели и только затем разрешать запуск.',
- SOURCE_DECLARED_NOT_FETCHED:'Ссылка оформлена корректно, но содержимое Skill ещё не загружено и не проверено.'
+ SOURCE_DECLARED_NOT_FETCHED:'Ссылка оформлена корректно, но содержимое Skill ещё не загружено и не проверено.',
+ SOURCE_PINNED_METADATA_VALIDATED:'Источник закреплён на известной ревизии. Это не доказывает runtime discovery или выполнение Skill.'
 };
 function displayStatus(status){return statusLabels[status]||status.replaceAll('_',' ')}
 function displayFact(key,value){
@@ -204,13 +207,59 @@ function redraw(){
    result(v);feedback('REVIEW REQUIRED · оценка не подтверждает сохранение геометрии');
   }catch(e){feedback('BLOCKED · '+e.message,true)}}));host.append(p);
  }else if(chosen==='skills'){
-  const p=panel('OVizLAB Skills · Зафиксированный источник','Только проверка формы ссылки; фактическая загрузка и исполнение Skill не реализованы.');
-  p.append(field('ID Skill','productionSkillId','archviz-geometry-guardian'),field('Репозиторий','productionRepo','lutiy-dev/GitHab-Skills'),field('Канонический путь','productionSkillPath','skills/archviz-geometry-guardian/SKILL.md'),field('Точный commit SHA','productionSkillSha','40 lowercase hex'));
-  p.append(action('Проверить метаданные источника',()=>{const sha=$('productionSkillSha').value.trim();
-   if(!/^[0-9a-f]{40}$/.test(sha)){feedback('BLOCKED · требуется точный commit SHA из 40 символов',true);return;}
-   result({status:'SOURCE_DECLARED_NOT_FETCHED',skill_id:$('productionSkillId').value.trim(),repository:$('productionRepo').value.trim(),path:$('productionSkillPath').value.trim(),sha});
-   feedback('NOT VERIFIED · метаданные проверены, источник не загружен');
-  }));host.append(p);
+  const p=panel('OVizLAB Skills · Реестр источников','Выберите Skill по задаче. Prompt Studio проверяет только закреплённые метаданные источника; загрузка и исполнение Skill здесь не выполняются.');
+  const registryNote=node('p','Реестр: 25 Skills · lutiy-dev/GitHab-Skills · pinned SHA '+OVIZLAB_SKILLS_SHA.slice(0,8)+'…');
+  registryNote.className='production-beginner-tip';p.append(registryNote);
+
+  const skillLabel=node('label');skillLabel.className='production-field';skillLabel.append(node('span','Skill'));
+  const select=node('select');select.id='productionSkillSelect';
+  const groups=new Map();
+  for(const skill of SKILL_REGISTRY){
+   if(!groups.has(skill.category)){const group=document.createElement('optgroup');group.label=skill.category;groups.set(skill.category,group);select.append(group);}
+   const option=document.createElement('option');option.value=skill.id;option.textContent=skill.id;groups.get(skill.category).append(option);
+  }
+  select.value='archviz-geometry-guardian';skillLabel.append(select);p.append(skillLabel);
+
+  const description=node('p');description.className='production-skill-description';
+  const category=node('div');category.className='production-result-fact';
+  const repoRow=node('div');repoRow.className='production-result-fact';
+  const pathRow=node('div');pathRow.className='production-result-fact';
+  const shaRow=node('div');shaRow.className='production-result-fact';
+  const recommendation=node('p');recommendation.className='production-beginner-tip';
+
+  const recommendations={
+   'archviz-geometry-guardian':'Для проверки сохранения фасада, окон, пропорций, перспективы и других архитектурных признаков.',
+   'comfyui-workflow-builder':'Для сборки или проверки импортируемого ComfyUI workflow с фиксированными моделями, нодами и параметрами.',
+   'archviz-shot-director':'Для выбора камеры, композиции и визуального сценария кадра.',
+   'archviz-material-lookdev':'Для настройки и проверки материалов 3ds Max / Corona.',
+   'archviz-atmosphere-lighting':'Для света, погоды, сезона и атмосферы без изменения архитектуры.',
+   'web-frontend-builder':'Для интерфейса Prompt Studio, Pages/PWA и других web UI.',
+   'pr-ci-verifier':'Для проверки PR и CI перед merge.',
+   'regression-guardian':'Для защиты уже подтверждённого поведения от регрессий.'
+  };
+
+  const showSkill=()=>{
+   const skill=getSkill(select.value);
+   if(!skill)return;
+   description.textContent=skill.description;
+   category.replaceChildren(node('span','Категория'),node('strong',skill.category));
+   repoRow.replaceChildren(node('span','Репозиторий'),node('strong',skill.repository));
+   pathRow.replaceChildren(node('span','Канонический путь'),node('strong',skill.path));
+   shaRow.replaceChildren(node('span','Pinned SHA'),node('strong',skill.sha));
+   recommendation.textContent='Когда использовать: '+(recommendations[skill.id]||'Используйте только когда задача прямо соответствует назначению этого Skill. Не запускайте несколько Skills без необходимости.');
+  };
+  select.addEventListener('change',showSkill);showSkill();
+  p.append(description,category,repoRow,pathRow,shaRow,recommendation);
+
+  p.append(action('Проверить pinned metadata',()=>{
+   const report=validateSkillPin(select.value);
+   result(report);
+   feedback(report.status==='SOURCE_PINNED_METADATA_VALIDATED'
+    ?'VALIDATED · pinned metadata совпадают с bundled registry; runtime discovery не проверен'
+    :'BLOCKED · '+report.reason,
+    report.status==='BLOCKED');
+  }));
+  host.append(p);
  }else if(chosen==='mcp_comfyui'){
   const p=panel('MCP / ComfyUI · Готовность подключения','Web/PWA не запускает локальные процессы. Desktop имеет ограниченный read-only bridge; очередь генерации пока не подключена.');
   for(const name of ['OpenAI API','Local MCP','ComfyUI'])p.append(node('div',name+' · '+integrationStatus().status+' / НЕ ПОДКЛЮЧЕНО'));
