@@ -11,9 +11,28 @@ export function validateComfyPrompt(graph,objectInfo){
   dependencies.push(node.class_type);
   const defs=objectInfo[node.class_type]?.input;
   if(!isObject(defs)){errors.push('Missing input contract: '+node.class_type);continue}
-  for(const key of Object.keys(defs.required||{}))if(!Object.prototype.hasOwnProperty.call(node.inputs,key))errors.push(id+': required input '+key+' missing');
+  const required=isObject(defs.required)?defs.required:{};
+  const optional=isObject(defs.optional)?defs.optional:{};
+  const hidden=isObject(defs.hidden)?defs.hidden:{};
+  const declared={...required,...optional,...hidden};
+  const dynamicRoot=key=>{
+   if(typeof key!=='string'||!key.includes('.'))return null;
+   const parts=key.split('.');
+   for(let i=parts.length-1;i>0;i--){
+    const root=parts.slice(0,i).join('.');
+    if(Object.prototype.hasOwnProperty.call(declared,root))return root;
+   }
+   return null;
+  };
+  for(const key of Object.keys(required)){
+   if(Object.prototype.hasOwnProperty.call(node.inputs,key))continue;
+   const hasExpandedDynamic=Object.keys(node.inputs).some(inputKey=>inputKey.startsWith(key+'.'));
+   if(!hasExpandedDynamic)errors.push(id+': required input '+key+' missing');
+  }
   for(const [key,value] of Object.entries(node.inputs)){
-   if(!Object.prototype.hasOwnProperty.call(defs.required||{},key)&&!Object.prototype.hasOwnProperty.call(defs.optional||{},key))errors.push(id+': unknown input '+key);
+   const exact=Object.prototype.hasOwnProperty.call(declared,key);
+   const dynamic=dynamicRoot(key);
+   if(!exact&&!dynamic)errors.push(id+': unknown input '+key);
    if(Array.isArray(value)){
     if(value.length!==2||(typeof value[0]!=='string'&&typeof value[0]!=='number')||!Number.isInteger(value[1])||value[1]<0||!Object.prototype.hasOwnProperty.call(graph,String(value[0])))errors.push(id+': dangling or invalid link '+key);
    }
