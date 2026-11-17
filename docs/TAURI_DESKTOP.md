@@ -24,3 +24,9 @@ After successful Windows packaging, CI executes the exact bundled sidecar execut
 
 ### Read-only ComfyUI health button
 In AI Production > MCP / ComfyUI, click `Probe local ComfyUI :8188 · read-only`. On the Desktop runtime this calls a fixed loopback TCP health check from Rust; in the Web/PWA it safely returns BLOCKED. A `CONNECTED_UNVERIFIED` response only establishes an HTTP 200 status, not available models or a successful render. No queue permission is granted.
+
+### Automatic local ComfyUI discovery
+
+Desktop no longer assumes a fixed ComfyUI port. `AI Production > MCP / ComfyUI` now asks the native backend to inspect **local Windows TCP listeners only**. The discovery order prioritizes `127.0.0.1:8000` (common Desktop) and `127.0.0.1:8188` (common standalone), then checks locally listening TCP ports reported by Windows. It never scans LAN/WAN addresses.
+
+A candidate is accepted only when the loopback endpoint returns HTTP 200 for both `/system_stats` and `/object_info`, with `/system_stats` containing expected ComfyUI fields. Result status is still `CONNECTED_UNVERIFIED`: this verifies the local API identity/readiness only, not models, custom nodes, queue execution or render success. Generation remains disabled. A manual **localhost port** fallback is available when auto-discovery fails. No ComfyUI settings or process are modified.
