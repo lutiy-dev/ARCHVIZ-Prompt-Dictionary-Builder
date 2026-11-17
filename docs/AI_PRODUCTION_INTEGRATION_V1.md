@@ -114,3 +114,21 @@ The AI Production **OVizLAB Skills** cabinet now uses a bundled registry of 25 c
 The user selects a Skill from a categorized registry. Prompt Studio auto-fills the canonical repository, `skills/<slug>/SKILL.md` path, pinned SHA and source description. Local validation checks that the selected item still matches the bundled registry contract.
 
 This is metadata-only. Prompt Studio does not fetch GitHub content at runtime, install a Skill, invoke a Skill, or claim Codex/ChatGPT runtime discovery. `execution_allowed=false` remains explicit. A successful validation is **SOURCE_PINNED_METADATA_VALIDATED**, not runtime TESTED.
+
+## Automatic First principle
+
+Project rule: whenever reliable read-only state can be obtained automatically from the local runtime or a verified source, Prompt Studio should acquire and use it automatically instead of asking the user to type, export, or upload it manually.
+
+Priority:
+1. **Automatic read-only discovery / retrieval**.
+2. **Manual fallback** only when automatic retrieval is unavailable or fails.
+3. **Explicit user approval** before side effects, paid requests, queue execution, file mutation, model/workflow changes, or other irreversible actions.
+
+The rule must not silently guess unknown values. Auto-detected data must remain attributable and visibly report its source/status.
+
+Current ComfyUI application:
+- local endpoint is auto-discovered on loopback;
+- `system_stats` and `object_info` are obtained through the native read-only bridge;
+- node inventory is used automatically for API-prompt validation;
+- manual port and `object_info` file remain fallback paths only;
+- queue execution remains disabled until a separate reviewed approval gate.
