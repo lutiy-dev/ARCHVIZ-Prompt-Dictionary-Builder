@@ -21,3 +21,16 @@ export async function validateOfflineComfyFiles(promptFile,infoFile){
   runtime_tested:false,model_selection_verified:false,queue_allowed:false,network_used:false,
   notice:'Local structural check only. Actual installed models, custom nodes and runtime are NOT verified.'};
 }
+
+
+/** Validate one local API prompt file against already retrieved object_info. */
+export async function validateOfflineComfyPrompt(promptFile,objectInfo){
+ const source=await readJsonFile(promptFile,'API prompt');
+ if(!isRecord(objectInfo))throw Error('object_info unavailable; reconnect ComfyUI or use manual fallback');
+ const graph=isRecord(source.prompt)?source.prompt:source;
+ if(Array.isArray(graph.nodes))throw Error('UI workflow JSON is not an API prompt; export API format');
+ const report=validateComfyPrompt(graph,objectInfo);
+ return {...report,status:report.valid?'OFFLINE_VALIDATED_UNVERIFIED':'BLOCKED',
+  runtime_tested:false,model_selection_verified:false,queue_allowed:false,network_used:false,
+  notice:'API prompt checked against automatically retrieved local object_info. Queue execution is still disabled.'};
+}
