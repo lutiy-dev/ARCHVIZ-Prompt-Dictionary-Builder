@@ -88,7 +88,7 @@ try{
 
  await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="mcp_comfyui").click();return true');
  await pass('MCP integrations are disconnected by default','return document.querySelector("#productionContent").textContent.includes("NOT CONNECTED")');
- await pass('Local ComfyUI auto-discovery exposed as an explicit read-only action','return document.querySelector("#productionContent").textContent.includes("Auto-detect local ComfyUI") && document.querySelector("#productionContent").textContent.includes("Manual localhost port")');
+ await pass('Local ComfyUI auto-discovery exposed as an explicit read-only action','return document.querySelector("#productionContent").textContent.includes("Re-detect local ComfyUI") && document.querySelector("#productionContent").textContent.includes("Manual localhost port")');
  await pass('Web/PWA auto-discovery remains Desktop-only','return document.querySelector("#productionContent").textContent.includes("Web/PWA") && document.querySelector("#productionContent").textContent.includes("read-only")');
 
  await evaluate('Array.from(document.querySelectorAll("#productionCabinets button")).find(x=>x.dataset.cabinet==="geometry_guardian").click();return true');
