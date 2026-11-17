@@ -1,8 +1,9 @@
 import {prepareTask,authorizeToolCall,integrationStatus,evaluateGeometryQC,appendHistory} from './core.mjs';
 import {readHistory,addHistoryRecord,exportHistory,PRODUCTION_HISTORY_KEY} from './history-store.mjs';
 import {compareImageFiles} from './image-qc.mjs';
-import {getDesktopStatus,discoverComfyUi,probeComfyUiPort,fetchComfyUiObjectInfo} from './desktop-bridge.mjs';
+import {getDesktopStatus,discoverComfyUi,probeComfyUiPort,fetchComfyUiObjectInfo,stageComfyUiExecution,approveComfyUiExecution,queueComfyUiExecution,fetchComfyUiExecutionHistory} from './desktop-bridge.mjs';
 import {validateOfflineComfyFiles,validateOfflineComfyPrompt} from './offline-comfyui-check.mjs';
+import {stageControlledExecution,extractComfyOutputs,historyCompleted} from './comfyui-controlled-execution.mjs';
 import {stageArtCandidate,decideArtCandidate} from './candidate-review.mjs';
 import {SKILL_REGISTRY,getSkill,validateSkillPin,OVIZLAB_SKILLS_SHA} from './skill-registry.mjs';
 
@@ -10,7 +11,7 @@ const $=id=>document.getElementById(id);
 const names={art_director:'AI Арт-директор',geometry_guardian:'Контроль геометрии',skills:'OVizLAB Skills',mcp_comfyui:'MCP / ComfyUI',history:'История Production'};
 const initialHistory=readHistory(localStorage);
 let chosen='art_director',currentTask=null,stagedCandidate=null,history=initialHistory.records;
-let comfyObjectInfo=null,comfyEndpoint=null;
+let comfyObjectInfo=null,comfyEndpoint=null,comfyValidatedGraph=null,comfyValidatedFile=null,comfyExecution=null;
 let historyError=initialHistory.error;
 const statusLabels={
  GENERATED:'Задание подготовлено',
@@ -26,7 +27,14 @@ const statusLabels={
  TESTED:'Протестировано',
  OFFLINE_VALIDATED_UNVERIFIED:'Структура проверена · runtime не подтверждён',
  SOURCE_DECLARED_NOT_FETCHED:'Источник указан · не загружен',
- SOURCE_PINNED_METADATA_VALIDATED:'Pinned metadata проверены'
+ SOURCE_PINNED_METADATA_VALIDATED:'Pinned metadata проверены',
+ READY_FOR_HUMAN_APPROVAL:'Готово к подтверждению пользователя',
+ APPROVED_FOR_ONE_QUEUE:'Разрешён один запуск',
+ QUEUED_UNVERIFIED:'Отправлено в ComfyUI · результат не проверен',
+ GENERATION_COMPLETED_UNREVIEWED:'Генерация завершена · результат требует проверки',
+ EXECUTION_FAILED:'Ошибка выполнения',
+ RESULT_ACCEPTED:'Результат принят пользователем',
+ RESULT_REJECTED:'Результат отклонён пользователем'
 };
 const factLabels={status:'Статус',task_id:'ID задачи',prompt_id:'ID промпта',node_count:'Количество нод',model_count:'Количество моделей',geometry_verified:'Геометрия проверена',runtime_tested:'Runtime протестирован',network_used:'Сеть использовалась',model_selection_verified:'Выбор моделей проверен',queue_allowed:'Запуск очереди разрешён',api_verified:'ComfyUI API подтверждён',port:'Порт'};
 const beginnerTips={
@@ -43,7 +51,14 @@ const beginnerTips={
  TESTED:'Runtime-проверка пройдена. Всё равно проверьте конкретный результат перед принятием.',
  OFFLINE_VALIDATED_UNVERIFIED:'JSON структурно совместим. Следующий шаг — проверить реальные ноды, модели и только затем разрешать запуск.',
  SOURCE_DECLARED_NOT_FETCHED:'Ссылка оформлена корректно, но содержимое Skill ещё не загружено и не проверено.',
- SOURCE_PINNED_METADATA_VALIDATED:'Источник закреплён на известной ревизии. Это не доказывает runtime discovery или выполнение Skill.'
+ SOURCE_PINNED_METADATA_VALIDATED:'Источник закреплён на известной ревизии. Это не доказывает runtime discovery или выполнение Skill.',
+ READY_FOR_HUMAN_APPROVAL:'Workflow проверен и подготовлен, но ещё не запущен. Сверьте карточку и подтвердите один запуск.',
+ APPROVED_FOR_ONE_QUEUE:'Разрешён только один запуск именно этой staged-версии workflow.',
+ QUEUED_UNVERIFIED:'Workflow отправлен в локальный ComfyUI. Prompt Studio ждёт завершения и не делает auto-retry.',
+ GENERATION_COMPLETED_UNREVIEWED:'Генерация закончена. Визуально проверьте результат перед принятием.',
+ EXECUTION_FAILED:'Выполнение остановлено. Исправьте причину и заново пройдите Stage → Approve.',
+ RESULT_ACCEPTED:'Пользователь принял generated candidate. Это не Geometry PASS и не изменение исходного проекта.',
+ RESULT_REJECTED:'Результат отклонён. Исходный workflow и проект не изменены.'
 };
 function displayStatus(status){return statusLabels[status]||status.replaceAll('_',' ')}
 function displayFact(key,value){
@@ -130,7 +145,7 @@ function result(data){
  const explanation=node('p',data?.notice||data?.reason||'Технический результат. Выполните ручную проверку перед принятием.');
  const tip=node('p',beginnerTips[status]||beginnerTips.NOT_VERIFIED);tip.className='production-beginner-tip';
  summary.append(statusLine,explanation,tip);
- const safe=['status','task_id','prompt_id','node_count','model_count','geometry_verified','runtime_tested','network_used'];
+ const safe=['status','task_id','candidate_id','prompt_id','node_count','model_count','output_count','digest','geometry_verified','runtime_tested','network_used'];
  for(const key of safe){if(data?.[key]===undefined)continue;const item=node('div');item.className='production-result-fact';item.append(node('span',factLabels[key]||key),node('strong',displayFact(key,data[key])));summary.append(item);}
  const issues=$('productionIssues');issues.replaceChildren();
  const findings=[...(Array.isArray(data?.errors)?data.errors:[]),...(Array.isArray(data?.issues)?data.issues.map(x=>typeof x==='string'?x:JSON.stringify(x)):[]),...(Array.isArray(data?.reasons)?data.reasons:[])].map(displayIssue);
@@ -144,6 +159,22 @@ function result(data){
 function exportJson(filename,content){
  const url=URL.createObjectURL(new Blob([JSON.stringify(content,null,2)],{type:'application/json'}));
  const a=node('a');a.href=url;a.download=filename;a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+}
+function executionHistory(event,status,note,extra={}){
+ const taskId=extra.task_id||comfyExecution?.candidate_id||('execution_'+Date.now());
+ const entry={id:'exec_'+(crypto.randomUUID?.()||String(Date.now())).replaceAll('-','').slice(0,22),task_id:taskId,status,event,note,...extra};
+ // Keep history v1 status contract unchanged; store lifecycle name in event.
+ const allowedStatus={EXECUTION_STAGED:'VALIDATED',EXECUTION_APPROVED:'VALIDATED',QUEUED_UNVERIFIED:'VALIDATED',EXECUTION_COMPLETED:'TESTED',EXECUTION_FAILED:'BLOCKED',RESULT_ACCEPTED:'ACCEPTED',RESULT_REJECTED:'REJECTED'}[event]||status;
+ entry.status=allowedStatus;
+ entry.event=event;
+ try{
+  if(historyError)throw Error(historyError);
+  addHistoryRecord(localStorage,entry);
+  history=appendHistory(history,entry);
+ }catch(error){historyError=error.message;feedback('Execution state updated; history not persisted: '+historyError,true)}
+}
+function comfyPort(){
+ try{const url=new URL(comfyEndpoint);return Number(url.port)}catch{return 0}
 }
 function redraw(){
  clearPreviewUrls();
@@ -297,7 +328,7 @@ function redraw(){
   const inventory=node('div','object_info · AUTO / ожидание подключения');inventory.className='production-result-fact';p.append(inventory);
 
   const loadInventory=async state=>{
-   comfyObjectInfo=null;comfyEndpoint=null;
+   comfyObjectInfo=null;comfyEndpoint=null;comfyValidatedGraph=null;comfyValidatedFile=null;comfyExecution=null;
    if(state?.status!=='CONNECTED_UNVERIFIED'||!state.port){inventory.textContent='object_info · AUTO / недоступен';return state}
    const info=await fetchComfyUiObjectInfo(state.port);
    if(info.status==='OBJECT_INFO_READY'){
@@ -361,13 +392,149 @@ function redraw(){
      if(!manualInfo)throw Error('object_info не получен автоматически; переподключите ComfyUI или используйте ручной fallback');
      report=await validateOfflineComfyFiles(prompt,manualInfo);
     }
-    result(report);feedback(report.status+' · '+(report.valid?'структура проверена; запуск НЕ выполнялся':report.errors.join('; ')),!report.valid);
-   }catch(e){feedback('BLOCKED · '+e.message,true)}
+    if(report.valid){
+     comfyValidatedGraph=JSON.parse(await prompt.text());
+     comfyValidatedFile=prompt.name;
+     comfyExecution=null;
+    }else{
+     comfyValidatedGraph=null;comfyValidatedFile=null;comfyExecution=null;
+    }
+    result(report);feedback(report.status+' · '+(report.valid?'структура проверена; workflow готов к Stage':report.errors.join('; ')),!report.valid);
+   }catch(e){comfyValidatedGraph=null;comfyValidatedFile=null;comfyExecution=null;feedback('BLOCKED · '+e.message,true)}
   });
   p.append(validateButton);
+
+  const executionBox=node('section');executionBox.className='production-execution-box';
+  const executionTitle=node('h3','Controlled Execution · Desktop only');
+  const executionBody=node('div');executionBody.append(node('p','Сначала выполните проверку API prompt. Stage не запускает генерацию.'));
+  executionBox.append(executionTitle,executionBody);p.append(executionBox);
+
+  const renderExecution=()=>{
+   executionBody.replaceChildren();
+   if(!comfyExecution){
+    executionBody.append(node('p','Workflow ещё не подготовлен к запуску.'));
+    return;
+   }
+   const info=node('div');info.className='production-history-meta-grid';
+   const rows=[
+    ['Workflow',comfyExecution.filename],
+    ['ComfyUI',comfyEndpoint||'не подключён'],
+    ['Nodes',comfyExecution.node_count],
+    ['Models',comfyExecution.model_count],
+    ['Graph',comfyExecution.digest?.slice(0,12)+'…'],
+    ['Geometry','NOT VERIFIED']
+   ];
+   for(const [label,value] of rows){const row=node('div');row.className='production-result-fact';row.append(node('span',label),node('strong',String(value)));info.append(row)}
+   executionBody.append(info);
+   const details=node('details');details.append(node('summary','Technical details'),node('pre',JSON.stringify({candidate_id:comfyExecution.candidate_id,digest:comfyExecution.digest,client_id:comfyExecution.client_id},null,2)));executionBody.append(details);
+
+   if(comfyExecution.phase==='STAGED'){
+    const confirmLabel=node('label');confirmLabel.className='production-field';
+    const check=node('input');check.type='checkbox';check.id='productionExecutionApproval';
+    confirmLabel.append(check,node('span','Я проверил workflow и разрешаю один запуск в локальном ComfyUI'));executionBody.append(confirmLabel);
+    const approve=action('Разрешить один запуск',async()=>{
+     if(!check.checked){feedback('BLOCKED · требуется явное подтверждение пользователя',true);return}
+     const approved=await approveComfyUiExecution({candidateId:comfyExecution.candidate_id,digest:comfyExecution.digest,userConfirmed:true});
+     if(approved.status!=='APPROVED_FOR_ONE_QUEUE'){result(approved);feedback('BLOCKED · '+(approved.reason||'approval failed'),true);return}
+     comfyExecution={...comfyExecution,phase:'APPROVED',ticket:approved.ticket,status:approved.status};
+     executionHistory('EXECUTION_APPROVED','VALIDATED','User approved exactly one queue for staged graph',{digest:comfyExecution.digest,workflow_filename:comfyExecution.filename,endpoint:comfyEndpoint});
+     result({...approved,node_count:comfyExecution.node_count,model_count:comfyExecution.model_count,geometry_verified:false,runtime_tested:false});
+     feedback('APPROVED_FOR_ONE_QUEUE · разрешён только один запуск этой staged-версии');renderExecution();
+    });
+    executionBody.append(approve);return;
+   }
+
+   if(comfyExecution.phase==='APPROVED'){
+    const run=action('Запустить один раз в ComfyUI',async()=>{
+     run.disabled=true;
+     const queued=await queueComfyUiExecution({ticket:comfyExecution.ticket});
+     delete comfyExecution.ticket;
+     if(queued.status!=='QUEUED_UNVERIFIED'){
+      comfyExecution={...comfyExecution,phase:'FAILED',status:'EXECUTION_FAILED'};
+      executionHistory('EXECUTION_FAILED','BLOCKED','Queue failed; automatic retry forbidden',{digest:comfyExecution.digest,workflow_filename:comfyExecution.filename,endpoint:comfyEndpoint,reason:queued.reason});
+      result({status:'EXECUTION_FAILED',reason:queued.reason,geometry_verified:false,runtime_tested:false});feedback('EXECUTION_FAILED · для повтора нужен новый Stage → Approve',true);renderExecution();return;
+     }
+     comfyExecution={...comfyExecution,phase:'QUEUED',prompt_id:queued.prompt_id,status:queued.status,queued_at:Date.now()};
+     executionHistory('QUEUED_UNVERIFIED','VALIDATED','Exact staged graph queued once in local ComfyUI',{digest:comfyExecution.digest,workflow_filename:comfyExecution.filename,endpoint:comfyEndpoint,prompt_id:queued.prompt_id});
+     result({...queued,node_count:comfyExecution.node_count,model_count:comfyExecution.model_count,runtime_tested:false,network_used:true});
+     feedback('QUEUED_UNVERIFIED · Prompt Studio ожидает результат; auto-retry отключён');renderExecution();
+     void monitorExecution();
+    });
+    executionBody.append(node('p','Разрешение получено. Следующее действие отправит workflow в локальный ComfyUI ровно один раз.'),run);return;
+   }
+
+   if(comfyExecution.phase==='QUEUED'){
+    executionBody.append(node('p','Workflow выполняется. Prompt ID: '+comfyExecution.prompt_id),node('p','Prompt Studio проверяет локальную историю примерно раз в 2 секунды.'));return;
+   }
+
+   if(comfyExecution.phase==='COMPLETED'){
+    executionBody.append(node('p','Генерация завершена. Выходных файлов: '+(comfyExecution.outputs?.length||0)));
+    for(const output of comfyExecution.outputs||[]){
+     const row=node('div');row.className='production-result-fact';row.append(node('span',output.kind+' · node '+output.node_id),node('strong',[output.subfolder,output.filename].filter(Boolean).join('/')));executionBody.append(row);
+    }
+    const accept=action('Принять результат',()=>decideExecution('RESULT_ACCEPTED'));
+    const reject=action('Отклонить результат',()=>decideExecution('RESULT_REJECTED'));reject.classList.add('production-danger');
+    executionBody.append(accept,reject);return;
+   }
+
+   executionBody.append(node('p',comfyExecution.status||'Execution stopped.'));
+  };
+
+  const decideExecution=decision=>{
+   if(!comfyExecution?.prompt_id||comfyExecution.phase!=='COMPLETED')return;
+   const status=decision;
+   executionHistory(decision,decision==='RESULT_ACCEPTED'?'ACCEPTED':'REJECTED',decision==='RESULT_ACCEPTED'?'Generated candidate accepted by user; geometry NOT verified':'Generated candidate rejected; source project unchanged',{digest:comfyExecution.digest,workflow_filename:comfyExecution.filename,endpoint:comfyEndpoint,prompt_id:comfyExecution.prompt_id,output_count:comfyExecution.outputs?.length||0});
+   comfyExecution={...comfyExecution,phase:decision==='RESULT_ACCEPTED'?'ACCEPTED':'REJECTED',status};
+   result({status,prompt_id:comfyExecution.prompt_id,output_count:comfyExecution.outputs?.length||0,geometry_verified:false,runtime_tested:true});
+   feedback((decision==='RESULT_ACCEPTED'?'Результат принят пользователем':'Результат отклонён')+' · Geometry PASS не присвоен');renderExecution();
+  };
+
+  const monitorExecution=async()=>{
+   const started=Date.now(),timeoutMs=30*60*1000,intervalMs=2000;
+   while(comfyExecution?.phase==='QUEUED'&&Date.now()-started<timeoutMs){
+    await new Promise(resolve=>setTimeout(resolve,intervalMs));
+    if(comfyExecution?.phase!=='QUEUED')return;
+    const report=await fetchComfyUiExecutionHistory({port:comfyPort(),promptId:comfyExecution.prompt_id});
+    if(report.status!=='HISTORY_RECEIVED_UNREVIEWED')continue;
+    const state=historyCompleted(report.history,comfyExecution.prompt_id);
+    if(!state.done)continue;
+    if(state.failed){
+     comfyExecution={...comfyExecution,phase:'FAILED',status:'EXECUTION_FAILED'};
+     executionHistory('EXECUTION_FAILED','BLOCKED','ComfyUI history reported execution failure; no retry performed',{digest:comfyExecution.digest,workflow_filename:comfyExecution.filename,endpoint:comfyEndpoint,prompt_id:comfyExecution.prompt_id});
+     result({status:'EXECUTION_FAILED',prompt_id:comfyExecution.prompt_id,geometry_verified:false,runtime_tested:true});feedback('EXECUTION_FAILED · ComfyUI сообщил об ошибке; auto-retry не выполнялся',true);renderExecution();return;
+    }
+    const outputs=extractComfyOutputs(report.history,comfyExecution.prompt_id);
+    comfyExecution={...comfyExecution,phase:'COMPLETED',status:'GENERATION_COMPLETED_UNREVIEWED',outputs};
+    executionHistory('EXECUTION_COMPLETED','TESTED','ComfyUI completed workflow; result still requires human review',{digest:comfyExecution.digest,workflow_filename:comfyExecution.filename,endpoint:comfyEndpoint,prompt_id:comfyExecution.prompt_id,output_count:outputs.length});
+    result({status:'GENERATION_COMPLETED_UNREVIEWED',prompt_id:comfyExecution.prompt_id,node_count:comfyExecution.node_count,model_count:comfyExecution.model_count,output_count:outputs.length,outputs,geometry_verified:false,runtime_tested:true,network_used:true});
+    feedback('GENERATION_COMPLETED_UNREVIEWED · визуально проверьте результат');renderExecution();return;
+   }
+   if(comfyExecution?.phase==='QUEUED'){
+    comfyExecution={...comfyExecution,phase:'FAILED',status:'EXECUTION_FAILED'};
+    executionHistory('EXECUTION_FAILED','BLOCKED','Monitoring timeout; automatic retry forbidden',{digest:comfyExecution.digest,workflow_filename:comfyExecution.filename,endpoint:comfyEndpoint,prompt_id:comfyExecution.prompt_id});
+    result({status:'EXECUTION_FAILED',reason:'MONITOR_TIMEOUT',prompt_id:comfyExecution.prompt_id,geometry_verified:false,runtime_tested:false});feedback('EXECUTION_FAILED · timeout мониторинга; workflow автоматически не перезапускается',true);renderExecution();
+   }
+  };
+
+  p.append(action('Подготовить к запуску',async()=>{
+   if(!comfyValidatedGraph||!comfyValidatedFile){feedback('BLOCKED · сначала выполните успешную проверку API prompt',true);return}
+   const port=comfyPort();if(!port||!comfyObjectInfo){feedback('BLOCKED · нужен активный локальный ComfyUI с object_info',true);return}
+   try{
+    const clientId='prompt_studio_'+(crypto.randomUUID?.()||String(Date.now())).replaceAll('-','').slice(0,24);
+    const staged=await stageControlledExecution({graph:comfyValidatedGraph,objectInfo:comfyObjectInfo,filename:comfyValidatedFile,clientId});
+    const nativeStage=await stageComfyUiExecution({port,graph:staged.graph,digest:staged.digest,clientId,filename:staged.filename});
+    if(nativeStage.status!=='READY_FOR_HUMAN_APPROVAL'||nativeStage.digest!==staged.digest)throw Error(nativeStage.reason||'native stage mismatch');
+    comfyExecution={...staged,...nativeStage,filename:staged.filename,client_id:clientId,phase:'STAGED'};
+    executionHistory('EXECUTION_STAGED','VALIDATED','Workflow staged without queue execution',{digest:staged.digest,workflow_filename:staged.filename,endpoint:comfyEndpoint,node_count:staged.node_count,model_count:nativeStage.model_count});
+    result({...nativeStage,filename:staged.filename,runtime_tested:false,network_used:false});
+    feedback('READY_FOR_HUMAN_APPROVAL · workflow подготовлен, но ещё не запущен');renderExecution();
+   }catch(e){comfyExecution=null;result({status:'BLOCKED',reason:e.message,geometry_verified:false,runtime_tested:false});feedback('BLOCKED · '+e.message,true);renderExecution()}
+  }));
+  renderExecution();
+
   p.append(action('Проверить политику запуска · dry-run',()=>{
    const decision=authorizeToolCall({server_id:'comfyui',tool_id:'queue',effect:'execute'},{allow:[]});
-   result(decision);feedback('Вызов инструмента запрещён · '+displayIssue(decision.reason));
+   result(decision);feedback('Dry-run deny-by-default · '+displayIssue(decision.reason));
   }));host.append(p);void runDiscovery();
  }else{
   const p=panel('История Production · Локально','Локальный журнал решений AI Production. Он помогает понять, что было подготовлено, принято или отклонено. История не является резервной копией проекта.');
