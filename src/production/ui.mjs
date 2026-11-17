@@ -1,7 +1,7 @@
 import {prepareTask,authorizeToolCall,integrationStatus,evaluateGeometryQC,appendHistory} from './core.mjs';
 import {readHistory,addHistoryRecord,exportHistory} from './history-store.mjs';
 import {compareImageFiles} from './image-qc.mjs';
-import {getDesktopStatus,probeComfyUi} from './desktop-bridge.mjs';
+import {getDesktopStatus,discoverComfyUi,probeComfyUiPort} from './desktop-bridge.mjs';
 import {validateOfflineComfyFiles} from './offline-comfyui-check.mjs';
 import {stageArtCandidate,decideArtCandidate} from './candidate-review.mjs';
 
@@ -161,12 +161,25 @@ function redraw(){
   for(const name of ['OpenAI API','Local MCP','ComfyUI'])p.append(node('div',name+' · '+integrationStatus().status+' / NOT CONNECTED'));
   const native=node('div','Desktop Sidecar · CHECKING');p.append(native);
   void getDesktopStatus().then(s=>{native.textContent='Desktop Sidecar · '+s.runtime+(s.mcp_ready?' / STDIO READY':' / NOT CONNECTED');});
-  p.append(action('Probe local ComfyUI :8188 · read-only',async()=>{
-   feedback('Checking local Desktop connection only');
-   const state=await probeComfyUi();
+  const endpoint=node('div','ComfyUI endpoint · AUTO / not detected');endpoint.className='production-result-fact';p.append(endpoint);
+  p.append(action('Auto-detect local ComfyUI · read-only',async()=>{
+   feedback('Searching local loopback listeners and verifying ComfyUI API');
+   const state=await discoverComfyUi();
+   endpoint.textContent='ComfyUI endpoint · '+(state.origin||'NOT FOUND');
    result(state);
-   feedback('ComfyUI · '+state.status+(state.reason?' / '+state.reason:''));
+   feedback('ComfyUI · '+state.status+(state.origin?' / '+state.origin:'')+(state.reason?' / '+state.reason:''));
   }));
+  const manual=node('div');manual.className='production-image-pair';
+  const portField=field('Manual localhost port','productionComfyPort','8000');
+  const portInput=portField.querySelector('input');portInput.type='number';portInput.min='1';portInput.max='65535';portInput.value='8000';
+  manual.append(portField);
+  const manualButton=action('Probe manual port · read-only',async()=>{
+   const state=await probeComfyUiPort($('productionComfyPort').value);
+   endpoint.textContent='ComfyUI endpoint · '+(state.origin||'NOT FOUND');
+   result(state);
+   feedback('ComfyUI · '+state.status+(state.origin?' / '+state.origin:'')+(state.reason?' / '+state.reason:''));
+  });
+  manual.append(manualButton);p.append(manual);
   const offline=node('div');offline.className='production-image-pair';
   for(const [label,id] of [['ComfyUI API prompt (.json)','productionComfyApiFile'],['ComfyUI object_info (.json)','productionComfyInfoFile']]){
    const l=node('label');l.className='production-field';const input=node('input');input.type='file';input.accept='.json,application/json';input.id=id;l.append(node('span',label),input);offline.append(l);
